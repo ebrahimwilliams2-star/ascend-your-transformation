@@ -47,10 +47,15 @@ function Metrics() {
 
   const save = useMutation({
     mutationFn: async () => {
-      const payload: Record<string, number | string> = { user_id: user!.id };
-      for (const f of FIELDS) {
-        if (form[f.key]) payload[f.key] = parseFloat(form[f.key]);
-      }
+      const payload = {
+        user_id: user!.id,
+        weight_kg: form.weight_kg ? parseFloat(form.weight_kg) : null,
+        body_fat: form.body_fat ? parseFloat(form.body_fat) : null,
+        chest_cm: form.chest_cm ? parseFloat(form.chest_cm) : null,
+        waist_cm: form.waist_cm ? parseFloat(form.waist_cm) : null,
+        arms_cm: form.arms_cm ? parseFloat(form.arms_cm) : null,
+        thighs_cm: form.thighs_cm ? parseFloat(form.thighs_cm) : null,
+      };
       const { error } = await supabase.from("measurements").insert(payload);
       if (error) throw error;
     },
