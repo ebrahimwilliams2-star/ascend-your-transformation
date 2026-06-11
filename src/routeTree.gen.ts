@@ -13,6 +13,7 @@ import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as MetricsRouteImport } from './routes/metrics'
 import { Route as JournalRouteImport } from './routes/journal'
+import { Route as GymbrosRouteImport } from './routes/gymbros'
 import { Route as DashRouteImport } from './routes/dash'
 import { Route as CoachRouteImport } from './routes/coach'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -36,6 +37,11 @@ const MetricsRoute = MetricsRouteImport.update({
 const JournalRoute = JournalRouteImport.update({
   id: '/journal',
   path: '/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GymbrosRoute = GymbrosRouteImport.update({
+  id: '/gymbros',
+  path: '/gymbros',
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashRoute = DashRouteImport.update({
@@ -64,6 +70,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
+  '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/photos': typeof PhotosRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
+  '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/photos': typeof PhotosRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
+  '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/photos': typeof PhotosRoute
@@ -97,6 +106,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coach'
     | '/dash'
+    | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/photos'
@@ -107,6 +117,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coach'
     | '/dash'
+    | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/photos'
@@ -117,6 +128,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/coach'
     | '/dash'
+    | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/photos'
@@ -128,6 +140,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   CoachRoute: typeof CoachRoute
   DashRoute: typeof DashRoute
+  GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
   MetricsRoute: typeof MetricsRoute
   PhotosRoute: typeof PhotosRoute
@@ -162,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/journal'
       fullPath: '/journal'
       preLoaderRoute: typeof JournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gymbros': {
+      id: '/gymbros'
+      path: '/gymbros'
+      fullPath: '/gymbros'
+      preLoaderRoute: typeof GymbrosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/dash': {
@@ -200,6 +220,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   CoachRoute: CoachRoute,
   DashRoute: DashRoute,
+  GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
   MetricsRoute: MetricsRoute,
   PhotosRoute: PhotosRoute,
@@ -208,13 +229,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

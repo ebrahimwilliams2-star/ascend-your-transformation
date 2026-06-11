@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Dumbbell, Plus, Flame, BookOpen, MessageCircle } from "lucide-react";
+import { Home, Dumbbell, Flame, Users, MessageCircle } from "lucide-react";
 import { useEffect } from "react";
 import { useUser } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
@@ -9,7 +9,7 @@ const navItems = [
   { to: "/dash", label: "Dash", Icon: Home },
   { to: "/workouts", label: "Lift", Icon: Dumbbell },
   { to: "/photos", label: "Form", Icon: Flame },
-  { to: "/journal", label: "Log", Icon: BookOpen },
+  { to: "/gymbros", label: "Bros", Icon: Users },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {

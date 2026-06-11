@@ -116,19 +116,24 @@ function Dashboard() {
   const progress = Math.min(100, Math.round(((xp % 500) / 500) * 100));
   const streak = profile?.current_streak ?? 0;
   const displayName = profile?.display_name ?? "Athlete";
+  const firstName = displayName.split(" ")[0];
   const rank = profile?.rank ?? "Initiate";
+  const hour = new Date().getHours();
+  const greeting = hour < 5 ? "Still grinding" : hour < 12 ? "Rise up" : hour < 18 ? "Stay sharp" : "Finish strong";
 
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
         <div>
           <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
-          <h1 className="text-display text-2xl font-bold mt-0.5">ASCEND</h1>
+          <h1 className="text-display text-2xl font-bold mt-0.5">
+            {greeting}, {firstName}
+          </h1>
         </div>
         <div className="flex items-center gap-3">
           <div className="text-right">
-            <p className="chip-label text-brand-silver">{displayName}</p>
-            <p className="text-xs font-bold text-white">{xp.toLocaleString()} XP</p>
+            <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
+            <p className="text-xs font-bold text-white">{streak} day streak</p>
           </div>
           <button
             onClick={() => signOut()}
