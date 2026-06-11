@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 
