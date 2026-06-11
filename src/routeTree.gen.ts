@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as PhotosRouteImport } from './routes/photos'
+import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as MetricsRouteImport } from './routes/metrics'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as GymbrosRouteImport } from './routes/gymbros'
@@ -28,6 +29,11 @@ const WorkoutsRoute = WorkoutsRouteImport.update({
 const PhotosRoute = PhotosRouteImport.update({
   id: '/photos',
   path: '/photos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NutritionRoute = NutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MetricsRoute = MetricsRouteImport.update({
@@ -80,6 +86,7 @@ export interface FileRoutesByFullPath {
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
+  '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/workouts': typeof WorkoutsRoute
 }
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
+  '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/workouts': typeof WorkoutsRoute
 }
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
+  '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/workouts': typeof WorkoutsRoute
 }
@@ -119,6 +128,7 @@ export interface FileRouteTypes {
     | '/gymbros'
     | '/journal'
     | '/metrics'
+    | '/nutrition'
     | '/photos'
     | '/workouts'
   fileRoutesByTo: FileRoutesByTo
@@ -131,6 +141,7 @@ export interface FileRouteTypes {
     | '/gymbros'
     | '/journal'
     | '/metrics'
+    | '/nutrition'
     | '/photos'
     | '/workouts'
   id:
@@ -143,6 +154,7 @@ export interface FileRouteTypes {
     | '/gymbros'
     | '/journal'
     | '/metrics'
+    | '/nutrition'
     | '/photos'
     | '/workouts'
   fileRoutesById: FileRoutesById
@@ -156,6 +168,7 @@ export interface RootRouteChildren {
   GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
   MetricsRoute: typeof MetricsRoute
+  NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
   WorkoutsRoute: typeof WorkoutsRoute
 }
@@ -174,6 +187,13 @@ declare module '@tanstack/react-router' {
       path: '/photos'
       fullPath: '/photos'
       preLoaderRoute: typeof PhotosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nutrition': {
+      id: '/nutrition'
+      path: '/nutrition'
+      fullPath: '/nutrition'
+      preLoaderRoute: typeof NutritionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/metrics': {
@@ -244,6 +264,7 @@ const rootRouteChildren: RootRouteChildren = {
   GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
   MetricsRoute: MetricsRoute,
+  NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
   WorkoutsRoute: WorkoutsRoute,
 }

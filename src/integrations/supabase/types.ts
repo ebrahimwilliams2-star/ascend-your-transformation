@@ -44,6 +44,48 @@ export type Database = {
         }
         Relationships: []
       }
+      food_logs: {
+        Row: {
+          calories: number
+          carbs_g: number
+          created_at: string
+          fat_g: number
+          food_name: string
+          id: string
+          log_date: string
+          meal_type: string
+          protein_g: number
+          serving_size: string | null
+          user_id: string
+        }
+        Insert: {
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          fat_g?: number
+          food_name: string
+          id?: string
+          log_date?: string
+          meal_type: string
+          protein_g?: number
+          serving_size?: string | null
+          user_id: string
+        }
+        Update: {
+          calories?: number
+          carbs_g?: number
+          created_at?: string
+          fat_g?: number
+          food_name?: string
+          id?: string
+          log_date?: string
+          meal_type?: string
+          protein_g?: number
+          serving_size?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
@@ -137,6 +179,72 @@ export type Database = {
           user_id?: string
           waist_cm?: number | null
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      nutrition_profiles: {
+        Row: {
+          activity_level: string
+          age: number
+          bmr: number | null
+          calorie_target: number | null
+          carbs_g: number | null
+          created_at: string
+          fat_g: number | null
+          gender: string
+          goal_pace: string
+          goal_type: string
+          goal_weight_kg: number | null
+          height_cm: number
+          id: string
+          protein_g: number | null
+          tdee: number | null
+          training_days: number
+          updated_at: string
+          user_id: string
+          weight_kg: number
+        }
+        Insert: {
+          activity_level: string
+          age: number
+          bmr?: number | null
+          calorie_target?: number | null
+          carbs_g?: number | null
+          created_at?: string
+          fat_g?: number | null
+          gender: string
+          goal_pace?: string
+          goal_type: string
+          goal_weight_kg?: number | null
+          height_cm: number
+          id?: string
+          protein_g?: number | null
+          tdee?: number | null
+          training_days?: number
+          updated_at?: string
+          user_id: string
+          weight_kg: number
+        }
+        Update: {
+          activity_level?: string
+          age?: number
+          bmr?: number | null
+          calorie_target?: number | null
+          carbs_g?: number | null
+          created_at?: string
+          fat_g?: number | null
+          gender?: string
+          goal_pace?: string
+          goal_type?: string
+          goal_weight_kg?: number | null
+          height_cm?: number
+          id?: string
+          protein_g?: number | null
+          tdee?: number | null
+          training_days?: number
+          updated_at?: string
+          user_id?: string
+          weight_kg?: number
         }
         Relationships: []
       }
