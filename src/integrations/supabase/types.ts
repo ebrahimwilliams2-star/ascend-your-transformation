@@ -14,7 +14,213 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      discipline_checkins: {
+        Row: {
+          checkin_date: string
+          created_at: string
+          id: string
+          items: Json
+          updated_at: string
+          user_id: string
+          xp_earned: number
+        }
+        Insert: {
+          checkin_date?: string
+          created_at?: string
+          id?: string
+          items?: Json
+          updated_at?: string
+          user_id: string
+          xp_earned?: number
+        }
+        Update: {
+          checkin_date?: string
+          created_at?: string
+          id?: string
+          items?: Json
+          updated_at?: string
+          user_id?: string
+          xp_earned?: number
+        }
+        Relationships: []
+      }
+      journal_entries: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          mood: string | null
+          title: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          mood?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          mood?: string | null
+          title?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      measurements: {
+        Row: {
+          arms_cm: number | null
+          body_fat: number | null
+          chest_cm: number | null
+          created_at: string
+          id: string
+          recorded_at: string
+          thighs_cm: number | null
+          user_id: string
+          waist_cm: number | null
+          weight_kg: number | null
+        }
+        Insert: {
+          arms_cm?: number | null
+          body_fat?: number | null
+          chest_cm?: number | null
+          created_at?: string
+          id?: string
+          recorded_at?: string
+          thighs_cm?: number | null
+          user_id: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Update: {
+          arms_cm?: number | null
+          body_fat?: number | null
+          chest_cm?: number | null
+          created_at?: string
+          id?: string
+          recorded_at?: string
+          thighs_cm?: number | null
+          user_id?: string
+          waist_cm?: number | null
+          weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          current_streak: number
+          display_name: string | null
+          id: string
+          last_checkin_date: string | null
+          level: number
+          longest_streak: number
+          rank: string
+          updated_at: string
+          username: string | null
+          xp: number
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          current_streak?: number
+          display_name?: string | null
+          id: string
+          last_checkin_date?: string | null
+          level?: number
+          longest_streak?: number
+          rank?: string
+          updated_at?: string
+          username?: string | null
+          xp?: number
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          current_streak?: number
+          display_name?: string | null
+          id?: string
+          last_checkin_date?: string | null
+          level?: number
+          longest_streak?: number
+          rank?: string
+          updated_at?: string
+          username?: string | null
+          xp?: number
+        }
+        Relationships: []
+      }
+      progress_photos: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          notes: string | null
+          photo_path: string
+          taken_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          notes?: string | null
+          photo_path: string
+          taken_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          notes?: string | null
+          photo_path?: string
+          taken_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      workouts: {
+        Row: {
+          created_at: string
+          duration_min: number | null
+          exercises: Json
+          id: string
+          name: string
+          notes: string | null
+          performed_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_min?: number | null
+          exercises?: Json
+          id?: string
+          name: string
+          notes?: string | null
+          performed_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_min?: number | null
+          exercises?: Json
+          id?: string
+          name?: string
+          notes?: string | null
+          performed_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
