@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 
@@ -164,6 +164,28 @@ function Dashboard() {
             </p>
           </div>
         </div>
+      </section>
+
+      {/* The Ascendant card */}
+      <section className="px-6 mb-6">
+        <Link
+          to="/ascendant"
+          className="group relative block overflow-hidden rounded-2xl border border-brand-red/40 bg-gradient-to-br from-brand-gray to-black p-5 transition-all hover:shadow-glow-red"
+        >
+          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-red/30 blur-3xl" />
+          <div className="relative flex items-center gap-4">
+            <div className="grid size-12 place-items-center rounded-xl bg-brand-red/20 ring-1 ring-brand-red/50">
+              <Flame className="size-6 text-brand-red" />
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="chip-label text-brand-red mb-0.5">The Ascendant</p>
+              <p className="text-sm font-bold italic leading-snug text-white">
+                Meet the future version of yourself.
+              </p>
+            </div>
+            <ChevronRight className="size-5 shrink-0 text-brand-red" />
+          </div>
+        </Link>
       </section>
 
       {/* AI Coach card */}

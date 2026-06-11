@@ -17,6 +17,7 @@ import { Route as GymbrosRouteImport } from './routes/gymbros'
 import { Route as DashRouteImport } from './routes/dash'
 import { Route as CoachRouteImport } from './routes/coach'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as IndexRouteImport } from './routes/index'
 
 const WorkoutsRoute = WorkoutsRouteImport.update({
@@ -59,6 +60,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AscendantRoute = AscendantRouteImport.update({
+  id: '/ascendant',
+  path: '/ascendant',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -67,6 +73,7 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
@@ -90,6 +98,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
   '/coach': typeof CoachRoute
   '/dash': typeof DashRoute
@@ -103,6 +112,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/ascendant'
     | '/auth'
     | '/coach'
     | '/dash'
@@ -114,6 +124,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/ascendant'
     | '/auth'
     | '/coach'
     | '/dash'
@@ -125,6 +136,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/ascendant'
     | '/auth'
     | '/coach'
     | '/dash'
@@ -137,6 +149,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AscendantRoute: typeof AscendantRoute
   AuthRoute: typeof AuthRoute
   CoachRoute: typeof CoachRoute
   DashRoute: typeof DashRoute
@@ -205,6 +218,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ascendant': {
+      id: '/ascendant'
+      path: '/ascendant'
+      fullPath: '/ascendant'
+      preLoaderRoute: typeof AscendantRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -217,6 +237,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AscendantRoute: AscendantRoute,
   AuthRoute: AuthRoute,
   CoachRoute: CoachRoute,
   DashRoute: DashRoute,
