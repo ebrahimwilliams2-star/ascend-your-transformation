@@ -262,8 +262,23 @@ function Dashboard() {
         </div>
       </section>
 
-      {/* Metrics quick link */}
-      <section className="px-6">
+      {/* Metrics & Nutrition quick links */}
+      <section className="px-6 space-y-3">
+        <Link
+          to="/nutrition"
+          className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"
+        >
+          <div className="flex items-center gap-3">
+            <div className="grid size-10 place-items-center rounded-lg bg-brand-red/20 text-brand-red">
+              <Apple className="size-5" />
+            </div>
+            <div>
+              <p className="text-sm font-bold">Nutrition</p>
+              <p className="text-[10px] uppercase tracking-widest text-brand-silver">Calories · Macros · Meals</p>
+            </div>
+          </div>
+          <ChevronRight className="size-5 text-brand-silver" />
+        </Link>
         <Link
           to="/metrics"
           className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"
