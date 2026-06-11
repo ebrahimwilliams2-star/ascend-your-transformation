@@ -44,6 +44,33 @@ export type Database = {
         }
         Relationships: []
       }
+      friendships: {
+        Row: {
+          addressee_id: string
+          created_at: string
+          id: string
+          requester_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          addressee_id: string
+          created_at?: string
+          id?: string
+          requester_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          addressee_id?: string
+          created_at?: string
+          id?: string
+          requester_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       journal_entries: {
         Row: {
           content: string
@@ -226,7 +253,34 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_gymbros: {
+        Args: never
+        Returns: {
+          avatar_url: string
+          current_streak: number
+          direction: string
+          display_name: string
+          friend_id: string
+          friendship_id: string
+          level: number
+          longest_streak: number
+          rank: string
+          status: string
+          username: string
+          xp: number
+        }[]
+      }
+      search_profiles: {
+        Args: { q: string }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          id: string
+          level: number
+          rank: string
+          username: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
