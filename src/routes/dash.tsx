@@ -143,11 +143,6 @@ function Dashboard() {
           </button>
         </div>
       </header>
-          >
-            <LogOut className="size-4" />
-          </button>
-        </div>
-      </header>
 
       {/* Hero progress */}
       <section className="px-6 mb-6">
