@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
+import { AscendLogo } from "@/components/AscendLogo";
 
 export const Route = createFileRoute("/dash")({
   head: () => ({ meta: [{ title: "Dashboard — ASCEND" }] }),
@@ -124,16 +125,19 @@ function Dashboard() {
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
-        <div>
-          <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
-          <h1 className="text-display text-2xl font-bold mt-0.5">
-            {greeting}, {firstName}
-          </h1>
-        </div>
         <div className="flex items-center gap-3">
+          <AscendLogo className="size-11" />
+          <div>
+            <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
+            <h1 className="text-display text-xl font-bold mt-0.5">
+              {greeting}, {firstName}
+            </h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="text-right">
             <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
-            <p className="text-xs font-bold text-white">{streak} day streak</p>
+            <p className="text-xs font-bold text-white">{streak}d streak</p>
           </div>
           <button
             onClick={() => signOut()}
@@ -208,6 +212,17 @@ function Dashboard() {
             <ChevronRight className="size-5 shrink-0 text-white" />
           </div>
         </Link>
+      </section>
+
+      {/* Brotherhood grid */}
+      <section className="px-6 mb-6">
+        <h3 className="chip-label text-brand-silver mb-3">Brotherhood</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <FeatureTile to="/challenges" Icon={Trophy} label="Challenges" sub="Earn XP · Badges" tone />
+          <FeatureTile to="/community" Icon={Heart} label="Community" sub="Feed · Reactions" />
+          <FeatureTile to="/squads" Icon={Users} label="Squads" sub="Groups · Leaderboards" />
+          <FeatureTile to="/rewards" Icon={Gift} label="Reward Vault" sub="Earned Meals" tone />
+        </div>
       </section>
 
       {/* Transformation */}
@@ -320,5 +335,24 @@ function PhotoSlot({ label, tone, path, fallback }: { label: string; tone: "silv
         {tone === "red" ? "Current" : "Baseline"}
       </p>
     </div>
+  );
+}
+
+function FeatureTile({ to, Icon, label, sub, tone }: { to: string; Icon: typeof Trophy; label: string; sub: string; tone?: boolean }) {
+  return (
+    <Link
+      to={to}
+      className={`group relative block overflow-hidden rounded-2xl border p-4 transition-all ${
+        tone
+          ? "border-brand-red/40 bg-gradient-to-br from-brand-red/15 to-black hover:shadow-glow-red"
+          : "border-white/5 bg-brand-gray/60 hover:bg-brand-gray"
+      }`}
+    >
+      <div className={`grid size-10 place-items-center rounded-xl ${tone ? "bg-brand-red text-white shadow-glow-red" : "bg-brand-red/20 text-brand-red"}`}>
+        <Icon className="size-5" />
+      </div>
+      <p className="mt-3 text-sm font-bold">{label}</p>
+      <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">{sub}</p>
+    </Link>
   );
 }

@@ -14,6 +14,151 @@ export type Database = {
   }
   public: {
     Tables: {
+      badges: {
+        Row: {
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          name: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          description: string
+          icon?: string
+          id: string
+          name: string
+          tier?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          tier?: string
+        }
+        Relationships: []
+      }
+      challenge_participants: {
+        Row: {
+          challenge_id: string
+          completed: boolean
+          completed_at: string | null
+          id: string
+          joined_at: string
+          progress: number
+          user_id: string
+        }
+        Insert: {
+          challenge_id: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          joined_at?: string
+          progress?: number
+          user_id: string
+        }
+        Update: {
+          challenge_id?: string
+          completed?: boolean
+          completed_at?: string | null
+          id?: string
+          joined_at?: string
+          progress?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenge_participants_challenge_id_fkey"
+            columns: ["challenge_id"]
+            isOneToOne: false
+            referencedRelation: "challenges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      challenges: {
+        Row: {
+          badge_id: string | null
+          cadence: string
+          created_at: string
+          description: string
+          icon: string
+          id: string
+          is_active: boolean
+          metric: string
+          target_value: number
+          title: string
+          xp_reward: number
+        }
+        Insert: {
+          badge_id?: string | null
+          cadence: string
+          created_at?: string
+          description: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          metric: string
+          target_value: number
+          title: string
+          xp_reward?: number
+        }
+        Update: {
+          badge_id?: string | null
+          cadence?: string
+          created_at?: string
+          description?: string
+          icon?: string
+          id?: string
+          is_active?: boolean
+          metric?: string
+          target_value?: number
+          title?: string
+          xp_reward?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "challenges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      community_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          milestone_label: string | null
+          photo_url: string | null
+          post_type: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          milestone_label?: string | null
+          photo_url?: string | null
+          post_type?: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          milestone_label?: string | null
+          photo_url?: string | null
+          post_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       discipline_checkins: {
         Row: {
           checkin_date: string
@@ -248,6 +393,38 @@ export type Database = {
         }
         Relationships: []
       }
+      post_reactions: {
+        Row: {
+          created_at: string
+          id: string
+          post_id: string
+          reaction: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          post_id: string
+          reaction: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          post_id?: string
+          reaction?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_reactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "community_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -323,6 +500,159 @@ export type Database = {
         }
         Relationships: []
       }
+      reward_meals: {
+        Row: {
+          claimed_at: string | null
+          description: string | null
+          id: string
+          milestone: string
+          photo_url: string | null
+          title: string
+          unlocked_at: string
+          user_id: string
+        }
+        Insert: {
+          claimed_at?: string | null
+          description?: string | null
+          id?: string
+          milestone: string
+          photo_url?: string | null
+          title: string
+          unlocked_at?: string
+          user_id: string
+        }
+        Update: {
+          claimed_at?: string | null
+          description?: string | null
+          id?: string
+          milestone?: string
+          photo_url?: string | null
+          title?: string
+          unlocked_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      squad_members: {
+        Row: {
+          id: string
+          joined_at: string
+          role: string
+          squad_id: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          joined_at?: string
+          role?: string
+          squad_id: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          joined_at?: string
+          role?: string
+          squad_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "squad_members_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      squad_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          squad_id: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          squad_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          squad_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "squad_posts_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: false
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      squads: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          join_code: string
+          name: string
+          owner_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          join_code: string
+          name: string
+          owner_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          join_code?: string
+          name?: string
+          owner_id?: string
+        }
+        Relationships: []
+      }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       workouts: {
         Row: {
           created_at: string
@@ -377,6 +707,10 @@ export type Database = {
           username: string
           xp: number
         }[]
+      }
+      is_squad_member: {
+        Args: { _squad_id: string; _user_id: string }
+        Returns: boolean
       }
       search_profiles: {
         Args: { q: string }

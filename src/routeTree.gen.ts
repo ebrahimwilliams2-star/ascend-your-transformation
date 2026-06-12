@@ -10,13 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
+import { Route as SquadsRouteImport } from './routes/squads'
+import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as MetricsRouteImport } from './routes/metrics'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as GymbrosRouteImport } from './routes/gymbros'
 import { Route as DashRouteImport } from './routes/dash'
+import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CoachRouteImport } from './routes/coach'
+import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as IndexRouteImport } from './routes/index'
@@ -24,6 +28,16 @@ import { Route as IndexRouteImport } from './routes/index'
 const WorkoutsRoute = WorkoutsRouteImport.update({
   id: '/workouts',
   path: '/workouts',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SquadsRoute = SquadsRouteImport.update({
+  id: '/squads',
+  path: '/squads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PhotosRoute = PhotosRouteImport.update({
@@ -56,9 +70,19 @@ const DashRoute = DashRouteImport.update({
   path: '/dash',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CoachRoute = CoachRouteImport.update({
   id: '/coach',
   path: '/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChallengesRoute = ChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -81,26 +105,34 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
+  '/community': typeof CommunityRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/rewards': typeof RewardsRoute
+  '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
+  '/community': typeof CommunityRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/rewards': typeof RewardsRoute
+  '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
 }
 export interface FileRoutesById {
@@ -108,13 +140,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
+  '/community': typeof CommunityRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/rewards': typeof RewardsRoute
+  '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
 }
 export interface FileRouteTypes {
@@ -123,39 +159,51 @@ export interface FileRouteTypes {
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/challenges'
     | '/coach'
+    | '/community'
     | '/dash'
     | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/rewards'
+    | '/squads'
     | '/workouts'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/challenges'
     | '/coach'
+    | '/community'
     | '/dash'
     | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/rewards'
+    | '/squads'
     | '/workouts'
   id:
     | '__root__'
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/challenges'
     | '/coach'
+    | '/community'
     | '/dash'
     | '/gymbros'
     | '/journal'
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/rewards'
+    | '/squads'
     | '/workouts'
   fileRoutesById: FileRoutesById
 }
@@ -163,13 +211,17 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AscendantRoute: typeof AscendantRoute
   AuthRoute: typeof AuthRoute
+  ChallengesRoute: typeof ChallengesRoute
   CoachRoute: typeof CoachRoute
+  CommunityRoute: typeof CommunityRoute
   DashRoute: typeof DashRoute
   GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
   MetricsRoute: typeof MetricsRoute
   NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
+  RewardsRoute: typeof RewardsRoute
+  SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
 }
 
@@ -180,6 +232,20 @@ declare module '@tanstack/react-router' {
       path: '/workouts'
       fullPath: '/workouts'
       preLoaderRoute: typeof WorkoutsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/squads': {
+      id: '/squads'
+      path: '/squads'
+      fullPath: '/squads'
+      preLoaderRoute: typeof SquadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/photos': {
@@ -224,11 +290,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/coach': {
       id: '/coach'
       path: '/coach'
       fullPath: '/coach'
       preLoaderRoute: typeof CoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/challenges': {
+      id: '/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof ChallengesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -259,13 +339,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AscendantRoute: AscendantRoute,
   AuthRoute: AuthRoute,
+  ChallengesRoute: ChallengesRoute,
   CoachRoute: CoachRoute,
+  CommunityRoute: CommunityRoute,
   DashRoute: DashRoute,
   GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
   MetricsRoute: MetricsRoute,
   NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
+  RewardsRoute: RewardsRoute,
+  SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,
 }
 export const routeTree = rootRouteImport
