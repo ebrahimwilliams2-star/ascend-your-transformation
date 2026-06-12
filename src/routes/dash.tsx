@@ -337,3 +337,22 @@ function PhotoSlot({ label, tone, path, fallback }: { label: string; tone: "silv
     </div>
   );
 }
+
+function FeatureTile({ to, Icon, label, sub, tone }: { to: string; Icon: typeof Trophy; label: string; sub: string; tone?: boolean }) {
+  return (
+    <Link
+      to={to}
+      className={`group relative block overflow-hidden rounded-2xl border p-4 transition-all ${
+        tone
+          ? "border-brand-red/40 bg-gradient-to-br from-brand-red/15 to-black hover:shadow-glow-red"
+          : "border-white/5 bg-brand-gray/60 hover:bg-brand-gray"
+      }`}
+    >
+      <div className={`grid size-10 place-items-center rounded-xl ${tone ? "bg-brand-red text-white shadow-glow-red" : "bg-brand-red/20 text-brand-red"}`}>
+        <Icon className="size-5" />
+      </div>
+      <p className="mt-3 text-sm font-bold">{label}</p>
+      <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">{sub}</p>
+    </Link>
+  );
+}
