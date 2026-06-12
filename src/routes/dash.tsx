@@ -5,9 +5,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
+import { AscendLogo } from "@/components/AscendLogo";
 
 export const Route = createFileRoute("/dash")({
   head: () => ({ meta: [{ title: "Dashboard — ASCEND" }] }),
@@ -124,16 +125,19 @@ function Dashboard() {
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
-        <div>
-          <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
-          <h1 className="text-display text-2xl font-bold mt-0.5">
-            {greeting}, {firstName}
-          </h1>
-        </div>
         <div className="flex items-center gap-3">
+          <AscendLogo className="size-11" />
+          <div>
+            <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
+            <h1 className="text-display text-xl font-bold mt-0.5">
+              {greeting}, {firstName}
+            </h1>
+          </div>
+        </div>
+        <div className="flex items-center gap-2">
           <div className="text-right">
             <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
-            <p className="text-xs font-bold text-white">{streak} day streak</p>
+            <p className="text-xs font-bold text-white">{streak}d streak</p>
           </div>
           <button
             onClick={() => signOut()}
