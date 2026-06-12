@@ -70,9 +70,9 @@ async function countMetric(
     return count ?? 0;
   }
   if (metric === "nutrition_days") {
-    const { data } = await supabase.from("food_logs").select("logged_at")
-      .eq("user_id", userId).gte("logged_at", sinceIso);
-    const days = new Set((data ?? []).map((r) => (r.logged_at ?? "").slice(0, 10)));
+    const { data } = await supabase.from("food_logs").select("log_date")
+      .eq("user_id", userId).gte("log_date", sinceIso.slice(0, 10));
+    const days = new Set((data ?? []).map((r) => r.log_date as string));
     return days.size;
   }
   return 0;
