@@ -214,6 +214,17 @@ function Dashboard() {
         </Link>
       </section>
 
+      {/* Brotherhood grid */}
+      <section className="px-6 mb-6">
+        <h3 className="chip-label text-brand-silver mb-3">Brotherhood</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <FeatureTile to="/challenges" Icon={Trophy} label="Challenges" sub="Earn XP · Badges" tone />
+          <FeatureTile to="/community" Icon={Heart} label="Community" sub="Feed · Reactions" />
+          <FeatureTile to="/squads" Icon={Users} label="Squads" sub="Groups · Leaderboards" />
+          <FeatureTile to="/rewards" Icon={Gift} label="Reward Vault" sub="Earned Meals" tone />
+        </div>
+      </section>
+
       {/* Transformation */}
       <section className="px-6 mb-6">
         <div className="mb-3 flex items-end justify-between">
