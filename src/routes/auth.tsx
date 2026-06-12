@@ -4,6 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { useUser } from "@/lib/auth";
 import { toast } from "sonner";
+import { AscendLogo } from "@/components/AscendLogo";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign In — ASCEND" }] }),
@@ -64,12 +65,13 @@ function AuthPage() {
       <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] max-w-md flex-col">
         <Link to="/" className="chip-label text-brand-silver hover:text-white">← Back</Link>
 
-        <div className="mt-12">
-          <p className="chip-label text-brand-red">Step 01 · Identify</p>
-          <h1 className="text-display mt-2 text-4xl font-bold italic leading-none">
+        <div className="mt-10 flex flex-col items-center">
+          <AscendLogo className="size-20" />
+          <p className="chip-label text-brand-red mt-6">Step 01 · Identify</p>
+          <h1 className="text-display mt-2 text-center text-4xl font-bold italic leading-none">
             {mode === "signin" ? "Welcome Back." : "Forge Your Path."}
           </h1>
-          <p className="mt-3 text-sm text-brand-silver">
+          <p className="mt-3 text-center text-sm text-brand-silver">
             {mode === "signin" ? "The grind continues." : "Every Titan started here."}
           </p>
         </div>
