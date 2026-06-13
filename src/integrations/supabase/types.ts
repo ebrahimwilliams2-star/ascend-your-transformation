@@ -533,6 +533,32 @@ export type Database = {
         }
         Relationships: []
       }
+      squad_join_codes: {
+        Row: {
+          code: string
+          created_at: string
+          squad_id: string
+        }
+        Insert: {
+          code: string
+          created_at?: string
+          squad_id: string
+        }
+        Update: {
+          code?: string
+          created_at?: string
+          squad_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "squad_join_codes_squad_id_fkey"
+            columns: ["squad_id"]
+            isOneToOne: true
+            referencedRelation: "squads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       squad_members: {
         Row: {
           id: string
@@ -602,7 +628,6 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          join_code: string
           name: string
           owner_id: string
         }
@@ -610,7 +635,6 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          join_code: string
           name: string
           owner_id: string
         }
@@ -618,7 +642,6 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          join_code?: string
           name?: string
           owner_id?: string
         }
@@ -691,6 +714,15 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_squad: {
+        Args: { _description: string; _name: string }
+        Returns: {
+          description: string
+          id: string
+          join_code: string
+          name: string
+        }[]
+      }
       get_gymbros: {
         Args: never
         Returns: {
@@ -708,9 +740,17 @@ export type Database = {
           xp: number
         }[]
       }
+      get_squad_join_code: { Args: { _squad_id: string }; Returns: string }
       is_squad_member: {
         Args: { _squad_id: string; _user_id: string }
         Returns: boolean
+      }
+      join_squad_by_code: {
+        Args: { _code: string }
+        Returns: {
+          name: string
+          squad_id: string
+        }[]
       }
       search_profiles: {
         Args: { q: string }

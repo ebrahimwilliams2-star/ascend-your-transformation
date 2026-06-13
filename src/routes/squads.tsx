@@ -12,9 +12,6 @@ export const Route = createFileRoute("/squads")({
   component: () => <AppShell><Squads /></AppShell>,
 });
 
-function generateCode() {
-  return Math.random().toString(36).slice(2, 8).toUpperCase();
-}
 
 function Squads() {
   const { user } = useUser();
@@ -46,20 +43,14 @@ function Squads() {
   const createSquad = useMutation({
     mutationFn: async () => {
       if (!name.trim()) throw new Error("Name your squad");
-      const code = generateCode();
-      const { data: squad, error } = await supabase
-        .from("squads")
-        .insert({ name: name.trim(), description: desc.trim() || null, owner_id: user!.id, join_code: code })
-        .select()
-        .single();
-      if (error) throw error;
-      const { error: mErr } = await supabase.from("squad_members").insert({
-        squad_id: squad.id,
-        user_id: user!.id,
-        role: "owner",
+      const { data, error } = await supabase.rpc("create_squad", {
+        _name: name.trim(),
+        _description: desc.trim() || "",
       });
-      if (mErr) throw mErr;
-      return squad;
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) throw new Error("Failed to create squad");
+      return row as { id: string; name: string; description: string | null; join_code: string };
     },
     onSuccess: (s) => {
       toast.success(`Squad "${s.name}" forged. Code: ${s.join_code}`);
@@ -73,20 +64,11 @@ function Squads() {
     mutationFn: async () => {
       const code = joinCode.trim().toUpperCase();
       if (!code) throw new Error("Enter a code");
-      const { data: squad, error } = await supabase
-        .from("squads")
-        .select("id, name")
-        .eq("join_code", code)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc("join_squad_by_code", { _code: code });
       if (error) throw error;
-      if (!squad) throw new Error("No squad found with that code");
-      const { error: mErr } = await supabase.from("squad_members").insert({
-        squad_id: squad.id,
-        user_id: user!.id,
-        role: "member",
-      });
-      if (mErr) throw mErr;
-      return squad;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) throw new Error("No squad found with that code");
+      return row as { squad_id: string; name: string };
     },
     onSuccess: (s) => {
       toast.success(`Joined "${s.name}".`);
@@ -155,7 +137,7 @@ function Squads() {
                       <p className="text-sm font-bold">{s.name}</p>
                       {s.role === "owner" && <Crown className="size-3 text-brand-red" />}
                     </div>
-                    <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">Code: {s.join_code}</p>
+                    <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">{s.role === "owner" ? "Owner" : "Member"}</p>
                   </div>
                   <span className="chip-label text-brand-red">Open →</span>
                 </button>
@@ -290,9 +272,21 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
     },
   });
 
+  const isOwner = squad?.owner_id === user?.id;
+
+  const { data: joinCodeForOwner } = useQuery({
+    queryKey: ["squad-join-code", squadId],
+    enabled: !!isOwner,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_squad_join_code", { _squad_id: squadId });
+      if (error) throw error;
+      return (data as string | null) ?? null;
+    },
+  });
+
   const copyCode = () => {
-    if (squad?.join_code) {
-      navigator.clipboard.writeText(squad.join_code);
+    if (joinCodeForOwner) {
+      navigator.clipboard.writeText(joinCodeForOwner);
       toast.success("Code copied.");
     }
   };
@@ -305,9 +299,11 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
         </button>
         <div className="text-center min-w-0 px-3">
           <p className="chip-label text-brand-red truncate">{squad?.name}</p>
-          <button onClick={copyCode} className="mt-0.5 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-brand-silver hover:text-white">
-            <Copy className="size-3" /> {squad?.join_code}
-          </button>
+          {isOwner && joinCodeForOwner && (
+            <button onClick={copyCode} className="mt-0.5 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-brand-silver hover:text-white">
+              <Copy className="size-3" /> {joinCodeForOwner}
+            </button>
+          )}
         </div>
         <button
           onClick={() => { if (confirm("Leave this squad?")) leave.mutate(); }}
