@@ -189,6 +189,51 @@ export type Database = {
         }
         Relationships: []
       }
+      ethan_memory_summaries: {
+        Row: {
+          key_facts: Json
+          summary: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          key_facts?: Json
+          summary?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          key_facts?: Json
+          summary?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      ethan_messages: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          role: string
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          role: string
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       food_logs: {
         Row: {
           calories: number
@@ -324,6 +369,39 @@ export type Database = {
           user_id?: string
           waist_cm?: number | null
           weight_kg?: number | null
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          link: string | null
+          read: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          link?: string | null
+          read?: boolean
+          title?: string
+          type?: string
+          user_id?: string
         }
         Relationships: []
       }
@@ -709,11 +787,47 @@ export type Database = {
         }
         Relationships: []
       }
+      xp_logs: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          ref_id: string | null
+          source: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          ref_id?: string | null
+          source: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          ref_id?: string | null
+          source?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      award_xp: {
+        Args: {
+          _amount: number
+          _ref_id?: string
+          _source: string
+          _user_id: string
+        }
+        Returns: undefined
+      }
       create_squad: {
         Args: { _description: string; _name: string }
         Returns: {
@@ -752,6 +866,7 @@ export type Database = {
           squad_id: string
         }[]
       }
+      rank_for_level: { Args: { _level: number }; Returns: string }
       search_profiles: {
         Args: { q: string }
         Returns: {
@@ -762,6 +877,10 @@ export type Database = {
           rank: string
           username: string
         }[]
+      }
+      send_nudge: {
+        Args: { _friend_id: string; _message: string }
+        Returns: undefined
       }
     }
     Enums: {
