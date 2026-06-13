@@ -43,20 +43,14 @@ function Squads() {
   const createSquad = useMutation({
     mutationFn: async () => {
       if (!name.trim()) throw new Error("Name your squad");
-      const code = generateCode();
-      const { data: squad, error } = await supabase
-        .from("squads")
-        .insert({ name: name.trim(), description: desc.trim() || null, owner_id: user!.id, join_code: code })
-        .select()
-        .single();
-      if (error) throw error;
-      const { error: mErr } = await supabase.from("squad_members").insert({
-        squad_id: squad.id,
-        user_id: user!.id,
-        role: "owner",
+      const { data, error } = await supabase.rpc("create_squad", {
+        _name: name.trim(),
+        _description: desc.trim() || null,
       });
-      if (mErr) throw mErr;
-      return squad;
+      if (error) throw error;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) throw new Error("Failed to create squad");
+      return row as { id: string; name: string; description: string | null; join_code: string };
     },
     onSuccess: (s) => {
       toast.success(`Squad "${s.name}" forged. Code: ${s.join_code}`);
@@ -70,20 +64,11 @@ function Squads() {
     mutationFn: async () => {
       const code = joinCode.trim().toUpperCase();
       if (!code) throw new Error("Enter a code");
-      const { data: squad, error } = await supabase
-        .from("squads")
-        .select("id, name")
-        .eq("join_code", code)
-        .maybeSingle();
+      const { data, error } = await supabase.rpc("join_squad_by_code", { _code: code });
       if (error) throw error;
-      if (!squad) throw new Error("No squad found with that code");
-      const { error: mErr } = await supabase.from("squad_members").insert({
-        squad_id: squad.id,
-        user_id: user!.id,
-        role: "member",
-      });
-      if (mErr) throw mErr;
-      return squad;
+      const row = Array.isArray(data) ? data[0] : data;
+      if (!row) throw new Error("No squad found with that code");
+      return row as { squad_id: string; name: string };
     },
     onSuccess: (s) => {
       toast.success(`Joined "${s.name}".`);
