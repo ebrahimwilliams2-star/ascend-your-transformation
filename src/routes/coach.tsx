@@ -6,14 +6,14 @@ import { Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/coach")({
-  head: () => ({ meta: [{ title: "AI Coach — ASCEND" }] }),
+  head: () => ({ meta: [{ title: "Ethan — ASCEND" }] }),
   component: () => <AppShell><Coach /></AppShell>,
 });
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const SEED: Msg[] = [
-  { role: "assistant", content: "I'm your ASCEND Coach. Tell me what you trained today, or what's blocking you. No fluff." },
+  { role: "assistant", content: "I'm Ethan — your transformation coach. Tell me what you trained today, what you ate, or what's standing in your way. We build 1% at a time." },
 ];
 
 function Coach() {
