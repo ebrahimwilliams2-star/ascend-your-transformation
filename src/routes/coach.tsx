@@ -98,8 +98,8 @@ function Coach() {
           <Sparkles className="size-5 text-white" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="chip-label text-brand-red">AI Coach · Online</p>
-          <h1 className="text-display text-xl font-bold">No Excuses</h1>
+          <p className="chip-label text-brand-red">Ethan · Online</p>
+          <h1 className="text-display text-xl font-bold">Your Transformation Coach</h1>
         </div>
       </header>
 
