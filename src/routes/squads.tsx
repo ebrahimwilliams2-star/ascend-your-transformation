@@ -45,7 +45,7 @@ function Squads() {
       if (!name.trim()) throw new Error("Name your squad");
       const { data, error } = await supabase.rpc("create_squad", {
         _name: name.trim(),
-        _description: desc.trim() || null,
+        _description: desc.trim() || "",
       });
       if (error) throw error;
       const row = Array.isArray(data) ? data[0] : data;
