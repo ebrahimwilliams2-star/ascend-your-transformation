@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check, Search, UserPlus, X, Trophy, Flame, Crown } from "lucide-react";
+import { Check, Search, UserPlus, X, Trophy, Flame, Crown, Zap } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
@@ -109,6 +109,18 @@ function Gymbros() {
       toast.success("Removed");
       qc.invalidateQueries({ queryKey: ["gymbros"] });
     },
+  });
+
+  const nudge = useMutation({
+    mutationFn: async (friendId: string) => {
+      const { error } = await supabase.rpc("send_nudge", {
+        _friend_id: friendId,
+        _message: "Get the session in. Don't break the chain.",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => toast.success("Nudge sent. Iron sharpens iron."),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Couldn't nudge"),
   });
 
   const friends = bros.filter((b) => b.direction === "friend");
@@ -313,16 +325,25 @@ function Gymbros() {
                   {b.current_streak}
                   <span className="ml-1 text-xs text-brand-silver">day streak</span>
                 </p>
-                <button
-                  onClick={() => {
-                    if (confirm(`Remove ${b.display_name ?? "this bro"}?`)) {
-                      remove.mutate(b.friendship_id);
-                    }
-                  }}
-                  className="mt-1 chip-label text-brand-silver hover:text-brand-red"
-                >
-                  Remove
-                </button>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    onClick={() => nudge.mutate(b.friend_id)}
+                    disabled={nudge.isPending}
+                    className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-brand-red/15 px-2 py-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-red hover:bg-brand-red/25 disabled:opacity-50"
+                  >
+                    <Zap className="size-3" /> Nudge
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Remove ${b.display_name ?? "this bro"}?`)) {
+                        remove.mutate(b.friendship_id);
+                      }
+                    }}
+                    className="chip-label text-brand-silver hover:text-brand-red"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
           </div>

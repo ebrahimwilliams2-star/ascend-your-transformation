@@ -4,6 +4,7 @@ import { useUser } from "@/lib/auth";
 import { useEffect, useRef, useState } from "react";
 import { Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/coach")({
   head: () => ({ meta: [{ title: "Ethan — ASCEND" }] }),
@@ -21,31 +22,55 @@ function Coach() {
   const [messages, setMessages] = useState<Msg[]>(SEED);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
+  const [loadedHistory, setLoadedHistory] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  // Load persisted history once per session
+  useEffect(() => {
+    if (!user || loadedHistory) return;
+    let cancelled = false;
+    (async () => {
+      const { data } = await supabase
+        .from("ethan_messages")
+        .select("role, content, created_at")
+        .order("created_at", { ascending: true })
+        .limit(50);
+      if (cancelled) return;
+      const history = (data ?? [])
+        .filter((m) => m.role === "user" || m.role === "assistant")
+        .map((m) => ({ role: m.role as "user" | "assistant", content: m.content }));
+      setMessages(history.length ? history : SEED);
+      setLoadedHistory(true);
+    })();
+    return () => { cancelled = true; };
+  }, [user, loadedHistory]);
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
   }, [messages]);
 
   const send = async () => {
-    if (!input.trim() || streaming) return;
-    const userMsg: Msg = { role: "user", content: input.trim() };
+    if (!input.trim() || streaming || !user) return;
+    const userText = input.trim();
+    const userMsg: Msg = { role: "user", content: userText };
     const next = [...messages, userMsg];
     setMessages([...next, { role: "assistant", content: "" }]);
     setInput("");
     setStreaming(true);
 
     try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token ?? import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
       const url = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/ai-coach`;
       const res = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          Authorization: `Bearer ${token}`,
+          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
         },
         body: JSON.stringify({
           messages: next.map((m) => ({ role: m.role, content: m.content })),
-          context: user ? { userId: user.id } : undefined,
         }),
       });
 
@@ -82,6 +107,14 @@ function Coach() {
             }
           } catch { /* ignore */ }
         }
+      }
+
+      // Persist both messages once the stream completes
+      if (acc) {
+        await supabase.from("ethan_messages").insert([
+          { user_id: user.id, role: "user", content: userText },
+          { user_id: user.id, role: "assistant", content: acc },
+        ]);
       }
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Coach unavailable");
