@@ -45,9 +45,9 @@ export function ShareCardModal({ open, onClose, kind, headline, big, caption, at
       const dataUrl = await toPng(cardRef.current, { pixelRatio: 2, cacheBust: true });
       const blob = await (await fetch(dataUrl)).blob();
       const file = new File([blob], `ascend-${kind}.png`, { type: "image/png" });
-      // @ts-expect-error — canShare is recent web API
-      if (navigator.canShare?.({ files: [file] })) {
-        await navigator.share({ files: [file], title: "ASCEND", text: caption });
+      const nav = navigator as Navigator & { canShare?: (data: { files: File[] }) => boolean };
+      if (nav.canShare?.({ files: [file] })) {
+        await nav.share({ files: [file], title: "ASCEND", text: caption });
       } else {
         download();
       }
