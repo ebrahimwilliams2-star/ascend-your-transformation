@@ -204,9 +204,9 @@ function Dashboard() {
               <span className="absolute size-2 animate-pulse rounded-full bg-brand-red" style={{ marginLeft: 14, marginTop: 14 }} />
             </div>
             <div className="min-w-0 flex-1">
-              <p className="chip-label text-black/70 mb-1">AI Coach Briefing</p>
+              <p className="chip-label text-black/70 mb-1">Ethan · Your Coach</p>
               <p className="text-sm font-medium italic leading-snug text-white">
-                "Discipline equals freedom. Open the chat — let's plan the next 24 hours."
+                "Show up today. The next action matters most — let's plan it together."
               </p>
             </div>
             <ChevronRight className="size-5 shrink-0 text-white" />

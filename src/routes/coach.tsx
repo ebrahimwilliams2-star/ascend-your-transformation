@@ -6,14 +6,14 @@ import { Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/coach")({
-  head: () => ({ meta: [{ title: "AI Coach — ASCEND" }] }),
+  head: () => ({ meta: [{ title: "Ethan — ASCEND" }] }),
   component: () => <AppShell><Coach /></AppShell>,
 });
 
 type Msg = { role: "user" | "assistant"; content: string };
 
 const SEED: Msg[] = [
-  { role: "assistant", content: "I'm your ASCEND Coach. Tell me what you trained today, or what's blocking you. No fluff." },
+  { role: "assistant", content: "I'm Ethan — your transformation coach. Tell me what you trained today, what you ate, or what's standing in your way. We build 1% at a time." },
 ];
 
 function Coach() {
@@ -98,8 +98,8 @@ function Coach() {
           <Sparkles className="size-5 text-white" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="chip-label text-brand-red">AI Coach · Online</p>
-          <h1 className="text-display text-xl font-bold">No Excuses</h1>
+          <p className="chip-label text-brand-red">Ethan · Online</p>
+          <h1 className="text-display text-xl font-bold">Your Transformation Coach</h1>
         </div>
       </header>
 
@@ -123,7 +123,7 @@ function Coach() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
-            placeholder="What's the next move..."
+            placeholder="Talk to Ethan…"
             disabled={streaming}
             className="flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-brand-silver/60"
           />
