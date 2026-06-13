@@ -137,7 +137,7 @@ function Squads() {
                       <p className="text-sm font-bold">{s.name}</p>
                       {s.role === "owner" && <Crown className="size-3 text-brand-red" />}
                     </div>
-                    <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">Code: {s.join_code}</p>
+                    <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">{s.role === "owner" ? "Owner" : "Member"}</p>
                   </div>
                   <span className="chip-label text-brand-red">Open →</span>
                 </button>
