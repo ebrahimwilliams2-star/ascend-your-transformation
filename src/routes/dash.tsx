@@ -5,10 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2 } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
+import { NotificationsBell } from "@/components/NotificationsBell";
+import { ShareCardModal } from "@/components/ShareCardModal";
 
 export const Route = createFileRoute("/dash")({
   head: () => ({ meta: [{ title: "Dashboard — ASCEND" }] }),
