@@ -123,7 +123,7 @@ function Coach() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") send(); }}
-            placeholder="What's the next move..."
+            placeholder="Talk to Ethan…"
             disabled={streaming}
             className="flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-brand-silver/60"
           />
