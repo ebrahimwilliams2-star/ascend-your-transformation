@@ -111,6 +111,18 @@ function Gymbros() {
     },
   });
 
+  const nudge = useMutation({
+    mutationFn: async (friendId: string) => {
+      const { error } = await supabase.rpc("send_nudge", {
+        _friend_id: friendId,
+        _message: "Get the session in. Don't break the chain.",
+      });
+      if (error) throw error;
+    },
+    onSuccess: () => toast.success("Nudge sent. Iron sharpens iron."),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Couldn't nudge"),
+  });
+
   const friends = bros.filter((b) => b.direction === "friend");
   const incoming = bros.filter((b) => b.direction === "incoming");
   const outgoing = bros.filter((b) => b.direction === "outgoing");
