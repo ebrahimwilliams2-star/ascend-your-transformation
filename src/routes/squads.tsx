@@ -272,9 +272,21 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
     },
   });
 
+  const isOwner = squad?.owner_id === user?.id;
+
+  const { data: joinCodeForOwner } = useQuery({
+    queryKey: ["squad-join-code", squadId],
+    enabled: !!isOwner,
+    queryFn: async () => {
+      const { data, error } = await supabase.rpc("get_squad_join_code", { _squad_id: squadId });
+      if (error) throw error;
+      return (data as string | null) ?? null;
+    },
+  });
+
   const copyCode = () => {
-    if (squad?.join_code) {
-      navigator.clipboard.writeText(squad.join_code);
+    if (joinCodeForOwner) {
+      navigator.clipboard.writeText(joinCodeForOwner);
       toast.success("Code copied.");
     }
   };
@@ -287,9 +299,11 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
         </button>
         <div className="text-center min-w-0 px-3">
           <p className="chip-label text-brand-red truncate">{squad?.name}</p>
-          <button onClick={copyCode} className="mt-0.5 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-brand-silver hover:text-white">
-            <Copy className="size-3" /> {squad?.join_code}
-          </button>
+          {isOwner && joinCodeForOwner && (
+            <button onClick={copyCode} className="mt-0.5 inline-flex items-center gap-1 text-[10px] uppercase tracking-widest text-brand-silver hover:text-white">
+              <Copy className="size-3" /> {joinCodeForOwner}
+            </button>
+          )}
         </div>
         <button
           onClick={() => { if (confirm("Leave this squad?")) leave.mutate(); }}
