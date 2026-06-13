@@ -124,6 +124,8 @@ function Dashboard() {
   const hour = new Date().getHours();
   const greeting = hour < 5 ? "Still grinding" : hour < 12 ? "Rise up" : hour < 18 ? "Stay sharp" : "Finish strong";
 
+  const [shareOpen, setShareOpen] = useState(false);
+
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
@@ -141,6 +143,7 @@ function Dashboard() {
             <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
             <p className="text-xs font-bold text-white">{streak}d streak</p>
           </div>
+          <NotificationsBell />
           <button
             onClick={() => signOut()}
             className="grid size-10 place-items-center rounded-full border border-brand-red/30 text-brand-red hover:bg-brand-red/10"
@@ -155,10 +158,23 @@ function Dashboard() {
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-brand-gray p-6">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
           <div className="relative">
-            <h2 className="text-display text-3xl font-bold italic tracking-tight">1% Better</h2>
-            <p className="text-sm text-brand-silver mt-1">
-              {streak > 0 ? `${streak}-day discipline streak.` : "Start your streak today."}
-            </p>
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <h2 className="text-display text-3xl font-bold italic tracking-tight">1% Better</h2>
+                <p className="text-sm text-brand-silver mt-1">
+                  {streak > 0 ? `${streak}-day discipline streak.` : "Start your streak today."}
+                </p>
+              </div>
+              {streak >= 3 && (
+                <button
+                  onClick={() => setShareOpen(true)}
+                  className="grid size-9 shrink-0 place-items-center rounded-full border border-brand-red/40 text-brand-red hover:bg-brand-red/10"
+                  aria-label="Share streak"
+                >
+                  <Share2 className="size-4" />
+                </button>
+              )}
+            </div>
             <div className="mt-6 flex items-end gap-3">
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
                 <div className="h-full bg-brand-red transition-all duration-500" style={{ width: `${progress}%` }} />
@@ -171,6 +187,16 @@ function Dashboard() {
           </div>
         </div>
       </section>
+
+      <ShareCardModal
+        open={shareOpen}
+        onClose={() => setShareOpen(false)}
+        kind="streak"
+        headline={`${rank} · LVL ${level}`}
+        big={`${streak}d`}
+        caption="Discipline streak — and counting."
+        athlete={displayName}
+      />
 
       {/* The Ascendant card */}
       <section className="px-6 mb-6">
