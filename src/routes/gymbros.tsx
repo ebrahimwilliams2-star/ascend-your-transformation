@@ -325,16 +325,25 @@ function Gymbros() {
                   {b.current_streak}
                   <span className="ml-1 text-xs text-brand-silver">day streak</span>
                 </p>
-                <button
-                  onClick={() => {
-                    if (confirm(`Remove ${b.display_name ?? "this bro"}?`)) {
-                      remove.mutate(b.friendship_id);
-                    }
-                  }}
-                  className="mt-1 chip-label text-brand-silver hover:text-brand-red"
-                >
-                  Remove
-                </button>
+                <div className="mt-2 flex items-center gap-2">
+                  <button
+                    onClick={() => nudge.mutate(b.friend_id)}
+                    disabled={nudge.isPending}
+                    className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-brand-red/15 px-2 py-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-red hover:bg-brand-red/25 disabled:opacity-50"
+                  >
+                    <Zap className="size-3" /> Nudge
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (confirm(`Remove ${b.display_name ?? "this bro"}?`)) {
+                        remove.mutate(b.friendship_id);
+                      }
+                    }}
+                    className="chip-label text-brand-silver hover:text-brand-red"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
             ))}
           </div>
