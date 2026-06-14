@@ -69,28 +69,8 @@ function Dashboard() {
 
   const toggle = useMutation({
     mutationFn: async (id: string) => {
-      const existing = (checkin?.items as { id: string; done: boolean }[] | undefined) ?? [];
-      const map = new Map(existing.map((i) => [i.id, i.done]));
-      map.set(id, !map.get(id));
-      const items = Array.from(map.entries()).map(([id, done]) => ({ id, done }));
-      const xp = items.reduce((acc, i) => acc + (i.done ? DEFAULT_HABITS.find((h) => h.id === i.id)?.xp ?? 0 : 0), 0);
-
-      const { error } = await supabase
-        .from("discipline_checkins")
-        .upsert(
-          { user_id: user!.id, checkin_date: today, items, xp_earned: xp },
-          { onConflict: "user_id,checkin_date" }
-        );
+      const { error } = await supabase.rpc("toggle_discipline_habit", { _habit_id: id });
       if (error) throw error;
-
-      // Update profile XP
-      const currentXp = profile?.xp ?? 0;
-      const newXp = currentXp + (xp - (checkin?.xp_earned ?? 0));
-      const newLevel = Math.max(1, Math.floor(newXp / 500) + 1);
-      await supabase
-        .from("profiles")
-        .update({ xp: newXp, level: newLevel, rank: rankFor(newLevel) })
-        .eq("id", user!.id);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["checkin"] });
