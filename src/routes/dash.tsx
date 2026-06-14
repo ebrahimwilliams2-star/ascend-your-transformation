@@ -188,6 +188,33 @@ function Dashboard() {
         athlete={displayName}
       />
 
+      <LocationSheet
+        open={locationOpen}
+        onClose={() => setLocationOpen(false)}
+        initial={profile as any}
+        onSaved={() => qc.invalidateQueries({ queryKey: ["profile"] })}
+      />
+
+      {!city && (
+        <section className="px-6 mb-6">
+          <button
+            onClick={() => setLocationOpen(true)}
+            className="flex w-full items-center justify-between rounded-2xl border border-brand-red/30 bg-brand-red/5 p-4 text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-brand-red/15 text-brand-red">
+                <MapPin className="size-5" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">Plant Your Flag</p>
+                <p className="text-[11px] text-brand-silver">Set your South African city — fuel local brotherhood.</p>
+              </div>
+            </div>
+            <ChevronRight className="size-5 text-brand-red" />
+          </button>
+        </section>
+      )}
+
       {/* The Ascendant card */}
       <section className="px-6 mb-6">
         <Link
