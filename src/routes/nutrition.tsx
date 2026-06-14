@@ -5,7 +5,8 @@ import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { toast } from "sonner";
-import { Plus, Flame, Trash2, ChevronRight, Target, TrendingDown, TrendingUp, Repeat } from "lucide-react";
+import { Plus, Flame, Trash2, ChevronRight, Target, TrendingDown, TrendingUp, Repeat, Search } from "lucide-react";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/nutrition")({
   head: () => ({ meta: [{ title: "Nutrition — ASCEND" }] }),
