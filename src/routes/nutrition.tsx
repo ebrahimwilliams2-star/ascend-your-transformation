@@ -418,7 +418,7 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
       </section>
 
       {/* Meals */}
-      <section className="px-6 pb-8 space-y-4">
+      <section className="px-6 pb-28 space-y-4">
         {MEALS.map((m) => {
           const items = (logs ?? []).filter((l) => l.meal_type === m);
           const mCal = items.reduce((a, l) => a + Number(l.calories), 0);
