@@ -122,6 +122,13 @@ function Dashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLocationOpen(true)}
+            className="hidden sm:flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-silver hover:text-white"
+          >
+            <MapPin className="size-3" />
+            {city ?? "Set city"}
+          </button>
           <div className="text-right">
             <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
             <p className="text-xs font-bold text-white">{streak}d streak</p>
