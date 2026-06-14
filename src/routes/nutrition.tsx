@@ -499,9 +499,52 @@ function MacroBar({ label, value, target, unit }: { label: string; value: number
   );
 }
 
+type FoodRow = {
+  id: string;
+  name: string;
+  serving_size: string;
+  calories: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  cuisine: string;
+  country: string | null;
+};
+
 function AddFoodModal({ meal, onClose, onSaved }: { meal: string; onClose: () => void; onSaved: () => void }) {
   const { user } = useUser();
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<FoodRow[]>([]);
   const [f, setF] = useState({ food_name: "", calories: 0, protein_g: 0, carbs_g: 0, fat_g: 0, serving_size: "1 serving" });
+
+  // Initial: show SA staples; live search as user types.
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const q = supabase
+        .from("foods")
+        .select("id,name,serving_size,calories,protein_g,carbs_g,fat_g,cuisine,country")
+        .order("cuisine", { ascending: false })
+        .limit(20);
+      const { data } = query.trim().length >= 2
+        ? await q.ilike("name", `%${query.trim()}%`)
+        : await q.eq("country", "ZA");
+      if (active) setResults((data ?? []) as FoodRow[]);
+    })();
+    return () => { active = false; };
+  }, [query]);
+
+  const pick = (row: FoodRow) => {
+    setF({
+      food_name: row.name,
+      calories: Number(row.calories),
+      protein_g: Number(row.protein_g),
+      carbs_g: Number(row.carbs_g),
+      fat_g: Number(row.fat_g),
+      serving_size: row.serving_size,
+    });
+  };
+
   const save = useMutation({
     mutationFn: async () => {
       if (!f.food_name.trim()) throw new Error("Name required");
@@ -518,12 +561,50 @@ function AddFoodModal({ meal, onClose, onSaved }: { meal: string; onClose: () =>
   });
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-end bg-black/80 backdrop-blur-sm" onClick={onClose}>
-      <div className="w-full max-w-md rounded-t-3xl border-t border-white/10 bg-brand-black p-6" onClick={(e) => e.stopPropagation()}>
+    <div className="fixed inset-0 z-50 flex items-end bg-black/80 backdrop-blur-sm" onClick={onClose}>
+      <div
+        className="w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto rounded-t-3xl border-t border-white/10 bg-brand-black p-6"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/20" />
         <p className="chip-label text-brand-red">{MEAL_LABELS[meal]}</p>
         <h2 className="text-display text-2xl font-bold mb-4">Log Food</h2>
-        <div className="space-y-3">
+
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-brand-silver" />
+          <input
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search SA foods (pap, biltong, bunny chow…)"
+            className="w-full rounded-xl border border-white/10 bg-brand-gray pl-10 pr-4 py-3 text-sm text-white placeholder:text-brand-silver focus:border-brand-red focus:outline-none"
+          />
+        </div>
+
+        {results.length > 0 && (
+          <div className="mt-3 max-h-44 overflow-y-auto rounded-xl border border-white/5 bg-brand-gray/60 divide-y divide-white/5">
+            {results.map((r) => (
+              <button
+                key={r.id}
+                onClick={() => pick(r)}
+                className="flex w-full items-start justify-between gap-3 px-3 py-2.5 text-left hover:bg-white/5"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate">
+                    {r.name}
+                    {r.cuisine === "south_african" && <span className="ml-1.5 text-[10px] uppercase tracking-widest text-brand-red">SA</span>}
+                  </p>
+                  <p className="text-[10px] uppercase tracking-widest text-brand-silver">
+                    {r.serving_size} · {Math.round(Number(r.calories))} kcal · P{Math.round(Number(r.protein_g))}
+                  </p>
+                </div>
+                <Plus className="size-4 shrink-0 text-brand-red" />
+              </button>
+            ))}
+          </div>
+        )}
+
+        <div className="mt-4 space-y-3">
           <input
             placeholder="Food name"
             value={f.food_name}
@@ -543,7 +624,7 @@ function AddFoodModal({ meal, onClose, onSaved }: { meal: string; onClose: () =>
             className="w-full rounded-xl border border-white/10 bg-brand-gray px-4 py-3 text-sm text-white placeholder:text-brand-silver focus:border-brand-red focus:outline-none"
           />
         </div>
-        <div className="mt-5 flex gap-2">
+        <div className="mt-5 flex gap-2 pb-2">
           <button onClick={onClose} className="flex-1 rounded-xl border border-white/10 bg-brand-gray py-3 text-sm font-bold uppercase tracking-widest text-brand-silver">Cancel</button>
           <button onClick={() => save.mutate()} disabled={save.isPending} className="flex-1 rounded-xl bg-brand-red py-3 text-sm font-bold uppercase tracking-widest text-white shadow-glow-red disabled:opacity-50">
             {save.isPending ? "Saving…" : "Add"}
