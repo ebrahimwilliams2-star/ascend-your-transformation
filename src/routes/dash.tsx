@@ -5,12 +5,13 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2 } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { ShareCardModal } from "@/components/ShareCardModal";
+import { LocationSheet } from "@/components/LocationSheet";
 
 export const Route = createFileRoute("/dash")({
   head: () => ({ meta: [{ title: "Dashboard — ASCEND" }] }),
@@ -105,6 +106,8 @@ function Dashboard() {
   const greeting = hour < 5 ? "Still grinding" : hour < 12 ? "Rise up" : hour < 18 ? "Stay sharp" : "Finish strong";
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const city = (profile as { city?: string | null } | null)?.city ?? null;
 
   return (
     <>
@@ -119,6 +122,13 @@ function Dashboard() {
           </div>
         </div>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setLocationOpen(true)}
+            className="hidden sm:flex items-center gap-1 rounded-full border border-white/10 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-silver hover:text-white"
+          >
+            <MapPin className="size-3" />
+            {city ?? "Set city"}
+          </button>
           <div className="text-right">
             <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
             <p className="text-xs font-bold text-white">{streak}d streak</p>
@@ -177,6 +187,33 @@ function Dashboard() {
         caption="Discipline streak — and counting."
         athlete={displayName}
       />
+
+      <LocationSheet
+        open={locationOpen}
+        onClose={() => setLocationOpen(false)}
+        initial={profile as any}
+        onSaved={() => qc.invalidateQueries({ queryKey: ["profile"] })}
+      />
+
+      {!city && (
+        <section className="px-6 mb-6">
+          <button
+            onClick={() => setLocationOpen(true)}
+            className="flex w-full items-center justify-between rounded-2xl border border-brand-red/30 bg-brand-red/5 p-4 text-left"
+          >
+            <div className="flex items-center gap-3">
+              <div className="grid size-10 place-items-center rounded-xl bg-brand-red/15 text-brand-red">
+                <MapPin className="size-5" />
+              </div>
+              <div>
+                <p className="text-sm font-bold text-white">Plant Your Flag</p>
+                <p className="text-[11px] text-brand-silver">Set your South African city — fuel local brotherhood.</p>
+              </div>
+            </div>
+            <ChevronRight className="size-5 text-brand-red" />
+          </button>
+        </section>
+      )}
 
       {/* The Ascendant card */}
       <section className="px-6 mb-6">

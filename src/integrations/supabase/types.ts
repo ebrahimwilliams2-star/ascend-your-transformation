@@ -276,6 +276,54 @@ export type Database = {
         }
         Relationships: []
       }
+      foods: {
+        Row: {
+          brand: string | null
+          calories: number
+          carbs_g: number
+          country: string | null
+          created_at: string
+          created_by: string | null
+          cuisine: string
+          fat_g: number
+          id: string
+          is_public: boolean
+          name: string
+          protein_g: number
+          serving_size: string
+        }
+        Insert: {
+          brand?: string | null
+          calories?: number
+          carbs_g?: number
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuisine?: string
+          fat_g?: number
+          id?: string
+          is_public?: boolean
+          name: string
+          protein_g?: number
+          serving_size?: string
+        }
+        Update: {
+          brand?: string | null
+          calories?: number
+          carbs_g?: number
+          country?: string | null
+          created_at?: string
+          created_by?: string | null
+          cuisine?: string
+          fat_g?: number
+          id?: string
+          is_public?: boolean
+          name?: string
+          protein_g?: number
+          serving_size?: string
+        }
+        Relationships: []
+      }
       friendships: {
         Row: {
           addressee_id: string
@@ -506,13 +554,19 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          city: string | null
+          country: string | null
           created_at: string
           current_streak: number
           display_name: string | null
+          experience_level: string | null
+          fitness_goals: string[] | null
           id: string
           last_checkin_date: string | null
           level: number
+          location_visibility: string
           longest_streak: number
+          province: string | null
           rank: string
           updated_at: string
           username: string | null
@@ -520,13 +574,19 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           current_streak?: number
           display_name?: string | null
+          experience_level?: string | null
+          fitness_goals?: string[] | null
           id: string
           last_checkin_date?: string | null
           level?: number
+          location_visibility?: string
           longest_streak?: number
+          province?: string | null
           rank?: string
           updated_at?: string
           username?: string | null
@@ -534,13 +594,19 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
           current_streak?: number
           display_name?: string | null
+          experience_level?: string | null
+          fitness_goals?: string[] | null
           id?: string
           last_checkin_date?: string | null
           level?: number
+          location_visibility?: string
           longest_streak?: number
+          province?: string | null
           rank?: string
           updated_at?: string
           username?: string | null
@@ -886,6 +952,8 @@ export type Database = {
         Args: { _friend_id: string; _message: string }
         Returns: undefined
       }
+      show_limit: { Args: never; Returns: number }
+      show_trgm: { Args: { "": string }; Returns: string[] }
       toggle_discipline_habit: {
         Args: { _habit_id: string }
         Returns: undefined
