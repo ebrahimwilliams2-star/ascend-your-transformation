@@ -140,7 +140,7 @@ function Onboarding({ onDone }: { onDone: () => void }) {
   const targets = computeTargets(form);
 
   return (
-    <div className="min-h-screen px-6 py-8">
+    <div className="min-h-screen px-6 py-8 pb-32">
       <header className="mb-6">
         <p className="chip-label text-brand-red">Step {step + 1} of 4</p>
         <h1 className="text-display text-3xl font-bold mt-1">Fuel the Ascend</h1>
