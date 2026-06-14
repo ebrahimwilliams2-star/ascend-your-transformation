@@ -106,6 +106,8 @@ function Dashboard() {
   const greeting = hour < 5 ? "Still grinding" : hour < 12 ? "Rise up" : hour < 18 ? "Stay sharp" : "Finish strong";
 
   const [shareOpen, setShareOpen] = useState(false);
+  const [locationOpen, setLocationOpen] = useState(false);
+  const city = (profile as { city?: string | null } | null)?.city ?? null;
 
   return (
     <>
