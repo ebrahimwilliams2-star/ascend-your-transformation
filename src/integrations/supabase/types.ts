@@ -828,6 +828,10 @@ export type Database = {
         }
         Returns: undefined
       }
+      claim_challenge_xp: {
+        Args: { _challenge_id: string }
+        Returns: undefined
+      }
       create_squad: {
         Args: { _description: string; _name: string }
         Returns: {
@@ -880,6 +884,10 @@ export type Database = {
       }
       send_nudge: {
         Args: { _friend_id: string; _message: string }
+        Returns: undefined
+      }
+      toggle_discipline_habit: {
+        Args: { _habit_id: string }
         Returns: undefined
       }
     }

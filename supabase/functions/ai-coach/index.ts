@@ -139,7 +139,6 @@ async function buildSnapshot(authToken: string): Promise<string> {
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response(null, { headers: corsHeaders });
   try {
-    const { messages } = await req.json();
     const apiKey = Deno.env.get("LOVABLE_API_KEY");
     if (!apiKey) {
       return new Response(JSON.stringify({ error: "Missing LOVABLE_API_KEY" }), {
@@ -148,13 +147,29 @@ Deno.serve(async (req) => {
       });
     }
 
+    // Require a valid user JWT — block anon-key and unauthenticated callers.
     const authHeader = req.headers.get("Authorization") ?? "";
     const authToken = authHeader.replace(/^Bearer\s+/i, "");
-
-    let snapshot = "";
-    if (authToken && authToken !== ANON_KEY) {
-      snapshot = await buildSnapshot(authToken);
+    if (!authToken || authToken === ANON_KEY) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
     }
+
+    // Verify the JWT against Supabase Auth before consuming AI credits.
+    const userRes = await fetch(`${SUPABASE_URL}/auth/v1/user`, {
+      headers: { apikey: ANON_KEY, Authorization: `Bearer ${authToken}` },
+    });
+    if (!userRes.ok) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { messages } = await req.json();
+    const snapshot = await buildSnapshot(authToken);
 
     const systemContent = snapshot
       ? `${SYSTEM_PROMPT}\n\n--- LIVE USER SNAPSHOT ---\n${snapshot}\n--- END SNAPSHOT ---`
