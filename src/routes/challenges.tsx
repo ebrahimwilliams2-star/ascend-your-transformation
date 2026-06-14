@@ -133,29 +133,8 @@ function Challenges() {
     mutationFn: async (c: Challenge) => {
       const progress = progressMap?.[c.id] ?? 0;
       if (progress < c.target_value) throw new Error("Not complete yet");
-      // mark participant completed
-      await supabase.from("challenge_participants").upsert(
-        {
-          user_id: user!.id,
-          challenge_id: c.id,
-          progress,
-          completed: true,
-          completed_at: new Date().toISOString(),
-        },
-        { onConflict: "user_id,challenge_id" },
-      );
-      // award XP
-      const { data: prof } = await supabase.from("profiles").select("xp,level").eq("id", user!.id).maybeSingle();
-      const newXp = (prof?.xp ?? 0) + c.xp_reward;
-      const newLevel = Math.max(1, Math.floor(newXp / 500) + 1);
-      await supabase.from("profiles").update({ xp: newXp, level: newLevel }).eq("id", user!.id);
-      // grant badge if attached
-      if (c.badge_id) {
-        await supabase.from("user_badges").upsert(
-          { user_id: user!.id, badge_id: c.badge_id },
-          { onConflict: "user_id,badge_id" },
-        );
-      }
+      const { error } = await supabase.rpc("claim_challenge_xp", { _challenge_id: c.id });
+      if (error) throw error;
     },
     onSuccess: (_d, c) => {
       toast.success(`+${c.xp_reward} XP claimed`);
