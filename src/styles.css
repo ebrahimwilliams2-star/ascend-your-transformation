@@ -91,11 +91,40 @@
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
   }
+  body {
+    /* Landscape notch / Android edges */
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
   ::selection {
     background: var(--brand-red);
     color: white;
   }
+
+  /* Notch / Dynamic Island clearance — every sticky header gains top safe-area inset.
+     Uses max() so devices without a notch keep the original p-6 padding. */
+  header.sticky.top-0 {
+    padding-top: max(1.5rem, calc(1rem + env(safe-area-inset-top)));
+  }
+
+  /* Keyboard avoidance: when a field is focused the browser scrolls it into
+     view; this margin keeps the field clear of the fixed bottom nav (≈ 6rem). */
+  input:focus,
+  textarea:focus,
+  select:focus,
+  [contenteditable="true"]:focus {
+    scroll-margin-bottom: 7rem;
+    scroll-margin-top: 5rem;
+  }
 }
+
+@utility safe-top { padding-top: env(safe-area-inset-top); }
+@utility safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
+@utility safe-x {
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
 
 @utility no-scrollbar {
   &::-webkit-scrollbar { display: none; }

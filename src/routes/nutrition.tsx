@@ -563,7 +563,8 @@ function AddFoodModal({ meal, onClose, onSaved }: { meal: string; onClose: () =>
   return (
     <div className="fixed inset-0 z-50 flex items-end bg-black/80 backdrop-blur-sm" onClick={onClose}>
       <div
-        className="w-full max-w-md mx-auto max-h-[90vh] overflow-y-auto rounded-t-3xl border-t border-white/10 bg-brand-black p-6"
+        className="w-full max-w-md mx-auto max-h-[90dvh] overflow-y-auto rounded-t-3xl border-t border-white/10 bg-brand-black p-6"
+        style={{ paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))" }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="mx-auto mb-4 h-1 w-12 rounded-full bg-white/20" />

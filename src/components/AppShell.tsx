@@ -31,8 +31,10 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div
-      className="min-h-screen bg-brand-black"
-      style={{ paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}
+      className="min-h-dvh bg-brand-black"
+      style={{
+        paddingBottom: "calc(7rem + env(safe-area-inset-bottom))",
+      }}
     >
       <div className="mx-auto max-w-md">{children}</div>
 

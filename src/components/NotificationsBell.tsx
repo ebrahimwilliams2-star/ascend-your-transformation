@@ -113,7 +113,13 @@ export function NotificationsBell() {
             )}
           </div>
         </SheetHeader>
-        <div className="overflow-y-auto px-6 py-4" style={{ maxHeight: "calc(100vh - 100px)" }}>
+        <div
+          className="overflow-y-auto px-6 py-4"
+          style={{
+            maxHeight: "calc(100dvh - 100px - env(safe-area-inset-top))",
+            paddingBottom: "calc(1rem + env(safe-area-inset-bottom))",
+          }}
+        >
           {notifications.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-white/10 bg-brand-gray/30 p-10 text-center">
               <Bell className="mx-auto size-6 text-brand-red" />

@@ -61,9 +61,15 @@ export function ShareCardModal({ open, onClose, kind, headline, big, caption, at
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 grid place-items-center bg-black/80 p-6 backdrop-blur-sm"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm"
+      style={{
+        paddingTop: "calc(1.5rem + env(safe-area-inset-top))",
+        paddingBottom: "calc(1.5rem + env(safe-area-inset-bottom))",
+        paddingLeft: "1.5rem",
+        paddingRight: "1.5rem",
+      }}
     >
-      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm">
+      <div onClick={(e) => e.stopPropagation()} className="w-full max-w-sm mx-auto">
         <div className="mb-4 flex items-center justify-between">
           <p className="chip-label text-brand-silver">Share card</p>
           <button onClick={onClose} className="grid size-8 place-items-center rounded-full border border-white/10 text-brand-silver">
