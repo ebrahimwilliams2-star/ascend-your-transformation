@@ -30,10 +30,16 @@ export function AppShell({ children }: { children: ReactNode }) {
   }
 
   return (
-    <div className="min-h-screen bg-brand-black pb-28">
+    <div
+      className="min-h-screen bg-brand-black"
+      style={{ paddingBottom: "calc(7rem + env(safe-area-inset-bottom))" }}
+    >
       <div className="mx-auto max-w-md">{children}</div>
 
-      <nav className="fixed bottom-0 left-1/2 z-50 -translate-x-1/2 w-full max-w-md px-4 pb-4 pt-2">
+      <nav
+        className="fixed bottom-0 left-1/2 z-50 -translate-x-1/2 w-full max-w-md px-4 pt-2"
+        style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
+      >
         <div className="relative grid grid-cols-5 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
           {navItems.slice(0, 2).map((it) => (
             <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
