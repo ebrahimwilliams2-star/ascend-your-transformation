@@ -60,9 +60,15 @@ function AuthPage() {
   };
 
   return (
-    <main className="relative min-h-screen bg-brand-black px-6 py-10">
+    <main
+      className="relative min-h-dvh bg-brand-black px-6"
+      style={{
+        paddingTop: "calc(2.5rem + env(safe-area-inset-top))",
+        paddingBottom: "calc(2.5rem + env(safe-area-inset-bottom))",
+      }}
+    >
       <div className="absolute -left-20 top-20 h-80 w-80 rounded-full bg-brand-red/15 blur-[120px]" />
-      <div className="relative mx-auto flex min-h-[calc(100vh-5rem)] max-w-md flex-col">
+      <div className="relative mx-auto flex max-w-md flex-col">
         <Link to="/" className="chip-label text-brand-silver hover:text-white">← Back</Link>
 
         <div className="mt-10 flex flex-col items-center">
