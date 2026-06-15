@@ -138,7 +138,11 @@ function Coach() {
         </div>
       </header>
 
-      <div ref={scrollRef} className="flex-1 overflow-y-auto px-6 py-4 pb-40 space-y-4">
+      <div
+        ref={scrollRef}
+        className="flex-1 overflow-y-auto px-6 py-4 space-y-4"
+        style={{ paddingBottom: "calc(11rem + env(safe-area-inset-bottom))" }}
+      >
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
