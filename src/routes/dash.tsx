@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3 } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
@@ -108,6 +108,7 @@ function Dashboard() {
   const [shareOpen, setShareOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const city = (profile as { city?: string | null } | null)?.city ?? null;
+  const province = (profile as { province?: string | null } | null)?.province ?? null;
 
   return (
     <>
@@ -195,7 +196,29 @@ function Dashboard() {
         onSaved={() => qc.invalidateQueries({ queryKey: ["profile"] })}
       />
 
-      {!city && (
+      {city ? (
+        <section className="px-6 mb-6">
+          <button
+            onClick={() => setLocationOpen(true)}
+            className="w-full group relative block overflow-hidden rounded-2xl border border-brand-red/30 bg-brand-red/5 p-5 transition-all hover:bg-brand-red/10 text-left"
+          >
+            <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-brand-red/15 blur-2xl group-hover:blur-3xl transition-all" />
+            <div className="relative flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="grid size-10 place-items-center rounded-xl bg-brand-red/15 text-brand-red">
+                  <MapPin className="size-5" />
+                </div>
+                <div>
+                  <p className="chip-label text-brand-red mb-0.5">Your Territory</p>
+                  <p className="text-sm font-bold text-white">{city}{province ? `, ${province}` : ""}</p>
+                  <p className="text-[11px] text-brand-silver mt-0.5">Connect with local gym bros in your area.</p>
+                </div>
+              </div>
+              <Edit3 className="size-5 shrink-0 text-brand-red opacity-0 group-hover:opacity-100 transition-opacity" />
+            </div>
+          </button>
+        </section>
+      ) : (
         <section className="px-6 mb-6">
           <button
             onClick={() => setLocationOpen(true)}
@@ -323,7 +346,7 @@ function Dashboard() {
       </section>
 
       {/* Metrics & Nutrition quick links */}
-      <section className="px-6 space-y-3">
+      <section className="px-6 space-y-3 pb-8">
         <Link
           to="/nutrition"
           className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"
