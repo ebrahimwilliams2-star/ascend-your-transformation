@@ -39,7 +39,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       <div className="mx-auto max-w-md">{children}</div>
 
       <nav
-        className="fixed bottom-0 left-1/2 z-50 -translate-x-1/2 w-full max-w-md px-4 pt-2"
+        className="fixed bottom-0 left-1/2 z-nav -translate-x-1/2 w-full max-w-md px-4 pt-2"
         style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
       >
         <div className="relative grid grid-cols-5 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
@@ -47,7 +47,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
           ))}
           <Link to="/coach" className="relative -top-6 mx-auto">
-            <div className={`grid size-14 place-items-center rounded-full bg-brand-red shadow-glow-red-strong ring-4 ring-brand-black transition-transform active:scale-95 ${pathname.startsWith("/coach") ? "scale-105" : ""}`}>
+            <div className={`grid size-14 place-items-center rounded-full bg-brand-red shadow-glow-red-strong ring-4 ring-brand-black transition-transform active:scale-95 ${pathname.startsWith("/coach") ? "text-white" : ""}`}>
               <MessageCircle className="size-6 text-white" strokeWidth={2.2} />
             </div>
           </Link>
