@@ -152,7 +152,10 @@ function Coach() {
         ))}
       </div>
 
-      <div className="fixed bottom-24 left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4">
+      <div
+        className="fixed left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4"
+        style={{ bottom: "calc(6rem + env(safe-area-inset-bottom))" }}
+      >
         <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-brand-gray/95 p-2 backdrop-blur-xl">
           <input
             value={input}
