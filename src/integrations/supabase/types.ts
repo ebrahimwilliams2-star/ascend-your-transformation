@@ -355,6 +355,8 @@ export type Database = {
         Row: {
           content: string
           created_at: string
+          discipline_score: number | null
+          energy_level: number | null
           id: string
           mood: string | null
           title: string | null
@@ -364,6 +366,8 @@ export type Database = {
         Insert: {
           content: string
           created_at?: string
+          discipline_score?: number | null
+          energy_level?: number | null
           id?: string
           mood?: string | null
           title?: string | null
@@ -373,6 +377,8 @@ export type Database = {
         Update: {
           content?: string
           created_at?: string
+          discipline_score?: number | null
+          energy_level?: number | null
           id?: string
           mood?: string | null
           title?: string | null
@@ -936,6 +942,7 @@ export type Database = {
           squad_id: string
         }[]
       }
+      journal_stats: { Args: { _user_id: string }; Returns: Json }
       rank_for_level: { Args: { _level: number }; Returns: string }
       search_profiles: {
         Args: { q: string }
