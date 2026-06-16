@@ -69,7 +69,7 @@ async function buildSnapshot(authToken: string): Promise<string> {
   const [profileRows, workouts, journal, measurements, foodToday, nutritionProfile, memoryRows] = await Promise.all([
     sb<Profile[]>(authToken, "profiles?select=display_name,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
     sb<Array<{ name: string; created_at: string }>>(authToken, "workouts?select=name,created_at&order=created_at.desc&limit=5"),
-    sb<Array<{ mood: string | null; content: string; created_at: string }>>(authToken, "journal_entries?select=mood,content,created_at&order=created_at.desc&limit=3"),
+    sb<Array<{ mood: string | null; content: string; created_at: string; energy_level: number | null; discipline_score: number | null }>>(authToken, "journal_entries?select=mood,content,created_at,energy_level,discipline_score&order=created_at.desc&limit=10"),
     sb<Array<{ weight_kg: number | null; recorded_at: string }>>(authToken, "measurements?select=weight_kg,recorded_at&order=recorded_at.desc&limit=4"),
     sb<Array<{ calories: number; protein_g: number; carbs_g: number; fat_g: number }>>(authToken, `food_logs?select=calories,protein_g,carbs_g,fat_g&log_date=eq.${today}`),
     sb<Array<{ calorie_target: number | null; protein_target_g: number | null; goal: string | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_target_g,goal&limit=1"),
