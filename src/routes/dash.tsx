@@ -12,6 +12,7 @@ import { AscendLogo } from "@/components/AscendLogo";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { ShareCardModal } from "@/components/ShareCardModal";
 import { LocationSheet } from "@/components/LocationSheet";
+import { TodayJournalWidget, StreakWidget, LatestEntryWidget, DisciplineTrendWidget } from "@/components/JournalWidgets";
 
 export const Route = createFileRoute("/dash")({
   head: () => ({ meta: [{ title: "Dashboard — ASCEND" }] }),
@@ -237,6 +238,19 @@ function Dashboard() {
           </button>
         </section>
       )}
+
+      {/* Journal Widgets Section */}
+      <section className="px-6 mb-6">
+        <h3 className="chip-label text-brand-silver mb-3">The Mirror</h3>
+        <div className="grid grid-cols-2 gap-3">
+          <TodayJournalWidget />
+          <StreakWidget />
+        </div>
+        <div className="mt-3 space-y-3">
+          <LatestEntryWidget />
+          <DisciplineTrendWidget />
+        </div>
+      </section>
 
       {/* The Ascendant card */}
       <section className="px-6 mb-6">
