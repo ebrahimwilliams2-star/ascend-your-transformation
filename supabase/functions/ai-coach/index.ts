@@ -69,7 +69,7 @@ async function buildSnapshot(authToken: string): Promise<string> {
   const [profileRows, workouts, journal, measurements, foodToday, nutritionProfile, memoryRows] = await Promise.all([
     sb<Profile[]>(authToken, "profiles?select=display_name,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
     sb<Array<{ name: string; created_at: string }>>(authToken, "workouts?select=name,created_at&order=created_at.desc&limit=5"),
-    sb<Array<{ mood: string | null; content: string; created_at: string }>>(authToken, "journal_entries?select=mood,content,created_at&order=created_at.desc&limit=3"),
+    sb<Array<{ mood: string | null; content: string; created_at: string; energy_level: number | null; discipline_score: number | null }>>(authToken, "journal_entries?select=mood,content,created_at,energy_level,discipline_score&order=created_at.desc&limit=10"),
     sb<Array<{ weight_kg: number | null; recorded_at: string }>>(authToken, "measurements?select=weight_kg,recorded_at&order=recorded_at.desc&limit=4"),
     sb<Array<{ calories: number; protein_g: number; carbs_g: number; fat_g: number }>>(authToken, `food_logs?select=calories,protein_g,carbs_g,fat_g&log_date=eq.${today}`),
     sb<Array<{ calorie_target: number | null; protein_target_g: number | null; goal: string | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_target_g,goal&limit=1"),
@@ -101,8 +101,34 @@ async function buildSnapshot(authToken: string): Promise<string> {
 
   if (journal?.length) {
     const j = journal[0];
-    lines.push(`Latest journal (${j.created_at.slice(0, 10)}, mood: ${j.mood ?? "n/a"}): ${j.content.slice(0, 240)}`);
+    const meta: string[] = [`mood: ${j.mood ?? "n/a"}`];
+    if (j.discipline_score != null) meta.push(`discipline ${j.discipline_score}/10`);
+    if (j.energy_level != null) meta.push(`energy ${j.energy_level}/10`);
+    lines.push(`Latest journal (${j.created_at.slice(0, 10)}, ${meta.join(", ")}): ${j.content.slice(0, 280)}`);
+
+    if (journal.length > 1) {
+      const moods = journal.map((e) => e.mood).filter(Boolean) as string[];
+      const moodTally: Record<string, number> = {};
+      moods.forEach((m) => (moodTally[m] = (moodTally[m] ?? 0) + 1));
+      const topMood = Object.entries(moodTally).sort((a, b) => b[1] - a[1])[0];
+      const discs = journal.map((e) => e.discipline_score).filter((v): v is number => v != null);
+      const energies = journal.map((e) => e.energy_level).filter((v): v is number => v != null);
+      const avgD = discs.length ? (discs.reduce((a, b) => a + b, 0) / discs.length).toFixed(1) : null;
+      const avgE = energies.length ? (energies.reduce((a, b) => a + b, 0) / energies.length).toFixed(1) : null;
+      const parts: string[] = [`${journal.length} recent entries`];
+      if (topMood) parts.push(`most common mood: ${topMood[0]}`);
+      if (avgD) parts.push(`avg discipline ${avgD}/10`);
+      if (avgE) parts.push(`avg energy ${avgE}/10`);
+      lines.push(`Journal trend — ${parts.join(", ")}.`);
+
+      const recentSnippets = journal
+        .slice(1, 5)
+        .map((e) => `(${e.created_at.slice(0, 10)}) ${e.content.slice(0, 120)}`)
+        .join(" | ");
+      lines.push(`Earlier reflections: ${recentSnippets}`);
+    }
   }
+
 
   if (foodToday?.length) {
     const totals = foodToday.reduce(
