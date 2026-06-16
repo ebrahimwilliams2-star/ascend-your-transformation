@@ -101,8 +101,34 @@ async function buildSnapshot(authToken: string): Promise<string> {
 
   if (journal?.length) {
     const j = journal[0];
-    lines.push(`Latest journal (${j.created_at.slice(0, 10)}, mood: ${j.mood ?? "n/a"}): ${j.content.slice(0, 240)}`);
+    const meta: string[] = [`mood: ${j.mood ?? "n/a"}`];
+    if (j.discipline_score != null) meta.push(`discipline ${j.discipline_score}/10`);
+    if (j.energy_level != null) meta.push(`energy ${j.energy_level}/10`);
+    lines.push(`Latest journal (${j.created_at.slice(0, 10)}, ${meta.join(", ")}): ${j.content.slice(0, 280)}`);
+
+    if (journal.length > 1) {
+      const moods = journal.map((e) => e.mood).filter(Boolean) as string[];
+      const moodTally: Record<string, number> = {};
+      moods.forEach((m) => (moodTally[m] = (moodTally[m] ?? 0) + 1));
+      const topMood = Object.entries(moodTally).sort((a, b) => b[1] - a[1])[0];
+      const discs = journal.map((e) => e.discipline_score).filter((v): v is number => v != null);
+      const energies = journal.map((e) => e.energy_level).filter((v): v is number => v != null);
+      const avgD = discs.length ? (discs.reduce((a, b) => a + b, 0) / discs.length).toFixed(1) : null;
+      const avgE = energies.length ? (energies.reduce((a, b) => a + b, 0) / energies.length).toFixed(1) : null;
+      const parts: string[] = [`${journal.length} recent entries`];
+      if (topMood) parts.push(`most common mood: ${topMood[0]}`);
+      if (avgD) parts.push(`avg discipline ${avgD}/10`);
+      if (avgE) parts.push(`avg energy ${avgE}/10`);
+      lines.push(`Journal trend — ${parts.join(", ")}.`);
+
+      const recentSnippets = journal
+        .slice(1, 5)
+        .map((e) => `(${e.created_at.slice(0, 10)}) ${e.content.slice(0, 120)}`)
+        .join(" | ");
+      lines.push(`Earlier reflections: ${recentSnippets}`);
+    }
   }
+
 
   if (foodToday?.length) {
     const totals = foodToday.reduce(
