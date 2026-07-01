@@ -8,7 +8,11 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/coach")({
   head: () => ({ meta: [{ title: "Ethan — ASCEND" }] }),
-  component: () => <AppShell><Coach /></AppShell>,
+  component: () => (
+    <AppShell>
+      <Coach />
+    </AppShell>
+  ),
 });
 
 type Msg = { role: "user" | "assistant"; content: string };
@@ -45,7 +49,9 @@ function Coach() {
       setMessages(history.length ? history : SEED);
       setLoadedHistory(true);
     })();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [user, loadedHistory]);
 
   useEffect(() => {
@@ -62,7 +68,9 @@ function Coach() {
     setStreaming(true);
 
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
       if (!session?.access_token) {
         throw new Error("Sign in to talk to Ethan.");
       }
@@ -84,7 +92,11 @@ function Coach() {
         throw new Error(err.error ?? `Request failed (${res.status})`);
       }
 
-      const reader = res.body!.getReader();
+      if (!res.body) {
+        throw new Error("No response body received from AI coach service");
+      }
+
+      const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let acc = "";
       let buffer = "";
@@ -110,7 +122,9 @@ function Coach() {
                 return copy;
               });
             }
-          } catch { /* ignore */ }
+          } catch {
+            /* ignore */
+          }
         }
       }
 
@@ -148,12 +162,21 @@ function Coach() {
       >
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-            <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
-              m.role === "user"
-                ? "bg-brand-red text-white rounded-br-sm"
-                : "bg-brand-gray text-white rounded-bl-sm border border-white/5"
-            }`}>
-              {m.content || (streaming && i === messages.length - 1 ? <span className="inline-flex gap-1"><span className="size-1.5 animate-pulse rounded-full bg-brand-red" /><span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:150ms]" /><span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:300ms]" /></span> : null)}
+            <div
+              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+                m.role === "user"
+                  ? "bg-brand-red text-white rounded-br-sm"
+                  : "bg-brand-gray text-white rounded-bl-sm border border-white/5"
+              }`}
+            >
+              {m.content ||
+                (streaming && i === messages.length - 1 ? (
+                  <span className="inline-flex gap-1">
+                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red" />
+                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:150ms]" />
+                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:300ms]" />
+                  </span>
+                ) : null)}
             </div>
           </div>
         ))}
@@ -167,7 +190,9 @@ function Coach() {
           <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => { if (e.key === "Enter") send(); }}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") send();
+            }}
             placeholder="Talk to Ethan…"
             disabled={streaming}
             className="flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-brand-silver/60"

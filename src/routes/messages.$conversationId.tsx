@@ -76,9 +76,7 @@ function ChatPage() {
   const [input, setInput] = useState("");
   const [isOtherTyping, setIsOtherTyping] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(false);
-  const [contextMenu, setContextMenu] = useState<{ message: Message } | null>(
-    null
-  );
+  const [contextMenu, setContextMenu] = useState<{ message: Message } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editContent, setEditContent] = useState("");
 
@@ -94,8 +92,7 @@ function ChatPage() {
     enabled: !!user,
     queryFn: async () => {
       const conv = await conversationsService.getConversation(conversationId);
-      const otherId =
-        conv.user_id_1 === user!.id ? conv.user_id_2 : conv.user_id_1;
+      const otherId = conv.user_id_1 === user!.id ? conv.user_id_2 : conv.user_id_1;
 
       const [profileRes, presence] = await Promise.all([
         supabase
@@ -153,11 +150,9 @@ function ChatPage() {
             return [...prev, newMsg];
           });
           if (newMsg.sender_id !== user.id) {
-            readReceiptsService
-              .markConversationAsRead(conversationId)
-              .catch(() => {});
+            readReceiptsService.markConversationAsRead(conversationId).catch(() => {});
           }
-        }
+        },
       )
       .on(
         "postgres_changes" as any,
@@ -169,10 +164,8 @@ function ChatPage() {
         },
         (payload: any) => {
           const updated = payload.new as Message;
-          setMessages((prev) =>
-            prev.map((m) => (m.id === updated.id ? updated : m))
-          );
-        }
+          setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
+        },
       )
       .subscribe();
 
@@ -199,7 +192,7 @@ function ChatPage() {
             .getTypingUsers(conversationId)
             .catch(() => [] as string[]);
           setIsOtherTyping(users.some((id) => id !== user.id));
-        }
+        },
       )
       .subscribe();
 
@@ -230,8 +223,7 @@ function ChatPage() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["conversations"] });
     },
-    onError: (e) =>
-      toast.error(e instanceof Error ? e.message : "Failed to send"),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to send"),
   });
 
   const handleSend = useCallback(() => {
@@ -261,9 +253,7 @@ function ChatPage() {
   };
 
   // ── Quick actions ────────────────────────────────────────────────────────
-  const handleQuickAction = (
-    action: (typeof QUICK_ACTIONS)[number]
-  ) => {
+  const handleQuickAction = (action: (typeof QUICK_ACTIONS)[number]) => {
     setShowQuickActions(false);
     sendMutation.mutate({
       content: `${action.label} ${action.emoji}`,
@@ -308,10 +298,7 @@ function ChatPage() {
   const submitEdit = async () => {
     if (!editingId || !editContent.trim()) return;
     try {
-      const updated = await messagesService.edit(
-        editingId,
-        editContent.trim()
-      );
+      const updated = await messagesService.edit(editingId, editContent.trim());
       setMessages((prev) => prev.map((m) => (m.id === updated.id ? updated : m)));
     } catch {
       toast.error("Failed to edit message");
@@ -326,11 +313,7 @@ function ChatPage() {
     try {
       await messagesService.delete(messageId);
       setMessages((prev) =>
-        prev.map((m) =>
-          m.id === messageId
-            ? { ...m, deleted_at: new Date().toISOString() }
-            : m
-        )
+        prev.map((m) => (m.id === messageId ? { ...m, deleted_at: new Date().toISOString() } : m)),
       );
     } catch {
       toast.error("Failed to delete message");
@@ -358,8 +341,7 @@ function ChatPage() {
 
   // ── Derived values ────────────────────────────────────────────────────────
   const profile = convInfo?.profile;
-  const otherName =
-    profile?.display_name ?? profile?.username ?? profile?.full_name ?? "GymBro";
+  const otherName = profile?.display_name ?? profile?.username ?? profile?.full_name ?? "GymBro";
   const presenceStatus: PresenceStatus =
     (convInfo?.presence?.status as PresenceStatus) ?? "offline";
 
@@ -374,17 +356,11 @@ function ChatPage() {
         >
           <ArrowLeft className="size-5" />
         </button>
-        <Avatar
-          url={profile?.avatar_url ?? null}
-          name={otherName}
-          className="size-10"
-        />
+        <Avatar url={profile?.avatar_url ?? null} name={otherName} className="size-10" />
         <div className="min-w-0 flex-1">
           <p className="truncate text-sm font-bold">{otherName}</p>
           <div className="flex items-center gap-1.5">
-            <div
-              className={`size-2 rounded-full ${PRESENCE_DOT[presenceStatus]}`}
-            />
+            <div className={`size-2 rounded-full ${PRESENCE_DOT[presenceStatus]}`} />
             <p className="chip-label text-brand-silver capitalize">
               {presenceStatus.replace("_", " ")}
             </p>
@@ -406,22 +382,14 @@ function ChatPage() {
 
           if (isDeleted) {
             return (
-              <div
-                key={message.id}
-                className={`flex ${isMe ? "justify-end" : "justify-start"}`}
-              >
-                <p className="px-3 py-2 text-xs italic text-brand-silver">
-                  Message deleted
-                </p>
+              <div key={message.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
+                <p className="px-3 py-2 text-xs italic text-brand-silver">Message deleted</p>
               </div>
             );
           }
 
           return (
-            <div
-              key={message.id}
-              className={`flex ${isMe ? "justify-end" : "justify-start"}`}
-            >
+            <div key={message.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
               <div
                 className={`flex max-w-[78%] flex-col gap-1 ${isMe ? "items-end" : "items-start"}`}
                 onContextMenu={(e) => {
@@ -444,9 +412,7 @@ function ChatPage() {
                       <input
                         value={editContent}
                         onChange={(e) => setEditContent(e.target.value)}
-                        onKeyDown={(e) =>
-                          e.key === "Enter" && submitEdit()
-                        }
+                        onKeyDown={(e) => e.key === "Enter" && submitEdit()}
                         className="flex-1 bg-transparent text-sm outline-none"
                         autoFocus
                       />
@@ -464,11 +430,15 @@ function ChatPage() {
                       </button>
                     </div>
                   ) : message.message_type === "image" ? (
-                    <img
-                      src={message.image_url ?? message.metadata?.image_url ?? ""}
-                      alt="Shared image"
-                      className="max-w-full rounded-xl"
-                    />
+                    (() => {
+                      const imageUrl = message.metadata?.image_url ?? message.image_url;
+
+                      return imageUrl ? (
+                        <img src={imageUrl} alt="Shared image" className="max-w-full rounded-xl" />
+                      ) : (
+                        <p className="text-sm text-brand-silver">Image unavailable</p>
+                      );
+                    })()
                   ) : [
                       "workout_share",
                       "achievement_share",
@@ -483,25 +453,18 @@ function ChatPage() {
                         {message.message_type.replace(/_/g, " ")}
                       </p>
                       <p className="text-sm">{message.content}</p>
-                      {message.metadata &&
-                        Object.keys(message.metadata).length > 0 && (
-                          <p className="text-xs text-white/50">
-                            {JSON.stringify(message.metadata)}
-                          </p>
-                        )}
+                      {message.metadata && Object.keys(message.metadata).length > 0 && (
+                        <p className="text-xs text-white/50">{JSON.stringify(message.metadata)}</p>
+                      )}
                     </div>
                   ) : message.message_type === "system_notification" ? (
-                    <p className="text-xs italic text-brand-silver">
-                      {message.content}
-                    </p>
+                    <p className="text-xs italic text-brand-silver">{message.content}</p>
                   ) : (
                     <p className="text-sm leading-relaxed">{message.content}</p>
                   )}
                 </div>
 
-                {message.edited_at && (
-                  <p className="px-1 text-[10px] text-brand-silver">edited</p>
-                )}
+                {message.edited_at && <p className="px-1 text-[10px] text-brand-silver">edited</p>}
               </div>
             </div>
           );
@@ -628,9 +591,7 @@ function ChatPage() {
               {REACTION_EMOJIS.map((emoji) => (
                 <button
                   key={emoji}
-                  onClick={() =>
-                    handleReaction(contextMenu.message.id, emoji)
-                  }
+                  onClick={() => handleReaction(contextMenu.message.id, emoji)}
                   className="text-2xl transition-transform hover:scale-125 active:scale-110"
                 >
                   {emoji}

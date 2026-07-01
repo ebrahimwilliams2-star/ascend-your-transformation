@@ -1,45 +1,47 @@
-import { supabase } from '@/integrations/supabase/client';
-import type { 
-  Message, 
-  Conversation, 
-  MessageReaction, 
+import { supabase } from "@/integrations/supabase/client";
+import type {
+  Message,
+  Conversation,
+  MessageReaction,
   MessageRead,
   TypingStatus,
   UserPresence,
   BlockedUser,
   ConversationMember,
   PaginatedResponse,
-  ReportedMessage
-} from '@/types/messaging';
+  ReportedMessage,
+} from "@/types/messaging";
 
-const POSTGRES_UNIQUE_VIOLATION = '23505';
+const POSTGRES_UNIQUE_VIOLATION = "23505";
 
 // ===== CONVERSATIONS SERVICE =====
 
 export const conversationsService = {
   // Get or create conversation with a user
   async getOrCreate(userId: string): Promise<Conversation> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
       const { data: sortedConversation, error: sortedError } = await supabase
-        .from('conversations')
-        .select('*')
-        .eq('user_id_1', user1)
-        .eq('user_id_2', user2)
+        .from("conversations")
+        .select("*")
+        .eq("user_id_1", user1)
+        .eq("user_id_2", user2)
         .maybeSingle();
 
       if (sortedError) throw sortedError;
       if (sortedConversation) return sortedConversation as Conversation;
 
       const { data: reversedConversation, error: reversedError } = await supabase
-        .from('conversations')
-        .select('*')
-        .eq('user_id_1', user2)
-        .eq('user_id_2', user1)
+        .from("conversations")
+        .select("*")
+        .eq("user_id_1", user2)
+        .eq("user_id_2", user1)
         .maybeSingle();
 
       if (reversedError) throw reversedError;
@@ -52,7 +54,7 @@ export const conversationsService = {
 
     // Create new conversation
     const { data: newConversation, error } = await supabase
-      .from('conversations')
+      .from("conversations")
       .insert({
         user_id_1: user1,
         user_id_2: user2,
@@ -73,14 +75,16 @@ export const conversationsService = {
 
   // Get all conversations for current user
   async getConversations(limit = 50, offset = 0): Promise<PaginatedResponse<Conversation>> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { data, count, error } = await supabase
-      .from('conversations')
-      .select('*', { count: 'exact' })
+      .from("conversations")
+      .select("*", { count: "exact" })
       .or(`user_id_1.eq.${user.id},user_id_2.eq.${user.id}`)
-      .order('updated_at', { ascending: false })
+      .order("updated_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (error) throw error;
@@ -94,49 +98,52 @@ export const conversationsService = {
 
   // Archive conversation
   async archive(conversationId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { error } = await supabase
-      .from('conversations')
+      .from("conversations")
       .update({
-        [user.id === (await this.getConversation(conversationId)).user_id_1 ? 'archived_by_1' : 'archived_by_2']: true,
+        [user.id === (await this.getConversation(conversationId)).user_id_1
+          ? "archived_by_1"
+          : "archived_by_2"]: true,
       })
-      .eq('id', conversationId);
+      .eq("id", conversationId);
 
     if (error) throw error;
   },
 
   // Block user
   async block(conversationId: string, reason?: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const conv = await this.getConversation(conversationId);
     const isUser1 = user.id === conv.user_id_1;
 
     const { error } = await supabase
-      .from('conversations')
+      .from("conversations")
       .update({
-        [isUser1 ? 'blocked_by_1' : 'blocked_by_2']: true,
+        [isUser1 ? "blocked_by_1" : "blocked_by_2"]: true,
       })
-      .eq('id', conversationId);
+      .eq("id", conversationId);
 
     if (error) throw error;
 
     // Also add to blocked_users
-    await blockedUsersService.block(
-      isUser1 ? conv.user_id_2 : conv.user_id_1,
-      reason
-    );
+    await blockedUsersService.block(isUser1 ? conv.user_id_2 : conv.user_id_1, reason);
   },
 
   // Get single conversation
   async getConversation(conversationId: string): Promise<Conversation> {
     const { data, error } = await supabase
-      .from('conversations')
-      .select('*')
-      .eq('id', conversationId)
+      .from("conversations")
+      .select("*")
+      .eq("id", conversationId)
       .single();
 
     if (error) throw error;
@@ -153,13 +160,15 @@ export const messagesService = {
     content: string | null,
     messageType: string,
     metadata?: Record<string, any>,
-    attachmentData?: Record<string, any>
+    attachmentData?: Record<string, any>,
   ): Promise<Message> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { data, error } = await supabase
-      .from('messages')
+      .from("messages")
       .insert({
         conversation_id: conversationId,
         sender_id: user.id,
@@ -176,9 +185,9 @@ export const messagesService = {
 
     // Update conversation last_message_at
     await supabase
-      .from('conversations')
+      .from("conversations")
       .update({ updated_at: new Date().toISOString(), last_message_at: new Date().toISOString() })
-      .eq('id', conversationId);
+      .eq("id", conversationId);
 
     return data as Message;
   },
@@ -187,14 +196,14 @@ export const messagesService = {
   async getMessages(
     conversationId: string,
     limit = 50,
-    offset = 0
+    offset = 0,
   ): Promise<PaginatedResponse<Message>> {
     const { data, count, error } = await supabase
-      .from('messages')
-      .select('*', { count: 'exact' })
-      .eq('conversation_id', conversationId)
-      .is('deleted_at', null)
-      .order('created_at', { ascending: false })
+      .from("messages")
+      .select("*", { count: "exact" })
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null)
+      .order("created_at", { ascending: false })
       .range(offset, offset + limit - 1);
 
     if (error) throw error;
@@ -209,9 +218,9 @@ export const messagesService = {
   // Delete message (soft delete)
   async delete(messageId: string): Promise<void> {
     const { error } = await supabase
-      .from('messages')
+      .from("messages")
       .update({ deleted_at: new Date().toISOString() })
-      .eq('id', messageId);
+      .eq("id", messageId);
 
     if (error) throw error;
   },
@@ -219,9 +228,9 @@ export const messagesService = {
   // Edit message
   async edit(messageId: string, content: string): Promise<Message> {
     const { data, error } = await supabase
-      .from('messages')
+      .from("messages")
       .update({ content, edited_at: new Date().toISOString() })
-      .eq('id', messageId)
+      .eq("id", messageId)
       .select()
       .single();
 
@@ -231,20 +240,18 @@ export const messagesService = {
 
   // Upload image
   async uploadImage(conversationId: string, file: File): Promise<{ url: string; path: string }> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const path = `${user.id}/${conversationId}/${Date.now()}_${file.name}`;
 
-    const { error } = await supabase.storage
-      .from('message-images')
-      .upload(path, file);
+    const { error } = await supabase.storage.from("message-images").upload(path, file);
 
     if (error) throw error;
 
-    const { data: publicData } = supabase.storage
-      .from('message-images')
-      .getPublicUrl(path);
+    const { data: publicData } = supabase.storage.from("message-images").getPublicUrl(path);
 
     return {
       url: publicData.publicUrl,
@@ -254,16 +261,16 @@ export const messagesService = {
 
   // Report message
   async report(messageId: string, reason: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
-      .from('reported_messages')
-      .insert({
-        message_id: messageId,
-        reported_by: user.id,
-        reason,
-      });
+    const { error } = await supabase.from("reported_messages").insert({
+      message_id: messageId,
+      reported_by: user.id,
+      reason,
+    });
 
     if (error) throw error;
   },
@@ -274,11 +281,13 @@ export const messagesService = {
 export const reactionsService = {
   // Add reaction to message
   async add(messageId: string, emoji: string): Promise<MessageReaction> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { data, error } = await supabase
-      .from('message_reactions')
+      .from("message_reactions")
       .insert({
         message_id: messageId,
         user_id: user.id,
@@ -293,15 +302,17 @@ export const reactionsService = {
 
   // Remove reaction
   async remove(messageId: string, emoji: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { error } = await supabase
-      .from('message_reactions')
+      .from("message_reactions")
       .delete()
-      .eq('message_id', messageId)
-      .eq('user_id', user.id)
-      .eq('emoji', emoji);
+      .eq("message_id", messageId)
+      .eq("user_id", user.id)
+      .eq("emoji", emoji);
 
     if (error) throw error;
   },
@@ -309,9 +320,9 @@ export const reactionsService = {
   // Get reactions for message
   async getReactions(messageId: string): Promise<MessageReaction[]> {
     const { data, error } = await supabase
-      .from('message_reactions')
-      .select('*')
-      .eq('message_id', messageId);
+      .from("message_reactions")
+      .select("*")
+      .eq("message_id", messageId);
 
     if (error) throw error;
     return (data || []) as MessageReaction[];
@@ -323,15 +334,15 @@ export const reactionsService = {
 export const readReceiptsService = {
   // Mark message as read
   async markAsRead(messageId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
-      .from('message_reads')
-      .insert({
-        message_id: messageId,
-        user_id: user.id,
-      });
+    const { error } = await supabase.from("message_reads").insert({
+      message_id: messageId,
+      user_id: user.id,
+    });
 
     if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
@@ -339,9 +350,9 @@ export const readReceiptsService = {
   // Get read receipts for message
   async getReadReceipts(messageId: string): Promise<MessageRead[]> {
     const { data, error } = await supabase
-      .from('message_reads')
-      .select('*')
-      .eq('message_id', messageId);
+      .from("message_reads")
+      .select("*")
+      .eq("message_id", messageId);
 
     if (error) throw error;
     return (data || []) as MessageRead[];
@@ -349,26 +360,28 @@ export const readReceiptsService = {
 
   // Mark conversation as read
   async markConversationAsRead(conversationId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     // Get last message
     const { data: lastMessage } = await supabase
-      .from('messages')
-      .select('id')
-      .eq('conversation_id', conversationId)
-      .order('created_at', { ascending: false })
+      .from("messages")
+      .select("id")
+      .eq("conversation_id", conversationId)
+      .order("created_at", { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (!lastMessage) return;
 
     // Mark all messages as read
     const { data: messages } = await supabase
-      .from('messages')
-      .select('id')
-      .eq('conversation_id', conversationId)
-      .is('deleted_at', null);
+      .from("messages")
+      .select("id")
+      .eq("conversation_id", conversationId)
+      .is("deleted_at", null);
 
     if (messages) {
       for (const msg of messages) {
@@ -377,14 +390,15 @@ export const readReceiptsService = {
     }
 
     // Update conversation member
-    await supabase
-      .from('conversation_members')
-      .upsert({
+    await supabase.from("conversation_members").upsert(
+      {
         conversation_id: conversationId,
         user_id: user.id,
         last_read_message_id: lastMessage.id,
         unread_count: 0,
-      }, { onConflict: 'conversation_id,user_id' });
+      },
+      { onConflict: "conversation_id,user_id" },
+    );
   },
 };
 
@@ -393,38 +407,40 @@ export const readReceiptsService = {
 export const typingService = {
   // Set typing status
   async setTyping(conversationId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    await supabase
-      .from('typing_status')
-      .upsert(
-        {
-          conversation_id: conversationId,
-          user_id: user.id,
-        },
-        { onConflict: 'conversation_id,user_id' }
-      );
+    await supabase.from("typing_status").upsert(
+      {
+        conversation_id: conversationId,
+        user_id: user.id,
+      },
+      { onConflict: "conversation_id,user_id" },
+    );
   },
 
   // Clear typing status
   async clearTyping(conversationId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     await supabase
-      .from('typing_status')
+      .from("typing_status")
       .delete()
-      .eq('conversation_id', conversationId)
-      .eq('user_id', user.id);
+      .eq("conversation_id", conversationId)
+      .eq("user_id", user.id);
   },
 
   // Get typing users
   async getTypingUsers(conversationId: string): Promise<string[]> {
     const { data, error } = await supabase
-      .from('typing_status')
-      .select('user_id')
-      .eq('conversation_id', conversationId);
+      .from("typing_status")
+      .select("user_id")
+      .eq("conversation_id", conversationId);
 
     if (error) throw error;
     return (data || []).map((t) => t.user_id);
@@ -436,28 +452,28 @@ export const typingService = {
 export const presenceService = {
   // Update presence
   async updatePresence(status: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    await supabase
-      .from('user_presence')
-      .upsert(
-        {
-          user_id: user.id,
-          status: status as any,
-          updated_at: new Date().toISOString(),
-        },
-        { onConflict: 'user_id' }
-      );
+    await supabase.from("user_presence").upsert(
+      {
+        user_id: user.id,
+        status: status as any,
+        updated_at: new Date().toISOString(),
+      },
+      { onConflict: "user_id" },
+    );
   },
 
   // Get user presence
   async getPresence(userId: string): Promise<UserPresence | null> {
     const { data } = await supabase
-      .from('user_presence')
-      .select('*')
-      .eq('user_id', userId)
-      .single();
+      .from("user_presence")
+      .select("*")
+      .eq("user_id", userId)
+      .maybeSingle();
 
     return data as UserPresence | null;
   },
@@ -468,56 +484,61 @@ export const presenceService = {
 export const blockedUsersService = {
   // Block user
   async block(userId: string, reason?: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
-      .from('blocked_users')
-      .insert({
-        blocker_id: user.id,
-        blocked_id: userId,
-        reason,
-      });
+    const { error } = await supabase.from("blocked_users").insert({
+      blocker_id: user.id,
+      blocked_id: userId,
+      reason,
+    });
 
     if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Unblock user
   async unblock(userId: string): Promise<void> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     await supabase
-      .from('blocked_users')
+      .from("blocked_users")
       .delete()
-      .eq('blocker_id', user.id)
-      .eq('blocked_id', userId);
+      .eq("blocker_id", user.id)
+      .eq("blocked_id", userId);
   },
 
   // Check if user is blocked
   async isBlocked(userId: string): Promise<boolean> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
     const { data } = await supabase
-      .from('blocked_users')
-      .select('id')
-      .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${userId}),and(blocker_id.eq.${userId},blocked_id.eq.${user.id})`)
+      .from("blocked_users")
+      .select("id")
+      .or(
+        `and(blocker_id.eq.${user.id},blocked_id.eq.${userId}),and(blocker_id.eq.${userId},blocked_id.eq.${user.id})`,
+      )
       .limit(1)
-      .single();
+      .maybeSingle();
 
     return !!data;
   },
 
   // Get blocked users
   async getBlockedUsers(): Promise<BlockedUser[]> {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) throw new Error('Not authenticated');
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    if (!user) throw new Error("Not authenticated");
 
-    const { data } = await supabase
-      .from('blocked_users')
-      .select('*')
-      .eq('blocker_id', user.id);
+    const { data } = await supabase.from("blocked_users").select("*").eq("blocker_id", user.id);
 
     return (data || []) as BlockedUser[];
   },
