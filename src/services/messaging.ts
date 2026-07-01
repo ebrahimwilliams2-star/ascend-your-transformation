@@ -22,12 +22,29 @@ export const conversationsService = {
 
     const [user1, user2] = [user.id, userId].sort();
 
-    // Try to get existing conversation
-    const { data: existing } = await supabase
-      .from('conversations')
-      .select('*')
-      .or(`and(user_id_1.eq.${user1},user_id_2.eq.${user2}),and(user_id_1.eq.${user2},user_id_2.eq.${user1})`)
-      .single();
+    const findConversation = async (): Promise<Conversation | null> => {
+      const { data: sortedConversation, error: sortedError } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id_1', user1)
+        .eq('user_id_2', user2)
+        .maybeSingle();
+
+      if (sortedError) throw sortedError;
+      if (sortedConversation) return sortedConversation as Conversation;
+
+      const { data: legacyConversation, error: legacyError } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id_1', user2)
+        .eq('user_id_2', user1)
+        .maybeSingle();
+
+      if (legacyError) throw legacyError;
+      return (legacyConversation as Conversation | null) ?? null;
+    };
+
+    const existing = await findConversation();
 
     if (existing) return existing as Conversation;
 
@@ -41,7 +58,14 @@ export const conversationsService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === '23505') {
+        const concurrentConversation = await findConversation();
+        if (concurrentConversation) return concurrentConversation;
+      }
+      throw error;
+    }
+
     return newConversation as Conversation;
   },
 
