@@ -24,7 +24,7 @@ export const conversationsService = {
 
     const [user1, user2] = [user.id, userId].sort();
 
-    const findConversation = async (): Promise<Conversation | null> => {
+    const getExistingConversation = async (): Promise<Conversation | null> => {
       const { data: sortedConversation, error: sortedError } = await supabase
         .from('conversations')
         .select('*')
@@ -46,7 +46,7 @@ export const conversationsService = {
       return legacyConversation as Conversation | null;
     };
 
-    const existing = await findConversation();
+    const existing = await getExistingConversation();
 
     if (existing) return existing as Conversation;
 
@@ -62,7 +62,7 @@ export const conversationsService = {
 
     if (error) {
       if (error.code === POSTGRES_UNIQUE_VIOLATION) {
-        const concurrentConversation = await findConversation();
+        const concurrentConversation = await getExistingConversation();
         if (concurrentConversation) return concurrentConversation;
       }
       throw error;
