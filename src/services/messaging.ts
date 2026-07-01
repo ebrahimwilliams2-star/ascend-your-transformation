@@ -1,4 +1,4 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '@/integrations/supabase/client';
 import type { 
   Message, 
   Conversation, 
@@ -11,11 +11,6 @@ import type {
   PaginatedResponse,
   ReportedMessage
 } from '@/types/messaging';
-
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 // ===== CONVERSATIONS SERVICE =====
 
