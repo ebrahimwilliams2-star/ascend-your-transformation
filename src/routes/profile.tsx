@@ -22,12 +22,26 @@ const FITNESS_GOAL_OPTIONS = [
   "General fitness",
 ];
 const LOCATION_VISIBILITY_OPTIONS = ["public", "friends", "private"] as const;
+const XP_PER_LEVEL = 500;
 
 function getInitials(displayName?: string | null, username?: string | null): string | null {
   const name = displayName ?? username;
   if (!name) return null;
   return name.slice(0, 2).toUpperCase();
 }
+
+type BadgeRow = {
+  icon: string | null;
+  name: string;
+};
+
+type UserBadgeWithBadge = {
+  id: string;
+  badge_id: string;
+  earned_at: string;
+  user_id: string;
+  badges: BadgeRow | null;
+};
 
 function ProfilePage() {
   const { user } = useUser();
@@ -59,7 +73,7 @@ function ProfilePage() {
         .select("*, badges(*)")
         .eq("user_id", user!.id)
         .order("earned_at", { ascending: false });
-      return data ?? [];
+      return (data ?? []) as UserBadgeWithBadge[];
     },
   });
 
@@ -147,7 +161,7 @@ function ProfilePage() {
   const rank = profile?.rank ?? "Initiate";
   const currentStreak = profile?.current_streak ?? 0;
   const longestStreak = profile?.longest_streak ?? 0;
-  const progress = Math.min(100, Math.round(((xp % 500) / 500) * 100));
+  const progress = Math.min(100, Math.round(((xp % XP_PER_LEVEL) / XP_PER_LEVEL) * 100));
   const initials = getInitials(profile?.display_name, profile?.username);
   const memberSince = profile?.created_at
     ? new Date(profile.created_at).toLocaleDateString("en-US", { year: "numeric", month: "long" })
@@ -231,7 +245,7 @@ function ProfilePage() {
             />
           </div>
           <p className="mt-1 text-[10px] uppercase tracking-widest text-brand-silver">
-            {xp % 500} / 500 XP to next level
+            {xp % XP_PER_LEVEL} / {XP_PER_LEVEL} XP to next level
           </p>
         </div>
 
@@ -426,7 +440,7 @@ function ProfilePage() {
         ) : (
           <div className="flex gap-3 overflow-x-auto pb-1">
             {userBadges.map((ub) => {
-              const badge = (ub as any).badges;
+              const badge = ub.badges;
               return (
                 <div
                   key={ub.id}
