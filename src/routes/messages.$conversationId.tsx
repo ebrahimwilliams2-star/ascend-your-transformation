@@ -430,11 +430,15 @@ function ChatPage() {
                       </button>
                     </div>
                   ) : message.message_type === "image" ? (
-                    <img
-                      src={message.metadata?.image_url ?? message.image_url ?? ""}
-                      alt="Shared image"
-                      className="max-w-full rounded-xl"
-                    />
+                    (() => {
+                      const imageUrl = message.metadata?.image_url ?? message.image_url;
+
+                      return imageUrl ? (
+                        <img src={imageUrl} alt="Shared image" className="max-w-full rounded-xl" />
+                      ) : (
+                        <p className="text-sm text-brand-silver">Image unavailable</p>
+                      );
+                    })()
                   ) : [
                       "workout_share",
                       "achievement_share",
