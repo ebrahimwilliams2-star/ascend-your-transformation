@@ -234,7 +234,7 @@ export function LatestEntryWidget() {
   return (
     <Link
       to="/journal?tab=history"
-      className="group rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40 hover:bg-brand-gray"
+      className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40 hover:bg-brand-gray"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <p className="chip-label text-brand-silver text-[10px]">{date}</p>
@@ -308,7 +308,7 @@ export function DisciplineTrendWidget() {
   return (
     <Link
       to="/journal?tab=insights"
-      className="group rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40"
+      className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40"
     >
       <div className="flex items-center justify-between mb-3">
         <p className="chip-label text-brand-red text-[10px]">7-Day Trend</p>
