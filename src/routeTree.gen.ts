@@ -15,6 +15,7 @@ import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as MetricsRouteImport } from './routes/metrics'
+import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as GymbrosRouteImport } from './routes/gymbros'
 import { Route as DashRouteImport } from './routes/dash'
@@ -24,6 +25,7 @@ import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as MessagesConversationIdRouteImport } from './routes/messages.$conversationId'
 
 const WorkoutsRoute = WorkoutsRouteImport.update({
   id: '/workouts',
@@ -53,6 +55,11 @@ const NutritionRoute = NutritionRouteImport.update({
 const MetricsRoute = MetricsRouteImport.update({
   id: '/metrics',
   path: '/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
   getParentRoute: () => rootRouteImport,
 } as any)
 const JournalRoute = JournalRouteImport.update({
@@ -100,6 +107,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MessagesConversationIdRoute = MessagesConversationIdRouteImport.update({
+  id: '/$conversationId',
+  path: '/$conversationId',
+  getParentRoute: () => MessagesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -111,12 +123,14 @@ export interface FileRoutesByFullPath {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
+  '/messages/$conversationId': typeof MessagesConversationIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -128,12 +142,14 @@ export interface FileRoutesByTo {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
+  '/messages/$conversationId': typeof MessagesConversationIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -146,12 +162,14 @@ export interface FileRoutesById {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
+  '/messages': typeof MessagesRouteWithChildren
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
+  '/messages/$conversationId': typeof MessagesConversationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -165,12 +183,14 @@ export interface FileRouteTypes {
     | '/dash'
     | '/gymbros'
     | '/journal'
+    | '/messages'
     | '/metrics'
     | '/nutrition'
     | '/photos'
     | '/rewards'
     | '/squads'
     | '/workouts'
+    | '/messages/$conversationId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -182,12 +202,14 @@ export interface FileRouteTypes {
     | '/dash'
     | '/gymbros'
     | '/journal'
+    | '/messages'
     | '/metrics'
     | '/nutrition'
     | '/photos'
     | '/rewards'
     | '/squads'
     | '/workouts'
+    | '/messages/$conversationId'
   id:
     | '__root__'
     | '/'
@@ -199,12 +221,14 @@ export interface FileRouteTypes {
     | '/dash'
     | '/gymbros'
     | '/journal'
+    | '/messages'
     | '/metrics'
     | '/nutrition'
     | '/photos'
     | '/rewards'
     | '/squads'
     | '/workouts'
+    | '/messages/$conversationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -217,6 +241,7 @@ export interface RootRouteChildren {
   DashRoute: typeof DashRoute
   GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
+  MessagesRoute: typeof MessagesRouteWithChildren
   MetricsRoute: typeof MetricsRoute
   NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
@@ -267,6 +292,13 @@ declare module '@tanstack/react-router' {
       path: '/metrics'
       fullPath: '/metrics'
       preLoaderRoute: typeof MetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/journal': {
@@ -332,8 +364,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/messages/$conversationId': {
+      id: '/messages/$conversationId'
+      path: '/$conversationId'
+      fullPath: '/messages/$conversationId'
+      preLoaderRoute: typeof MessagesConversationIdRouteImport
+      parentRoute: typeof MessagesRoute
+    }
   }
 }
+
+interface MessagesRouteChildren {
+  MessagesConversationIdRoute: typeof MessagesConversationIdRoute
+}
+
+const MessagesRouteChildren: MessagesRouteChildren = {
+  MessagesConversationIdRoute: MessagesConversationIdRoute,
+}
+
+const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
+  MessagesRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -345,6 +396,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashRoute: DashRoute,
   GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
+  MessagesRoute: MessagesRouteWithChildren,
   MetricsRoute: MetricsRoute,
   NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
@@ -355,3 +407,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
