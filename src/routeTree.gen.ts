@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as SquadsRouteImport } from './routes/squads'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as NutritionRouteImport } from './routes/nutrition'
 import { Route as MetricsRouteImport } from './routes/metrics'
@@ -40,6 +41,11 @@ const SquadsRoute = SquadsRouteImport.update({
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PhotosRoute = PhotosRouteImport.update({
@@ -127,6 +133,7 @@ export interface FileRoutesByFullPath {
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/profile': typeof ProfileRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/profile': typeof ProfileRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
+  '/profile': typeof ProfileRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -187,6 +196,7 @@ export interface FileRouteTypes {
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/profile'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -206,6 +216,7 @@ export interface FileRouteTypes {
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/profile'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -225,6 +236,7 @@ export interface FileRouteTypes {
     | '/metrics'
     | '/nutrition'
     | '/photos'
+    | '/profile'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -245,6 +257,7 @@ export interface RootRouteChildren {
   MetricsRoute: typeof MetricsRoute
   NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
+  ProfileRoute: typeof ProfileRoute
   RewardsRoute: typeof RewardsRoute
   SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
@@ -271,6 +284,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards'
       preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/photos': {
@@ -400,6 +420,7 @@ const rootRouteChildren: RootRouteChildren = {
   MetricsRoute: MetricsRoute,
   NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
+  ProfileRoute: ProfileRoute,
   RewardsRoute: RewardsRoute,
   SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,

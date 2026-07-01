@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3 } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
@@ -115,7 +115,9 @@ function Dashboard() {
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
         <div className="flex items-center gap-3">
-          <AscendLogo className="size-11" />
+          <Link to="/profile">
+            <ProfileAvatar profile={profile} size="size-11" />
+          </Link>
           <div>
             <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
             <h1 className="text-display text-xl font-bold mt-0.5">
@@ -436,5 +438,37 @@ function FeatureTile({ to, Icon, label, sub, tone }: { to: string; Icon: typeof 
       <p className="mt-3 text-sm font-bold">{label}</p>
       <p className="mt-0.5 text-[10px] uppercase tracking-widest text-brand-silver">{sub}</p>
     </Link>
+  );
+}
+
+type ProfileAvatarProps = {
+  profile: { avatar_url?: string | null; display_name?: string | null; username?: string | null } | null | undefined;
+  size?: string;
+};
+
+function ProfileAvatar({ profile, size = "size-10" }: ProfileAvatarProps) {
+  const initials = (() => {
+    const name = profile?.display_name ?? profile?.username;
+    return name ? name.slice(0, 2).toUpperCase() : null;
+  })();
+
+  if (profile?.avatar_url) {
+    return (
+      <img
+        src={profile.avatar_url}
+        alt="Profile"
+        className={`${size} rounded-full object-cover ring-1 ring-brand-red/40 shadow-glow-red`}
+      />
+    );
+  }
+
+  return (
+    <div className={`${size} rounded-full bg-brand-red/20 flex items-center justify-center ring-1 ring-brand-red/40`}>
+      {initials ? (
+        <span className="text-xs font-bold text-brand-red">{initials}</span>
+      ) : (
+        <User className="size-5 text-brand-red" />
+      )}
+    </div>
   );
 }
