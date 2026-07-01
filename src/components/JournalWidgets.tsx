@@ -88,7 +88,7 @@ export function TodayJournalWidget() {
   return (
     <Link
       to="/journal"
-      className="group rounded-2xl border transition-all overflow-hidden"
+      className="group block rounded-2xl border transition-all overflow-hidden"
       style={{
         borderColor: journaledToday ? "rgba(239, 68, 68, 0.4)" : "rgba(255, 255, 255, 0.05)",
         backgroundColor: journaledToday ? "rgba(239, 68, 68, 0.05)" : "rgba(55, 65, 81, 0.6)",
@@ -214,7 +214,7 @@ export function LatestEntryWidget() {
     return (
       <Link
         to="/journal"
-        className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4 text-center"
+        className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4 text-center block"
       >
         <BookOpen className="size-5 text-brand-silver/40 mx-auto mb-2" />
         <p className="text-sm font-bold">No entries yet</p>
@@ -234,7 +234,7 @@ export function LatestEntryWidget() {
   return (
     <Link
       to="/journal?tab=history"
-      className="group rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40 hover:bg-brand-gray"
+      className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40 hover:bg-brand-gray"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <p className="chip-label text-brand-silver text-[10px]">{date}</p>
@@ -308,7 +308,7 @@ export function DisciplineTrendWidget() {
   return (
     <Link
       to="/journal?tab=insights"
-      className="group rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40"
+      className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40"
     >
       <div className="flex items-center justify-between mb-3">
         <p className="chip-label text-brand-red text-[10px]">7-Day Trend</p>
