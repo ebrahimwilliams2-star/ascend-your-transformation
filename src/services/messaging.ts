@@ -12,6 +12,8 @@ import type {
   ReportedMessage
 } from '@/types/messaging';
 
+const POSTGRES_UNIQUE_VIOLATION = '23505';
+
 // ===== CONVERSATIONS SERVICE =====
 
 export const conversationsService = {
@@ -59,7 +61,7 @@ export const conversationsService = {
       .single();
 
     if (error) {
-      if (error.code === '23505') {
+      if (error.code === POSTGRES_UNIQUE_VIOLATION) {
         const concurrentConversation = await findConversation();
         if (concurrentConversation) return concurrentConversation;
       }
@@ -285,7 +287,7 @@ export const reactionsService = {
       .select()
       .single();
 
-    if (error && error.code !== '23505') throw error; // 23505 is unique constraint
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
     return data as MessageReaction;
   },
 
@@ -331,7 +333,7 @@ export const readReceiptsService = {
         user_id: user.id,
       });
 
-    if (error && error.code !== '23505') throw error;
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Get read receipts for message
@@ -477,7 +479,7 @@ export const blockedUsersService = {
         reason,
       });
 
-    if (error && error.code !== '23505') throw error;
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Unblock user
