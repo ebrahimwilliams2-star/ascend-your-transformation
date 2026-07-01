@@ -159,7 +159,7 @@ function Onboarding({ onDone }: { onDone: () => void }) {
             <div className="grid grid-cols-2 gap-2">
               {["male", "female"].map((g) => (
                 <button key={g} onClick={() => setForm({ ...form, gender: g })}
-                  className={`rounded-xl border p-3 text-sm font-bold uppercase tracking-widest ${form.gender === g ? "border-brand-red bg-brand-red/10 text-brand-red" : "border-white/10 bg-brand-gray text-brand-silver"}`}>
+                  className={`rounded-xl border p-3 text-sm font-bold uppercase tracking-widest ${form.gender === g ? "border-brand-red bg-brand-red/10 text-brand-red" : "border-white/10 bg-brand-gray"}`}>
                   {g}
                 </button>
               ))}
@@ -180,7 +180,7 @@ function Onboarding({ onDone }: { onDone: () => void }) {
             <div className="space-y-2">
               {Object.entries(ACTIVITY_LABELS).map(([k, lbl]) => (
                 <button key={k} onClick={() => setForm({ ...form, activity_level: k })}
-                  className={`w-full rounded-xl border p-3 text-left text-sm font-medium ${form.activity_level === k ? "border-brand-red bg-brand-red/10 text-white" : "border-white/10 bg-brand-gray text-brand-silver"}`}>
+                  className={`w-full rounded-xl border p-3 text-left text-sm font-medium ${form.activity_level === k ? "border-brand-red bg-brand-red/10 text-white" : "border-white/10 bg-brand-gray"}`}>
                   {lbl}
                 </button>
               ))}
@@ -420,9 +420,10 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
         <div className="relative">
           <button 
             onClick={() => setShowResetMenu(!showResetMenu)} 
-            className="chip-label text-brand-silver hover:text-brand-red transition-colors flex items-center gap-1"
+            className="flex items-center gap-1.5 rounded-lg bg-brand-red/20 px-3 py-2 text-sm font-bold text-brand-red hover:bg-brand-red/30 transition-colors"
           >
             <RotateCcw className="size-4" />
+            <span>Reset</span>
           </button>
           {showResetMenu && (
             <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-white/10 bg-brand-black/95 backdrop-blur-md shadow-lg overflow-hidden z-50">
