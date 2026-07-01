@@ -904,6 +904,7 @@ export type Database = {
         Args: { _challenge_id: string }
         Returns: undefined
       }
+      claim_reward_meal: { Args: { _reward_id: string }; Returns: undefined }
       create_squad: {
         Args: { _description: string; _name: string }
         Returns: {
