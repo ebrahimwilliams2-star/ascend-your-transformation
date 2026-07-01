@@ -148,16 +148,8 @@ function Rewards() {
 
   const claim = useMutation({
     mutationFn: async (id: string) => {
-      const { data, error } = await supabase
-        .from("reward_meals")
-        .update({ claimed_at: new Date().toISOString() })
-        .eq("id", id)
-        .eq("user_id", user!.id)
-        .select("id")
-        .maybeSingle();
+      const { error } = await supabase.rpc("claim_reward_meal", { _reward_id: id });
       if (error) throw error;
-      if (!data) throw new Error("Reward not found or already claimed");
-      return data;
     },
     onSuccess: () => {
       toast.success("Reward claimed. Enjoy it.");
