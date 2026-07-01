@@ -12,6 +12,8 @@ import type {
   ReportedMessage
 } from '@/types/messaging';
 
+const POSTGRES_UNIQUE_VIOLATION = '23505';
+
 // ===== CONVERSATIONS SERVICE =====
 
 export const conversationsService = {
@@ -22,12 +24,29 @@ export const conversationsService = {
 
     const [user1, user2] = [user.id, userId].sort();
 
-    // Try to get existing conversation
-    const { data: existing } = await supabase
-      .from('conversations')
-      .select('*')
-      .or(`and(user_id_1.eq.${user1},user_id_2.eq.${user2}),and(user_id_1.eq.${user2},user_id_2.eq.${user1})`)
-      .single();
+    const getExistingConversation = async (): Promise<Conversation | null> => {
+      const { data: sortedConversation, error: sortedError } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id_1', user1)
+        .eq('user_id_2', user2)
+        .maybeSingle();
+
+      if (sortedError) throw sortedError;
+      if (sortedConversation) return sortedConversation as Conversation;
+
+      const { data: reversedConversation, error: reversedError } = await supabase
+        .from('conversations')
+        .select('*')
+        .eq('user_id_1', user2)
+        .eq('user_id_2', user1)
+        .maybeSingle();
+
+      if (reversedError) throw reversedError;
+      return reversedConversation as Conversation | null;
+    };
+
+    const existing = await getExistingConversation();
 
     if (existing) return existing as Conversation;
 
@@ -41,7 +60,14 @@ export const conversationsService = {
       .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === POSTGRES_UNIQUE_VIOLATION) {
+        const concurrentConversation = await getExistingConversation();
+        if (concurrentConversation) return concurrentConversation;
+      }
+      throw error;
+    }
+
     return newConversation as Conversation;
   },
 
@@ -261,7 +287,7 @@ export const reactionsService = {
       .select()
       .single();
 
-    if (error && error.code !== '23505') throw error; // 23505 is unique constraint
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
     return data as MessageReaction;
   },
 
@@ -307,7 +333,7 @@ export const readReceiptsService = {
         user_id: user.id,
       });
 
-    if (error && error.code !== '23505') throw error;
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Get read receipts for message
@@ -453,7 +479,7 @@ export const blockedUsersService = {
         reason,
       });
 
-    if (error && error.code !== '23505') throw error;
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Unblock user
