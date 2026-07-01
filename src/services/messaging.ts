@@ -35,15 +35,15 @@ export const conversationsService = {
       if (sortedError) throw sortedError;
       if (sortedConversation) return sortedConversation as Conversation;
 
-      const { data: legacyConversation, error: legacyError } = await supabase
+      const { data: reversedConversation, error: reversedError } = await supabase
         .from('conversations')
         .select('*')
         .eq('user_id_1', user2)
         .eq('user_id_2', user1)
         .maybeSingle();
 
-      if (legacyError) throw legacyError;
-      return legacyConversation as Conversation | null;
+      if (reversedError) throw reversedError;
+      return reversedConversation as Conversation | null;
     };
 
     const existing = await getExistingConversation();
