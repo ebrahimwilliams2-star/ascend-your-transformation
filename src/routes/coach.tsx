@@ -14,7 +14,10 @@ export const Route = createFileRoute("/coach")({
 type Msg = { role: "user" | "assistant"; content: string };
 
 const SEED: Msg[] = [
-  { role: "assistant", content: "I'm Ethan — your transformation coach. Tell me what you trained today, what you ate, or what's standing in your way. We build 1% at a time." },
+  {
+    role: "assistant",
+    content: "Hey! What's good? You training today or is this a rest day? Either way I'm here 💪",
+  },
 ];
 
 function Coach() {
@@ -133,8 +136,8 @@ function Coach() {
           <Sparkles className="size-5 text-white" />
         </div>
         <div className="min-w-0 flex-1">
-          <p className="chip-label text-brand-red">Ethan · Online</p>
-          <h1 className="text-display text-xl font-bold">Your Transformation Coach</h1>
+          <p className="chip-label text-brand-red">Ethan · Your GymBro</p>
+          <h1 className="text-display text-xl font-bold">Ethan</h1>
         </div>
       </header>
 
