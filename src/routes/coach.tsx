@@ -84,7 +84,11 @@ function Coach() {
         throw new Error(err.error ?? `Request failed (${res.status})`);
       }
 
-      const reader = res.body!.getReader();
+      if (!res.body) {
+        throw new Error("Coach response stream was empty");
+      }
+
+      const reader = res.body.getReader();
       const decoder = new TextDecoder();
       let acc = "";
       let buffer = "";

@@ -359,7 +359,7 @@ export const readReceiptsService = {
       .eq('conversation_id', conversationId)
       .order('created_at', { ascending: false })
       .limit(1)
-      .single();
+      .maybeSingle();
 
     if (!lastMessage) return;
 
@@ -457,7 +457,7 @@ export const presenceService = {
       .from('user_presence')
       .select('*')
       .eq('user_id', userId)
-      .single();
+      .maybeSingle();
 
     return data as UserPresence | null;
   },
@@ -504,7 +504,7 @@ export const blockedUsersService = {
       .select('id')
       .or(`and(blocker_id.eq.${user.id},blocked_id.eq.${userId}),and(blocker_id.eq.${userId},blocked_id.eq.${user.id})`)
       .limit(1)
-      .single();
+      .maybeSingle();
 
     return !!data;
   },

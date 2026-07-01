@@ -465,7 +465,7 @@ function ChatPage() {
                     </div>
                   ) : message.message_type === "image" ? (
                     <img
-                      src={message.image_url ?? message.metadata?.image_url ?? ""}
+                      src={message.metadata?.image_url ?? message.image_url ?? ""}
                       alt="Shared image"
                       className="max-w-full rounded-xl"
                     />
