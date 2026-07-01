@@ -214,7 +214,7 @@ export function LatestEntryWidget() {
     return (
       <Link
         to="/journal"
-        className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4 text-center"
+        className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4 text-center block"
       >
         <BookOpen className="size-5 text-brand-silver/40 mx-auto mb-2" />
         <p className="text-sm font-bold">No entries yet</p>
