@@ -41,7 +41,7 @@ export const conversationsService = {
         .maybeSingle();
 
       if (legacyError) throw legacyError;
-      return (legacyConversation as Conversation | null) ?? null;
+      return legacyConversation as Conversation | null;
     };
 
     const existing = await findConversation();
