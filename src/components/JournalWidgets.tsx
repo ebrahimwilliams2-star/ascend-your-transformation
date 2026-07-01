@@ -88,7 +88,7 @@ export function TodayJournalWidget() {
   return (
     <Link
       to="/journal"
-      className="group rounded-2xl border transition-all overflow-hidden"
+      className="group block rounded-2xl border transition-all overflow-hidden"
       style={{
         borderColor: journaledToday ? "rgba(239, 68, 68, 0.4)" : "rgba(255, 255, 255, 0.05)",
         backgroundColor: journaledToday ? "rgba(239, 68, 68, 0.05)" : "rgba(55, 65, 81, 0.6)",
