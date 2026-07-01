@@ -119,8 +119,15 @@ function Rewards() {
       }));
       const { error } = await supabase.from("reward_meals").insert(rows);
       if (error && !error.message.includes("duplicate")) throw error;
+      return templates.length;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["reward-meals"] }),
+    onSuccess: (count) => {
+      qc.invalidateQueries({ queryKey: ["reward-meals"] });
+      if (count > 0) {
+        toast.success(`${count} reward meal${count > 1 ? "s" : ""} unlocked!`);
+      }
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not unlock reward"),
   });
 
   useEffect(() => {
@@ -133,22 +140,30 @@ function Rewards() {
     };
     const alreadyUnlocked = new Set(unlocked.map((u) => u.milestone));
     const newlyEarned = TEMPLATES.filter((t) => t.condition(state) && !alreadyUnlocked.has(t.milestone));
-    if (newlyEarned.length > 0) {
+    if (newlyEarned.length > 0 && !autoUnlock.isPending) {
       autoUnlock.mutate(newlyEarned);
-      toast.success(`${newlyEarned.length} reward meal${newlyEarned.length > 1 ? "s" : ""} unlocked!`);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profile?.longest_streak, badges?.size, workouts, unlocked?.length]);
 
   const claim = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("reward_meals").update({ claimed_at: new Date().toISOString() }).eq("id", id);
+      const { data, error } = await supabase
+        .from("reward_meals")
+        .update({ claimed_at: new Date().toISOString() })
+        .eq("id", id)
+        .eq("user_id", user!.id)
+        .select("id")
+        .maybeSingle();
       if (error) throw error;
+      if (!data) throw new Error("Reward not found or already claimed");
+      return data;
     },
     onSuccess: () => {
       toast.success("Reward claimed. Enjoy it.");
       qc.invalidateQueries({ queryKey: ["reward-meals"] });
     },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Could not claim reward"),
   });
 
   const unlockedMap = new Map((unlocked ?? []).map((u) => [u.milestone, u]));
