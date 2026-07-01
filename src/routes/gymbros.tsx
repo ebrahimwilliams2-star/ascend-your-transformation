@@ -1,11 +1,12 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
-import { Check, Search, UserPlus, X, Trophy, Flame, Crown, Zap } from "lucide-react";
+import { Check, Search, UserPlus, X, Trophy, Flame, Crown, Zap, MessageCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
+import { conversationsService } from "@/services/messaging";
 
 export const Route = createFileRoute("/gymbros")({
   head: () => ({ meta: [{ title: "Gymbros — ASCEND" }] }),
@@ -43,7 +44,9 @@ type SearchHit = {
 function Gymbros() {
   const { user } = useUser();
   const qc = useQueryClient();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
+  const [messagingFriendId, setMessagingFriendId] = useState<string | null>(null);
 
   const { data: me } = useQuery({
     queryKey: ["profile", user?.id],
@@ -122,6 +125,18 @@ function Gymbros() {
     onSuccess: () => toast.success("Nudge sent. Iron sharpens iron."),
     onError: (e) => toast.error(e instanceof Error ? e.message : "Couldn't nudge"),
   });
+
+  const messageFriend = async (friendId: string) => {
+    setMessagingFriendId(friendId);
+    try {
+      const conv = await conversationsService.getOrCreate(friendId);
+      navigate({ to: "/messages/$conversationId", params: { conversationId: conv.id } });
+    } catch {
+      toast.error("Couldn't open chat");
+    } finally {
+      setMessagingFriendId(null);
+    }
+  };
 
   const friends = bros.filter((b) => b.direction === "friend");
   const incoming = bros.filter((b) => b.direction === "incoming");
@@ -302,6 +317,16 @@ function Gymbros() {
                       </p>
                     )}
                   </div>
+                  {!row.isMe && (
+                    <button
+                      onClick={() => messageFriend(row.friend_id)}
+                      disabled={messagingFriendId === row.friend_id}
+                      className="grid size-9 place-items-center rounded-lg bg-brand-gray/60 text-brand-silver hover:text-white disabled:opacity-50"
+                      aria-label="Message"
+                    >
+                      <MessageCircle className="size-4" />
+                    </button>
+                  )}
                 </div>
               );
             })}
@@ -332,6 +357,14 @@ function Gymbros() {
                     className="flex flex-1 items-center justify-center gap-1 rounded-lg bg-brand-red/15 px-2 py-1.5 text-[10px] font-bold uppercase tracking-widest text-brand-red hover:bg-brand-red/25 disabled:opacity-50"
                   >
                     <Zap className="size-3" /> Nudge
+                  </button>
+                  <button
+                    onClick={() => messageFriend(b.friend_id)}
+                    disabled={messagingFriendId === b.friend_id}
+                    className="grid size-7 place-items-center rounded-lg bg-brand-gray/60 text-brand-silver hover:text-white disabled:opacity-50"
+                    aria-label="Message"
+                  >
+                    <MessageCircle className="size-3.5" />
                   </button>
                   <button
                     onClick={() => {

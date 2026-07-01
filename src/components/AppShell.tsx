@@ -9,6 +9,7 @@ const navItems = [
   { to: "/dash", label: "Dash", Icon: Home },
   { to: "/workouts", label: "Lift", Icon: Dumbbell },
   { to: "/photos", label: "Form", Icon: Flame },
+  { to: "/messages", label: "DMs", Icon: MessageCircle },
   { to: "/gymbros", label: "Bros", Icon: Users },
 ] as const;
 
@@ -42,7 +43,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         className="fixed bottom-0 left-1/2 z-nav -translate-x-1/2 w-full max-w-md px-4 pt-2"
         style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
       >
-        <div className="relative grid grid-cols-5 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
+        <div className="relative grid grid-cols-6 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
           {navItems.slice(0, 2).map((it) => (
             <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
           ))}
