@@ -5,7 +5,7 @@ import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { toast } from "sonner";
-import { Plus, Flame, Trash2, ChevronRight, Target, TrendingDown, TrendingUp, Repeat, Search } from "lucide-react";
+import { Plus, Flame, Trash2, ChevronRight, Target, TrendingDown, TrendingUp, Repeat, Search, RotateCcw } from "lucide-react";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/nutrition")({
@@ -335,6 +335,7 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
   const qc = useQueryClient();
   const today = todayStr();
   const [adding, setAdding] = useState<string | null>(null);
+  const [showResetMenu, setShowResetMenu] = useState(false);
 
   const { data: logs } = useQuery({
     queryKey: ["food_logs", user?.id, today],
@@ -374,6 +375,41 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
     Math.min(1, (logs?.length ?? 0) / 3) * 20
   );
 
+  const resetNutritionPlan = useMutation({
+    mutationFn: async () => {
+      // Delete the nutrition profile to go back to onboarding
+      const { error } = await supabase
+        .from("nutrition_profiles")
+        .delete()
+        .eq("user_id", user!.id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Nutrition plan reset. Choose your new goal!");
+      onReset();
+      setShowResetMenu(false);
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to reset"),
+  });
+
+  const resetTodayLogs = useMutation({
+    mutationFn: async () => {
+      // Delete only today's food logs
+      const { error } = await supabase
+        .from("food_logs")
+        .delete()
+        .eq("user_id", user!.id)
+        .eq("log_date", today);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Today's nutrition logs cleared");
+      qc.invalidateQueries({ queryKey: ["food_logs"] });
+      setShowResetMenu(false);
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to reset logs"),
+  });
+
   return (
     <>
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
@@ -381,7 +417,33 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
           <p className="chip-label text-brand-red">{profile.goal_type.toUpperCase()} · {target.toLocaleString()} KCAL</p>
           <h1 className="text-display text-2xl font-bold mt-0.5">Nutrition</h1>
         </div>
-        <button onClick={onReset} className="chip-label text-brand-silver">Reset</button>
+        <div className="relative">
+          <button 
+            onClick={() => setShowResetMenu(!showResetMenu)} 
+            className="chip-label text-brand-silver hover:text-brand-red transition-colors flex items-center gap-1"
+          >
+            <RotateCcw className="size-4" />
+          </button>
+          {showResetMenu && (
+            <div className="absolute right-0 top-full mt-2 w-48 rounded-xl border border-white/10 bg-brand-black/95 backdrop-blur-md shadow-lg overflow-hidden z-50">
+              <button
+                onClick={() => resetTodayLogs.mutate()}
+                disabled={resetTodayLogs.isPending}
+                className="w-full text-left px-4 py-3 text-sm font-medium text-brand-silver hover:text-white hover:bg-brand-gray/40 transition-colors disabled:opacity-50"
+              >
+                {resetTodayLogs.isPending ? "Clearing…" : "Clear Today's Logs"}
+              </button>
+              <div className="border-t border-white/5" />
+              <button
+                onClick={() => resetNutritionPlan.mutate()}
+                disabled={resetNutritionPlan.isPending}
+                className="w-full text-left px-4 py-3 text-sm font-medium text-brand-red hover:bg-brand-red/10 transition-colors disabled:opacity-50"
+              >
+                {resetNutritionPlan.isPending ? "Resetting…" : "Reset Nutrition Plan"}
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* Calorie ring */}
