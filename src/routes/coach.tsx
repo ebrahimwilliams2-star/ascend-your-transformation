@@ -93,7 +93,7 @@ function Coach() {
       }
 
       if (!res.body) {
-        throw new Error("Coach response stream was empty");
+        throw new Error("No response body received from AI coach service");
       }
 
       const reader = res.body.getReader();
