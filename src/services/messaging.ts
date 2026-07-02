@@ -444,7 +444,7 @@ export const typingService = {
       .eq("conversation_id", conversationId);
 
     if (error) throw error;
-    return (data || []).map((t) => t.user_id);
+    return (data || []).map((t: { user_id: string }) => t.user_id);
   },
 };
 

@@ -81,8 +81,8 @@ function ChatPage() {
   const [editContent, setEditContent] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingTimerRef = useRef<number | null>(null);
+  const longPressTimerRef = useRef<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -204,7 +204,7 @@ function ChatPage() {
   // ── Cleanup typing on unmount ─────────────────────────────────────────────
   useEffect(() => {
     return () => {
-      clearTimeout(typingTimerRef.current);
+      if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
       typingService.clearTyping(conversationId).catch(() => {});
     };
   }, [conversationId]);
@@ -231,7 +231,7 @@ function ChatPage() {
     if (!text || sendMutation.isPending) return;
     setInput("");
     if (textareaRef.current) textareaRef.current.style.height = "auto";
-    clearTimeout(typingTimerRef.current);
+    if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
     typingService.clearTyping(conversationId).catch(() => {});
     sendMutation.mutate({ content: text, type: "text" });
   }, [input, sendMutation, conversationId]);
@@ -246,8 +246,8 @@ function ChatPage() {
     }
     // Typing indicator
     typingService.setTyping(conversationId).catch(() => {});
-    clearTimeout(typingTimerRef.current);
-    typingTimerRef.current = setTimeout(() => {
+    if (typingTimerRef.current) window.clearTimeout(typingTimerRef.current);
+    typingTimerRef.current = window.setTimeout(() => {
       typingService.clearTyping(conversationId).catch(() => {});
     }, 2000);
   };
@@ -335,9 +335,11 @@ function ChatPage() {
   const openContextMenu = (message: Message) => setContextMenu({ message });
 
   const handleLongPressStart = (message: Message) => {
-    longPressTimerRef.current = setTimeout(() => openContextMenu(message), 500);
+    longPressTimerRef.current = window.setTimeout(() => openContextMenu(message), 500);
   };
-  const handleLongPressEnd = () => clearTimeout(longPressTimerRef.current);
+  const handleLongPressEnd = () => {
+    if (longPressTimerRef.current) window.clearTimeout(longPressTimerRef.current);
+  };
 
   // ── Derived values ────────────────────────────────────────────────────────
   const profile = convInfo?.profile;
