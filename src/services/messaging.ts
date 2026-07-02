@@ -45,23 +45,25 @@ export const conversationsService = {
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const [{ data: sortedData, error: sortedError }, { data: reversedData, error: reversedError }] =
-        await Promise.all([
-          messagingDb
-            .from("conversations")
-            .select("*")
-            .eq("user_id_1", user1)
-            .eq("user_id_2", user2)
-            .order("updated_at", { ascending: false })
-            .limit(1),
-          messagingDb
-            .from("conversations")
-            .select("*")
-            .eq("user_id_1", user2)
-            .eq("user_id_2", user1)
-            .order("updated_at", { ascending: false })
-            .limit(1),
-        ]);
+      const [
+        { data: sortedData, error: sortedError },
+        { data: reversedData, error: reversedError },
+      ] = await Promise.all([
+        messagingDb
+          .from("conversations")
+          .select("*")
+          .eq("user_id_1", user1)
+          .eq("user_id_2", user2)
+          .order("updated_at", { ascending: false })
+          .limit(1),
+        messagingDb
+          .from("conversations")
+          .select("*")
+          .eq("user_id_1", user2)
+          .eq("user_id_2", user1)
+          .order("updated_at", { ascending: false })
+          .limit(1),
+      ]);
 
       if (sortedError) throw sortedError;
       if (reversedError) throw reversedError;
@@ -210,8 +212,7 @@ export const messagesService = {
     const imageSizeBytes =
       typeof metadata?.image_size_bytes === "number" ? metadata.image_size_bytes : null;
     const imageWidth = typeof metadata?.image_width === "number" ? metadata.image_width : null;
-    const imageHeight =
-      typeof metadata?.image_height === "number" ? metadata.image_height : null;
+    const imageHeight = typeof metadata?.image_height === "number" ? metadata.image_height : null;
 
     const { data, error } = await messagingDb
       .from("messages")

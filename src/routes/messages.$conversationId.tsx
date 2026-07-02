@@ -286,7 +286,9 @@ function ChatPage() {
     setContextMenu(null);
     try {
       await reactionsService.add(messageId, emoji);
-    } catch {}
+    } catch {
+      return;
+    }
   };
 
   // ── Edit ──────────────────────────────────────────────────────────────────
