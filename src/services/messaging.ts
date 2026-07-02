@@ -13,7 +13,7 @@ import type {
 } from "@/types/messaging";
 
 const POSTGRES_UNIQUE_VIOLATION = "23505";
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const messagingDb = supabase as any;
 
 // ===== CONVERSATIONS SERVICE =====
@@ -53,10 +53,15 @@ export const conversationsService = {
       if (sortedError) throw sortedError;
       if (reversedError) throw reversedError;
 
-      const candidates = [...(sortedData || []), ...(reversedData || [])] as Conversation[];
-      if (candidates.length === 0) return null;
+      const sortedConversation = (sortedData?.[0] as Conversation | undefined) ?? null;
+      const reversedConversation = (reversedData?.[0] as Conversation | undefined) ?? null;
 
-      return candidates.sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
+      if (!sortedConversation) return reversedConversation;
+      if (!reversedConversation) return sortedConversation;
+
+      return sortedConversation.updated_at >= reversedConversation.updated_at
+        ? sortedConversation
+        : reversedConversation;
     };
 
     const existing = await getExistingConversation();
