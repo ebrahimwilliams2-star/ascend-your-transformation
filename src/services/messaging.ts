@@ -16,6 +16,19 @@ const POSTGRES_UNIQUE_VIOLATION = "23505";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const messagingDb = supabase as any;
 
+async function ensureConversationMembers(conversationId: string, userIds: string[]): Promise<void> {
+  const { error } = await messagingDb.from("conversation_members").upsert(
+    userIds.map((userId) => ({
+      conversation_id: conversationId,
+      user_id: userId,
+      unread_count: 0,
+    })),
+    { onConflict: "conversation_id,user_id", ignoreDuplicates: true },
+  );
+
+  if (error) throw error;
+}
+
 // ===== CONVERSATIONS SERVICE =====
 
 export const conversationsService = {
@@ -66,7 +79,10 @@ export const conversationsService = {
 
     const existing = await getExistingConversation();
 
-    if (existing) return existing as Conversation;
+    if (existing) {
+      await ensureConversationMembers(existing.id, [user1, user2]);
+      return existing as Conversation;
+    }
 
     // Create new conversation
     const { data: newConversation, error } = await messagingDb
@@ -81,10 +97,15 @@ export const conversationsService = {
     if (error) {
       if (error.code === POSTGRES_UNIQUE_VIOLATION) {
         const concurrentConversation = await getExistingConversation();
-        if (concurrentConversation) return concurrentConversation;
+        if (concurrentConversation) {
+          await ensureConversationMembers(concurrentConversation.id, [user1, user2]);
+          return concurrentConversation;
+        }
       }
       throw error;
     }
+
+    await ensureConversationMembers(newConversation.id, [user1, user2]);
 
     return newConversation as Conversation;
   },
@@ -183,6 +204,15 @@ export const messagesService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
+    const imageUrl = typeof metadata?.image_url === "string" ? metadata.image_url : null;
+    const imageStoragePath =
+      typeof metadata?.image_storage_path === "string" ? metadata.image_storage_path : null;
+    const imageSizeBytes =
+      typeof metadata?.image_size_bytes === "number" ? metadata.image_size_bytes : null;
+    const imageWidth = typeof metadata?.image_width === "number" ? metadata.image_width : null;
+    const imageHeight =
+      typeof metadata?.image_height === "number" ? metadata.image_height : null;
+
     const { data, error } = await messagingDb
       .from("messages")
       .insert({
@@ -192,6 +222,11 @@ export const messagesService = {
         message_type: messageType,
         metadata: metadata || {},
         attachment_data: attachmentData,
+        image_url: imageUrl,
+        image_storage_path: imageStoragePath,
+        image_size_bytes: imageSizeBytes,
+        image_width: imageWidth,
+        image_height: imageHeight,
         delivered_at: new Date().toISOString(),
       })
       .select()
@@ -428,13 +463,18 @@ export const typingService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    await messagingDb.from("typing_status").upsert(
-      {
-        conversation_id: conversationId,
-        user_id: user.id,
-      },
-      { onConflict: "conversation_id,user_id" },
-    );
+    await messagingDb
+      .from("typing_status")
+      .delete()
+      .eq("conversation_id", conversationId)
+      .eq("user_id", user.id);
+
+    const { error } = await messagingDb.from("typing_status").insert({
+      conversation_id: conversationId,
+      user_id: user.id,
+    });
+
+    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
   },
 
   // Clear typing status

@@ -269,10 +269,11 @@ function ChatPage() {
   // ── Image upload ─────────────────────────────────────────────────────────
   const handleImageUpload = async (file: File) => {
     try {
-      const { url } = await messagesService.uploadImage(conversationId, file);
-      // Send via service — pass URL in metadata since the service insert covers the row
+      const { url, path } = await messagesService.uploadImage(conversationId, file);
       await messagesService.send(conversationId, null, "image", {
         image_url: url,
+        image_storage_path: path,
+        image_size_bytes: file.size,
       });
       qc.invalidateQueries({ queryKey: ["conversations"] });
     } catch {
