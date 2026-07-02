@@ -287,7 +287,7 @@ function ChatPage() {
     try {
       await reactionsService.add(messageId, emoji);
     } catch {
-      return;
+      toast.error("Failed to add reaction");
     }
   };
 
