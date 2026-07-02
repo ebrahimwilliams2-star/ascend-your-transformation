@@ -81,8 +81,8 @@ function ChatPage() {
   const [editContent, setEditContent] = useState("");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const typingTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const longPressTimerRef = useRef<ReturnType<typeof setTimeout>>();
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const longPressTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 

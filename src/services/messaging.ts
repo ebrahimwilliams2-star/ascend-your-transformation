@@ -28,7 +28,7 @@ export const conversationsService = {
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const { data: sortedConversation, error: sortedError } = await supabase
+      const { data: sortedConversation, error: sortedError } = await messagingDb
         .from("conversations")
         .select("*")
         .eq("user_id_1", user1)
@@ -38,7 +38,7 @@ export const conversationsService = {
       if (sortedError) throw sortedError;
       if (sortedConversation) return sortedConversation as Conversation;
 
-      const { data: reversedConversation, error: reversedError } = await supabase
+      const { data: reversedConversation, error: reversedError } = await messagingDb
         .from("conversations")
         .select("*")
         .eq("user_id_1", user2)
