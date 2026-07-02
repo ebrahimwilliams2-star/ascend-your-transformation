@@ -84,7 +84,7 @@ function MessagesPage() {
           const [profileRes, lastMsgRes, memberRes] = await Promise.all([
             supabase
               .from("profiles")
-              .select("id, display_name, username, full_name, avatar_url")
+              .select("id, display_name, username, avatar_url")
               .eq("id", otherId)
               .maybeSingle(),
             messagesService.getMessages(conv.id, 1, 0),
@@ -132,7 +132,6 @@ function MessagesPage() {
           const name =
             profile?.display_name ??
             profile?.username ??
-            profile?.full_name ??
             "Unknown";
           const rawContent = lastMessage?.content ?? "";
           const preview = lastMessage

@@ -13,6 +13,7 @@ import type {
 } from "@/types/messaging";
 
 const POSTGRES_UNIQUE_VIOLATION = "23505";
+const messagingDb = supabase as any;
 
 // ===== CONVERSATIONS SERVICE =====
 
@@ -27,7 +28,7 @@ export const conversationsService = {
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const { data: sortedConversation, error: sortedError } = await supabase
+      const { data: sortedConversation, error: sortedError } = await messagingDb
         .from("conversations")
         .select("*")
         .eq("user_id_1", user1)
@@ -37,7 +38,7 @@ export const conversationsService = {
       if (sortedError) throw sortedError;
       if (sortedConversation) return sortedConversation as Conversation;
 
-      const { data: reversedConversation, error: reversedError } = await supabase
+      const { data: reversedConversation, error: reversedError } = await messagingDb
         .from("conversations")
         .select("*")
         .eq("user_id_1", user2)
@@ -53,7 +54,7 @@ export const conversationsService = {
     if (existing) return existing as Conversation;
 
     // Create new conversation
-    const { data: newConversation, error } = await supabase
+    const { data: newConversation, error } = await messagingDb
       .from("conversations")
       .insert({
         user_id_1: user1,
@@ -80,7 +81,7 @@ export const conversationsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { data, count, error } = await supabase
+    const { data, count, error } = await messagingDb
       .from("conversations")
       .select("*", { count: "exact" })
       .or(`user_id_1.eq.${user.id},user_id_2.eq.${user.id}`)
@@ -103,7 +104,7 @@ export const conversationsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
+    const { error } = await messagingDb
       .from("conversations")
       .update({
         [user.id === (await this.getConversation(conversationId)).user_id_1
@@ -125,7 +126,7 @@ export const conversationsService = {
     const conv = await this.getConversation(conversationId);
     const isUser1 = user.id === conv.user_id_1;
 
-    const { error } = await supabase
+    const { error } = await messagingDb
       .from("conversations")
       .update({
         [isUser1 ? "blocked_by_1" : "blocked_by_2"]: true,
@@ -140,7 +141,7 @@ export const conversationsService = {
 
   // Get single conversation
   async getConversation(conversationId: string): Promise<Conversation> {
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("conversations")
       .select("*")
       .eq("id", conversationId)
@@ -167,7 +168,7 @@ export const messagesService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("messages")
       .insert({
         conversation_id: conversationId,
@@ -184,7 +185,7 @@ export const messagesService = {
     if (error) throw error;
 
     // Update conversation last_message_at
-    await supabase
+    await messagingDb
       .from("conversations")
       .update({ updated_at: new Date().toISOString(), last_message_at: new Date().toISOString() })
       .eq("id", conversationId);
@@ -198,7 +199,7 @@ export const messagesService = {
     limit = 50,
     offset = 0,
   ): Promise<PaginatedResponse<Message>> {
-    const { data, count, error } = await supabase
+    const { data, count, error } = await messagingDb
       .from("messages")
       .select("*", { count: "exact" })
       .eq("conversation_id", conversationId)
@@ -217,7 +218,7 @@ export const messagesService = {
 
   // Delete message (soft delete)
   async delete(messageId: string): Promise<void> {
-    const { error } = await supabase
+    const { error } = await messagingDb
       .from("messages")
       .update({ deleted_at: new Date().toISOString() })
       .eq("id", messageId);
@@ -227,7 +228,7 @@ export const messagesService = {
 
   // Edit message
   async edit(messageId: string, content: string): Promise<Message> {
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("messages")
       .update({ content, edited_at: new Date().toISOString() })
       .eq("id", messageId)
@@ -266,7 +267,7 @@ export const messagesService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase.from("reported_messages").insert({
+    const { error } = await messagingDb.from("reported_messages").insert({
       message_id: messageId,
       reported_by: user.id,
       reason,
@@ -286,7 +287,7 @@ export const reactionsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("message_reactions")
       .insert({
         message_id: messageId,
@@ -307,7 +308,7 @@ export const reactionsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase
+    const { error } = await messagingDb
       .from("message_reactions")
       .delete()
       .eq("message_id", messageId)
@@ -319,7 +320,7 @@ export const reactionsService = {
 
   // Get reactions for message
   async getReactions(messageId: string): Promise<MessageReaction[]> {
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("message_reactions")
       .select("*")
       .eq("message_id", messageId);
@@ -339,7 +340,7 @@ export const readReceiptsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase.from("message_reads").insert({
+    const { error } = await messagingDb.from("message_reads").insert({
       message_id: messageId,
       user_id: user.id,
     });
@@ -349,7 +350,7 @@ export const readReceiptsService = {
 
   // Get read receipts for message
   async getReadReceipts(messageId: string): Promise<MessageRead[]> {
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("message_reads")
       .select("*")
       .eq("message_id", messageId);
@@ -366,7 +367,7 @@ export const readReceiptsService = {
     if (!user) throw new Error("Not authenticated");
 
     // Get last message
-    const { data: lastMessage } = await supabase
+    const { data: lastMessage } = await messagingDb
       .from("messages")
       .select("id")
       .eq("conversation_id", conversationId)
@@ -377,7 +378,7 @@ export const readReceiptsService = {
     if (!lastMessage) return;
 
     // Mark all messages as read
-    const { data: messages } = await supabase
+    const { data: messages } = await messagingDb
       .from("messages")
       .select("id")
       .eq("conversation_id", conversationId)
@@ -390,7 +391,7 @@ export const readReceiptsService = {
     }
 
     // Update conversation member
-    await supabase.from("conversation_members").upsert(
+    await messagingDb.from("conversation_members").upsert(
       {
         conversation_id: conversationId,
         user_id: user.id,
@@ -412,7 +413,7 @@ export const typingService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    await supabase.from("typing_status").upsert(
+    await messagingDb.from("typing_status").upsert(
       {
         conversation_id: conversationId,
         user_id: user.id,
@@ -428,7 +429,7 @@ export const typingService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    await supabase
+    await messagingDb
       .from("typing_status")
       .delete()
       .eq("conversation_id", conversationId)
@@ -437,13 +438,13 @@ export const typingService = {
 
   // Get typing users
   async getTypingUsers(conversationId: string): Promise<string[]> {
-    const { data, error } = await supabase
+    const { data, error } = await messagingDb
       .from("typing_status")
       .select("user_id")
       .eq("conversation_id", conversationId);
 
     if (error) throw error;
-    return (data || []).map((t) => t.user_id);
+    return (data || []).map((t: { user_id: string }) => t.user_id);
   },
 };
 
@@ -457,7 +458,7 @@ export const presenceService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    await supabase.from("user_presence").upsert(
+    await messagingDb.from("user_presence").upsert(
       {
         user_id: user.id,
         status: status as any,
@@ -469,7 +470,7 @@ export const presenceService = {
 
   // Get user presence
   async getPresence(userId: string): Promise<UserPresence | null> {
-    const { data } = await supabase
+    const { data } = await messagingDb
       .from("user_presence")
       .select("*")
       .eq("user_id", userId)
@@ -489,7 +490,7 @@ export const blockedUsersService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await supabase.from("blocked_users").insert({
+    const { error } = await messagingDb.from("blocked_users").insert({
       blocker_id: user.id,
       blocked_id: userId,
       reason,
@@ -505,7 +506,7 @@ export const blockedUsersService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    await supabase
+    await messagingDb
       .from("blocked_users")
       .delete()
       .eq("blocker_id", user.id)
@@ -519,7 +520,7 @@ export const blockedUsersService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { data } = await supabase
+    const { data } = await messagingDb
       .from("blocked_users")
       .select("id")
       .or(
@@ -538,7 +539,7 @@ export const blockedUsersService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { data } = await supabase.from("blocked_users").select("*").eq("blocker_id", user.id);
+    const { data } = await messagingDb.from("blocked_users").select("*").eq("blocker_id", user.id);
 
     return (data || []) as BlockedUser[];
   },
