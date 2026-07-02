@@ -13,6 +13,7 @@ import type {
 } from "@/types/messaging";
 
 const POSTGRES_UNIQUE_VIOLATION = "23505";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const messagingDb = supabase as any;
 
 // ===== CONVERSATIONS SERVICE =====
@@ -24,29 +25,43 @@ export const conversationsService = {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
+    if (!UUID_PATTERN.test(user.id) || !UUID_PATTERN.test(userId)) {
+      throw new Error("Invalid user ID format");
+    }
 
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const { data: sortedConversation, error: sortedError } = await messagingDb
-        .from("conversations")
-        .select("*")
-        .eq("user_id_1", user1)
-        .eq("user_id_2", user2)
-        .maybeSingle();
+      const [{ data: sortedData, error: sortedError }, { data: reversedData, error: reversedError }] =
+        await Promise.all([
+          messagingDb
+            .from("conversations")
+            .select("*")
+            .eq("user_id_1", user1)
+            .eq("user_id_2", user2)
+            .order("updated_at", { ascending: false })
+            .limit(1),
+          messagingDb
+            .from("conversations")
+            .select("*")
+            .eq("user_id_1", user2)
+            .eq("user_id_2", user1)
+            .order("updated_at", { ascending: false })
+            .limit(1),
+        ]);
 
       if (sortedError) throw sortedError;
-      if (sortedConversation) return sortedConversation as Conversation;
-
-      const { data: reversedConversation, error: reversedError } = await messagingDb
-        .from("conversations")
-        .select("*")
-        .eq("user_id_1", user2)
-        .eq("user_id_2", user1)
-        .maybeSingle();
-
       if (reversedError) throw reversedError;
-      return reversedConversation as Conversation | null;
+
+      const sortedConversation = (sortedData?.[0] as Conversation | undefined) ?? null;
+      const reversedConversation = (reversedData?.[0] as Conversation | undefined) ?? null;
+
+      if (!sortedConversation) return reversedConversation;
+      if (!reversedConversation) return sortedConversation;
+
+      return sortedConversation.updated_at >= reversedConversation.updated_at
+        ? sortedConversation
+        : reversedConversation;
     };
 
     const existing = await getExistingConversation();
