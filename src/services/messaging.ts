@@ -26,24 +26,37 @@ export const conversationsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
     if (!UUID_PATTERN.test(user.id) || !UUID_PATTERN.test(userId)) {
-      throw new Error("Invalid user id");
+      throw new Error("Invalid user ID format");
     }
 
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const { data, error } = await messagingDb
-        .from("conversations")
-        .select("*")
-        .or(
-          `and(user_id_1.eq.${user1},user_id_2.eq.${user2}),and(user_id_1.eq.${user2},user_id_2.eq.${user1})`,
-        )
-        .order("updated_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
+      const [{ data: sortedData, error: sortedError }, { data: reversedData, error: reversedError }] =
+        await Promise.all([
+          messagingDb
+            .from("conversations")
+            .select("*")
+            .eq("user_id_1", user1)
+            .eq("user_id_2", user2)
+            .order("updated_at", { ascending: false })
+            .limit(1),
+          messagingDb
+            .from("conversations")
+            .select("*")
+            .eq("user_id_1", user2)
+            .eq("user_id_2", user1)
+            .order("updated_at", { ascending: false })
+            .limit(1),
+        ]);
 
-      if (error) throw error;
-      return (data as Conversation | null) ?? null;
+      if (sortedError) throw sortedError;
+      if (reversedError) throw reversedError;
+
+      const candidates = [...(sortedData || []), ...(reversedData || [])] as Conversation[];
+      if (candidates.length === 0) return null;
+
+      return candidates.sort((a, b) => b.updated_at.localeCompare(a.updated_at))[0];
     };
 
     const existing = await getExistingConversation();
