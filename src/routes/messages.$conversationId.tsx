@@ -97,7 +97,7 @@ function ChatPage() {
       const [profileRes, presence] = await Promise.all([
         supabase
           .from("profiles")
-          .select("id, display_name, username, full_name, avatar_url")
+          .select("id, display_name, username, avatar_url")
           .eq("id", otherId)
           .maybeSingle(),
         presenceService.getPresence(otherId),
@@ -341,7 +341,7 @@ function ChatPage() {
 
   // ── Derived values ────────────────────────────────────────────────────────
   const profile = convInfo?.profile;
-  const otherName = profile?.display_name ?? profile?.username ?? profile?.full_name ?? "GymBro";
+  const otherName = profile?.display_name ?? profile?.username ?? "GymBro";
   const presenceStatus: PresenceStatus =
     (convInfo?.presence?.status as PresenceStatus) ?? "offline";
 
