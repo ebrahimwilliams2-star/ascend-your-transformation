@@ -13,6 +13,7 @@ import type {
 } from "@/types/messaging";
 
 const POSTGRES_UNIQUE_VIOLATION = "23505";
+const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const messagingDb = supabase as any;
 
 // ===== CONVERSATIONS SERVICE =====
@@ -24,6 +25,9 @@ export const conversationsService = {
       data: { user },
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
+    if (!UUID_PATTERN.test(user.id) || !UUID_PATTERN.test(userId)) {
+      throw new Error("Invalid user id");
+    }
 
     const [user1, user2] = [user.id, userId].sort();
 
