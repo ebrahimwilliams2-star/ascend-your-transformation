@@ -28,25 +28,18 @@ export const conversationsService = {
     const [user1, user2] = [user.id, userId].sort();
 
     const getExistingConversation = async (): Promise<Conversation | null> => {
-      const { data: sortedConversation, error: sortedError } = await messagingDb
+      const { data, error } = await messagingDb
         .from("conversations")
         .select("*")
-        .eq("user_id_1", user1)
-        .eq("user_id_2", user2)
+        .or(
+          `and(user_id_1.eq.${user1},user_id_2.eq.${user2}),and(user_id_1.eq.${user2},user_id_2.eq.${user1})`,
+        )
+        .order("updated_at", { ascending: false })
+        .limit(1)
         .maybeSingle();
 
-      if (sortedError) throw sortedError;
-      if (sortedConversation) return sortedConversation as Conversation;
-
-      const { data: reversedConversation, error: reversedError } = await messagingDb
-        .from("conversations")
-        .select("*")
-        .eq("user_id_1", user2)
-        .eq("user_id_2", user1)
-        .maybeSingle();
-
-      if (reversedError) throw reversedError;
-      return reversedConversation as Conversation | null;
+      if (error) throw error;
+      return (data as Conversation | null) ?? null;
     };
 
     const existing = await getExistingConversation();
