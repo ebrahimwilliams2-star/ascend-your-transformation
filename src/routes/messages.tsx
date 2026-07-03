@@ -1,19 +1,31 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { conversationsService, messagesService } from "@/services/messaging";
+import { ChatConversationPage } from "./messages_.$conversationId";
 
 export const Route = createFileRoute("/messages")({
   head: () => ({ meta: [{ title: "Messages — ASCEND" }] }),
-  component: () => (
+  component: MessagesRoute,
+});
+
+function MessagesRoute() {
+  const { pathname } = useLocation();
+  const conversationId = pathname.match(/^\/messages\/([^/]+)$/)?.[1];
+
+  if (conversationId) {
+    return <ChatConversationPage conversationId={conversationId} />;
+  }
+
+  return (
     <AppShell>
       <MessagesPage />
     </AppShell>
-  ),
-});
+  );
+}
 
 function formatTime(dateString: string | null): string {
   if (!dateString) return "";

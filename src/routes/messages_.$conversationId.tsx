@@ -17,7 +17,10 @@ import type { Message, PresenceStatus } from "@/types/messaging";
 
 export const Route = createFileRoute("/messages_/$conversationId")({
   head: () => ({ meta: [{ title: "Chat — ASCEND" }] }),
-  component: ChatPage,
+  component: () => {
+    const { conversationId } = Route.useParams();
+    return <ChatConversationPage conversationId={conversationId} />;
+  },
 });
 
 const QUICK_ACTIONS = [
@@ -66,8 +69,7 @@ function Avatar({
   );
 }
 
-function ChatPage() {
-  const { conversationId } = Route.useParams();
+export function ChatConversationPage({ conversationId }: { conversationId: string }) {
   const { user } = useUser();
   const navigate = useNavigate();
   const qc = useQueryClient();
