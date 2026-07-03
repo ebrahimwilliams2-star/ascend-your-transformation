@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { Outlet, createFileRoute, useLocation, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { MessageCircle } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
@@ -8,12 +8,20 @@ import { conversationsService, messagesService } from "@/services/messaging";
 
 export const Route = createFileRoute("/messages")({
   head: () => ({ meta: [{ title: "Messages — ASCEND" }] }),
-  component: () => (
+  component: MessagesRoute,
+});
+
+function MessagesRoute() {
+  const { pathname } = useLocation();
+
+  if (pathname !== "/messages") return <Outlet />;
+
+  return (
     <AppShell>
       <MessagesPage />
     </AppShell>
-  ),
-});
+  );
+}
 
 function formatTime(dateString: string | null): string {
   if (!dateString) return "";

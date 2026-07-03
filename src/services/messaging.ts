@@ -29,64 +29,14 @@ export const conversationsService = {
       throw new Error("Invalid user ID format");
     }
 
-    const [user1, user2] = [user.id, userId].sort();
+    const { data, error } = await messagingDb.rpc("get_or_create_gymbro_conversation", {
+      _friend_id: userId,
+    });
 
-    const getExistingConversation = async (): Promise<Conversation | null> => {
-      const [{ data: sortedData, error: sortedError }, { data: reversedData, error: reversedError }] =
-        await Promise.all([
-          messagingDb
-            .from("conversations")
-            .select("*")
-            .eq("user_id_1", user1)
-            .eq("user_id_2", user2)
-            .order("updated_at", { ascending: false })
-            .limit(1),
-          messagingDb
-            .from("conversations")
-            .select("*")
-            .eq("user_id_1", user2)
-            .eq("user_id_2", user1)
-            .order("updated_at", { ascending: false })
-            .limit(1),
-        ]);
+    if (error) throw error;
+    if (!data) throw new Error("Couldn't open chat");
 
-      if (sortedError) throw sortedError;
-      if (reversedError) throw reversedError;
-
-      const sortedConversation = (sortedData?.[0] as Conversation | undefined) ?? null;
-      const reversedConversation = (reversedData?.[0] as Conversation | undefined) ?? null;
-
-      if (!sortedConversation) return reversedConversation;
-      if (!reversedConversation) return sortedConversation;
-
-      return sortedConversation.updated_at >= reversedConversation.updated_at
-        ? sortedConversation
-        : reversedConversation;
-    };
-
-    const existing = await getExistingConversation();
-
-    if (existing) return existing as Conversation;
-
-    // Create new conversation
-    const { data: newConversation, error } = await messagingDb
-      .from("conversations")
-      .insert({
-        user_id_1: user1,
-        user_id_2: user2,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      if (error.code === POSTGRES_UNIQUE_VIOLATION) {
-        const concurrentConversation = await getExistingConversation();
-        if (concurrentConversation) return concurrentConversation;
-      }
-      throw error;
-    }
-
-    return newConversation as Conversation;
+    return data as Conversation;
   },
 
   // Get all conversations for current user
