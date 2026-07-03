@@ -15,7 +15,7 @@ import {
 } from "@/services/messaging";
 import type { Message, PresenceStatus } from "@/types/messaging";
 
-export const Route = createFileRoute("/messages_/$conversationId")({
+export const Route = createFileRoute("/messages/$conversationId")({
   head: () => ({ meta: [{ title: "Chat — ASCEND" }] }),
   component: ChatPage,
 });
