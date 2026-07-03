@@ -222,7 +222,11 @@ export function ChatConversationPage({ conversationId }: { conversationId: strin
       type?: string;
       metadata?: Record<string, any>;
     }) => messagesService.send(conversationId, content, type, metadata),
-    onSuccess: () => {
+    onSuccess: (sentMessage) => {
+      setMessages((prev) => {
+        if (prev.some((message) => message.id === sentMessage.id)) return prev;
+        return [...prev, sentMessage];
+      });
       qc.invalidateQueries({ queryKey: ["conversations"] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to send"),
