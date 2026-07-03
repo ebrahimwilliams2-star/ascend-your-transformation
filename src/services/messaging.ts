@@ -305,12 +305,15 @@ export const readReceiptsService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const { error } = await messagingDb.from("message_reads").insert({
-      message_id: messageId,
-      user_id: user.id,
-    });
+    const { error } = await messagingDb.from("message_reads").upsert(
+      {
+        message_id: messageId,
+        user_id: user.id,
+      },
+      { onConflict: "message_id,user_id", ignoreDuplicates: true },
+    );
 
-    if (error && error.code !== POSTGRES_UNIQUE_VIOLATION) throw error;
+    if (error) throw error;
   },
 
   // Get read receipts for message
