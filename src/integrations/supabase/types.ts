@@ -1258,6 +1258,27 @@ export type Database = {
           xp: number
         }[]
       }
+      get_or_create_gymbro_conversation: {
+        Args: { _friend_id: string }
+        Returns: {
+          archived_by_1: boolean
+          archived_by_2: boolean
+          blocked_by_1: boolean
+          blocked_by_2: boolean
+          created_at: string
+          id: string
+          last_message_at: string | null
+          updated_at: string
+          user_id_1: string
+          user_id_2: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "conversations"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       get_squad_join_code: { Args: { _squad_id: string }; Returns: string }
       is_squad_member: {
         Args: { _squad_id: string; _user_id: string }
