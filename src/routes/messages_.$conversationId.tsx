@@ -15,9 +15,12 @@ import {
 } from "@/services/messaging";
 import type { Message, PresenceStatus } from "@/types/messaging";
 
-export const Route = createFileRoute("/messages/$conversationId")({
+export const Route = createFileRoute("/messages_/$conversationId")({
   head: () => ({ meta: [{ title: "Chat — ASCEND" }] }),
-  component: ChatPage,
+  component: () => {
+    const { conversationId } = Route.useParams();
+    return <ChatConversationPage conversationId={conversationId} />;
+  },
 });
 
 const QUICK_ACTIONS = [
@@ -66,8 +69,7 @@ function Avatar({
   );
 }
 
-function ChatPage() {
-  const { conversationId } = Route.useParams();
+export function ChatConversationPage({ conversationId }: { conversationId: string }) {
   const { user } = useUser();
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -220,7 +222,11 @@ function ChatPage() {
       type?: string;
       metadata?: Record<string, any>;
     }) => messagesService.send(conversationId, content, type, metadata),
-    onSuccess: () => {
+    onSuccess: (sentMessage) => {
+      setMessages((prev) => {
+        if (prev.some((message) => message.id === sentMessage.id)) return prev;
+        return [...prev, sentMessage];
+      });
       qc.invalidateQueries({ queryKey: ["conversations"] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to send"),
