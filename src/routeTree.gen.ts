@@ -26,7 +26,7 @@ import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as MessagesConversationIdRouteImport } from './routes/messages.$conversationId'
+import { Route as MessagesConversationIdRouteImport } from './routes/messages_.$conversationId'
 
 const WorkoutsRoute = WorkoutsRouteImport.update({
   id: '/workouts',
@@ -114,9 +114,9 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesConversationIdRoute = MessagesConversationIdRouteImport.update({
-  id: '/$conversationId',
-  path: '/$conversationId',
-  getParentRoute: () => MessagesRoute,
+  id: '/messages_/$conversationId',
+  path: '/messages/$conversationId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -129,7 +129,7 @@ export interface FileRoutesByFullPath {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
-  '/messages': typeof MessagesRouteWithChildren
+  '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
@@ -149,7 +149,7 @@ export interface FileRoutesByTo {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
-  '/messages': typeof MessagesRouteWithChildren
+  '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
@@ -170,7 +170,7 @@ export interface FileRoutesById {
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
-  '/messages': typeof MessagesRouteWithChildren
+  '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
@@ -178,7 +178,7 @@ export interface FileRoutesById {
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
-  '/messages/$conversationId': typeof MessagesConversationIdRoute
+  '/messages_/$conversationId': typeof MessagesConversationIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -240,7 +240,7 @@ export interface FileRouteTypes {
     | '/rewards'
     | '/squads'
     | '/workouts'
-    | '/messages/$conversationId'
+    | '/messages_/$conversationId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -253,7 +253,7 @@ export interface RootRouteChildren {
   DashRoute: typeof DashRoute
   GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
-  MessagesRoute: typeof MessagesRouteWithChildren
+  MessagesRoute: typeof MessagesRoute
   MetricsRoute: typeof MetricsRoute
   NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
@@ -261,6 +261,7 @@ export interface RootRouteChildren {
   RewardsRoute: typeof RewardsRoute
   SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
+  MessagesConversationIdRoute: typeof MessagesConversationIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -384,27 +385,15 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/messages/$conversationId': {
-      id: '/messages/$conversationId'
-      path: '/$conversationId'
+    '/messages_/$conversationId': {
+      id: '/messages_/$conversationId'
+      path: '/messages/$conversationId'
       fullPath: '/messages/$conversationId'
       preLoaderRoute: typeof MessagesConversationIdRouteImport
-      parentRoute: typeof MessagesRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
-
-interface MessagesRouteChildren {
-  MessagesConversationIdRoute: typeof MessagesConversationIdRoute
-}
-
-const MessagesRouteChildren: MessagesRouteChildren = {
-  MessagesConversationIdRoute: MessagesConversationIdRoute,
-}
-
-const MessagesRouteWithChildren = MessagesRoute._addFileChildren(
-  MessagesRouteChildren,
-)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -416,7 +405,7 @@ const rootRouteChildren: RootRouteChildren = {
   DashRoute: DashRoute,
   GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
-  MessagesRoute: MessagesRouteWithChildren,
+  MessagesRoute: MessagesRoute,
   MetricsRoute: MetricsRoute,
   NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
@@ -424,6 +413,7 @@ const rootRouteChildren: RootRouteChildren = {
   RewardsRoute: RewardsRoute,
   SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,
+  MessagesConversationIdRoute: MessagesConversationIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
