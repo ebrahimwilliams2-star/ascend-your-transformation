@@ -156,7 +156,8 @@ export function StreakWidget() {
 
   return (
     <Link
-      to="/journal?tab=insights"
+      to="/journal"
+      search={{ tab: "insights" } as never}
       className="group relative block rounded-2xl border border-brand-red/40 bg-gradient-to-br from-brand-red/15 to-black p-4 transition-all hover:shadow-glow-red overflow-hidden"
     >
       <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-brand-red/30 blur-3xl" />
@@ -233,7 +234,8 @@ export function LatestEntryWidget() {
 
   return (
     <Link
-      to="/journal?tab=history"
+      to="/journal"
+      search={{ tab: "history" } as never}
       className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40 hover:bg-brand-gray"
     >
       <div className="flex items-start justify-between gap-2 mb-2">
@@ -307,7 +309,8 @@ export function DisciplineTrendWidget() {
 
   return (
     <Link
-      to="/journal?tab=insights"
+      to="/journal"
+      search={{ tab: "insights" } as never}
       className="group block rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-all hover:border-brand-red/40"
     >
       <div className="flex items-center justify-between mb-3">
