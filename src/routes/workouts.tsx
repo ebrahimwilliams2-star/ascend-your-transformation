@@ -61,7 +61,11 @@ function Workouts() {
       const { error } = await supabase.from("workouts").delete().eq("id", id);
       if (error) throw error;
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: ["workouts"] }),
+    onSuccess: () => {
+      toast.success("Session deleted.");
+      qc.invalidateQueries({ queryKey: ["workouts"] });
+    },
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Delete failed"),
   });
 
   return (
@@ -175,7 +179,13 @@ function Workouts() {
                   </div>
                 )}
               </div>
-              <button onClick={() => remove.mutate(w.id)} className="text-brand-silver hover:text-brand-red">
+              <button
+                onClick={() => {
+                  if (confirm("Delete this session? This can't be undone.")) remove.mutate(w.id);
+                }}
+                className="text-brand-silver hover:text-brand-red"
+                aria-label="Delete session"
+              >
                 <Trash2 className="size-4" />
               </button>
             </div>

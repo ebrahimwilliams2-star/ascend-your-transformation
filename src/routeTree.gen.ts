@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as SquadsRouteImport } from './routes/squads'
 import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as NutritionRouteImport } from './routes/nutrition'
@@ -41,6 +42,11 @@ const SquadsRoute = SquadsRouteImport.update({
 const RewardsRoute = RewardsRouteImport.update({
   id: '/rewards',
   path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ProfileRoute = ProfileRouteImport.update({
@@ -134,6 +140,7 @@ export interface FileRoutesByFullPath {
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -154,6 +161,7 @@ export interface FileRoutesByTo {
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/nutrition': typeof NutritionRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
@@ -197,6 +206,7 @@ export interface FileRouteTypes {
     | '/nutrition'
     | '/photos'
     | '/profile'
+    | '/reset-password'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -217,6 +227,7 @@ export interface FileRouteTypes {
     | '/nutrition'
     | '/photos'
     | '/profile'
+    | '/reset-password'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -237,6 +248,7 @@ export interface FileRouteTypes {
     | '/nutrition'
     | '/photos'
     | '/profile'
+    | '/reset-password'
     | '/rewards'
     | '/squads'
     | '/workouts'
@@ -258,6 +270,7 @@ export interface RootRouteChildren {
   NutritionRoute: typeof NutritionRoute
   PhotosRoute: typeof PhotosRoute
   ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   RewardsRoute: typeof RewardsRoute
   SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       path: '/rewards'
       fullPath: '/rewards'
       preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/profile': {
@@ -410,6 +430,7 @@ const rootRouteChildren: RootRouteChildren = {
   NutritionRoute: NutritionRoute,
   PhotosRoute: PhotosRoute,
   ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   RewardsRoute: RewardsRoute,
   SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,
@@ -418,13 +439,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
