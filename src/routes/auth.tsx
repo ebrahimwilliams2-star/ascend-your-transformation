@@ -139,6 +139,15 @@ function AuthPage() {
             {mode === "signin" ? "Forge your path →" : "Sign in →"}
           </span>
         </button>
+
+        {mode === "signin" && (
+          <Link
+            to="/reset-password"
+            className="mt-3 text-center text-xs text-brand-silver/70 hover:text-white"
+          >
+            Forgot password?
+          </Link>
+        )}
       </div>
     </main>
   );
