@@ -54,6 +54,7 @@ function Avatar({ url, name, className }: { url: string | null; name: string; cl
       <img
         src={url}
         alt={name}
+        referrerPolicy="no-referrer"
         className={`rounded-full object-cover ring-1 ring-brand-red/40 ${className ?? "size-12"}`}
       />
     );

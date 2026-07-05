@@ -204,6 +204,7 @@ function ProfilePage() {
               <img
                 src={profile.avatar_url}
                 alt="Avatar"
+                referrerPolicy="no-referrer"
                 className="size-24 rounded-full object-cover ring-2 ring-brand-red/40 shadow-glow-red"
               />
             ) : (

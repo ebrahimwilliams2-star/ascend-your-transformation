@@ -457,6 +457,7 @@ function ProfileAvatar({ profile, size = "size-10" }: ProfileAvatarProps) {
       <img
         src={profile.avatar_url}
         alt="Profile"
+        referrerPolicy="no-referrer"
         className={`${size} rounded-full object-cover ring-1 ring-brand-red/40 shadow-glow-red`}
       />
     );

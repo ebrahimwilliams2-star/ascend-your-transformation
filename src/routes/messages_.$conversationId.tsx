@@ -59,7 +59,7 @@ function Avatar({
     .join("")
     .toUpperCase();
   const cls = `rounded-full object-cover ring-1 ring-brand-red/40 ${className ?? "size-10"}`;
-  if (url) return <img src={url} alt={name} className={cls} />;
+  if (url) return <img src={url} alt={name} referrerPolicy="no-referrer" className={cls} />;
   return (
     <div
       className={`grid place-items-center rounded-full bg-brand-red/20 text-xs font-bold text-brand-red ring-1 ring-brand-red/40 ${className ?? "size-10"}`}

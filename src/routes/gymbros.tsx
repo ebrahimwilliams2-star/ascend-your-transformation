@@ -431,6 +431,7 @@ function Avatar({ url, name }: { url: string | null; name: string }) {
       <img
         src={url}
         alt={name}
+        referrerPolicy="no-referrer"
         className="size-10 rounded-full object-cover ring-1 ring-brand-red/40"
       />
     );
