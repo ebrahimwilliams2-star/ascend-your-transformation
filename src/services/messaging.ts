@@ -211,11 +211,18 @@ export const messagesService = {
     } = await supabase.auth.getUser();
     if (!user) throw new Error("Not authenticated");
 
-    const path = `${user.id}/${conversationId}/${Date.now()}_${file.name}`;
+    const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 8) || "jpg";
+    const path = `${user.id}/${conversationId}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
 
-    const { error } = await supabase.storage.from("message-images").upload(path, file);
+    const { error } = await supabase.storage.from("message-images").upload(path, file, {
+      contentType: file.type || `image/${ext}`,
+      upsert: false,
+    });
 
-    if (error) throw error;
+    if (error) {
+      console.error("[uploadImage] storage upload failed", error);
+      throw error;
+    }
 
     const { data: signed, error: signedErr } = await supabase.storage
       .from("message-images")
