@@ -281,8 +281,9 @@ export function ChatConversationPage({ conversationId }: { conversationId: strin
         image_url: url,
       });
       qc.invalidateQueries({ queryKey: ["conversations"] });
-    } catch {
-      toast.error("Failed to upload image");
+    } catch (err) {
+      console.error("[chat] image upload failed", err);
+      toast.error(err instanceof Error ? err.message : "Failed to upload image");
     }
   };
 
