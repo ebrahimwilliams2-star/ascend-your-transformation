@@ -217,10 +217,13 @@ export const messagesService = {
 
     if (error) throw error;
 
-    const { data: publicData } = supabase.storage.from("message-images").getPublicUrl(path);
+    const { data: signed, error: signedErr } = await supabase.storage
+      .from("message-images")
+      .createSignedUrl(path, 60 * 60 * 24 * 365);
+    if (signedErr || !signed?.signedUrl) throw signedErr ?? new Error("Could not sign image URL");
 
     return {
-      url: publicData.publicUrl,
+      url: signed.signedUrl,
       path,
     };
   },
