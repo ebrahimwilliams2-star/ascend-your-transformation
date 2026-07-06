@@ -145,8 +145,19 @@ function Challenges() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
 
+  // A completed daily/weekly/monthly challenge only counts as "done" if
+  // the last completion timestamp falls inside the CURRENT window.
+  // Once the window rolls over (new day/week/month), the challenge resets.
+  const challengeById = new Map((challenges ?? []).map((c) => [c.id, c] as const));
   const completedSet = new Set(
-    (participations ?? []).filter((p) => p.completed).map((p) => p.challenge_id),
+    (participations ?? [])
+      .filter((p) => {
+        if (!p.completed || !p.completed_at) return false;
+        const c = challengeById.get(p.challenge_id);
+        if (!c) return false;
+        return new Date(p.completed_at).getTime() >= new Date(windowStart(c.cadence)).getTime();
+      })
+      .map((p) => p.challenge_id),
   );
 
   const grouped = {
