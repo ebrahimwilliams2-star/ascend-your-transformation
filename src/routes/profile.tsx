@@ -138,11 +138,14 @@ function ProfilePage() {
         .from("avatars")
         .upload(path, file, { upsert: true });
       if (uploadError) throw uploadError;
-      const { data: urlData } = supabase.storage.from("avatars").getPublicUrl(path);
-      const publicUrl = `${urlData.publicUrl}?t=${Date.now()}`;
+      const { data: signed, error: signedError } = await supabase.storage
+        .from("avatars")
+        .createSignedUrl(path, 60 * 60 * 24 * 365);
+      if (signedError || !signed?.signedUrl) throw signedError ?? new Error("Could not sign avatar URL");
+      const avatarUrl = `${signed.signedUrl}${signed.signedUrl.includes("?") ? "&" : "?"}t=${Date.now()}`;
       const { error: updateError } = await supabase
         .from("profiles")
-        .update({ avatar_url: publicUrl })
+        .update({ avatar_url: avatarUrl })
         .eq("id", user.id);
       if (updateError) throw updateError;
       toast.success("Avatar updated");
