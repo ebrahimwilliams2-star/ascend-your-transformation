@@ -72,4 +72,7 @@ function NavBtn({ to, label, Icon, active }: { to: string; label: string; Icon: 
 
 export async function signOut() {
   await supabase.auth.signOut();
+  // Full replace navigation: drops all in-memory cached protected data and
+  // keeps the signed-in route off the back stack.
+  if (typeof window !== "undefined") window.location.replace("/auth");
 }
