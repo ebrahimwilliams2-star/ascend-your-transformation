@@ -161,6 +161,7 @@ function Squads() {
             <textarea
               value={desc}
               onChange={(e) => setDesc(e.target.value)}
+              maxLength={500}
               rows={2}
               placeholder="Purpose (optional)"
               className="mt-3 w-full resize-none rounded-xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-white placeholder:text-brand-silver/40 focus:border-brand-red focus:outline-none"

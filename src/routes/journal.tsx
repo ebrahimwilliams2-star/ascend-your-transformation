@@ -241,6 +241,7 @@ function WriteTab({ entries, onSaved }: { entries: Entry[]; onSaved: () => void 
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title (optional)"
+          maxLength={120}
           className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm focus:border-brand-red focus:outline-none"
         />
 
@@ -578,6 +579,7 @@ function EditCard({
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
+        maxLength={120}
         className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm"
       />
       <textarea
