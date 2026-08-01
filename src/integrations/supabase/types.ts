@@ -1293,6 +1293,7 @@ export type Database = {
       }
       journal_stats: { Args: { _user_id: string }; Returns: Json }
       rank_for_level: { Args: { _level: number }; Returns: string }
+      reconcile_xp: { Args: { _user_id?: string }; Returns: number }
       search_profiles: {
         Args: { q: string }
         Returns: {
