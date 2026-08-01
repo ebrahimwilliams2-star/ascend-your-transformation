@@ -4,8 +4,9 @@ import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
+import { workoutSchema, LIMITS } from "@/lib/validation";
 
 export const Route = createFileRoute("/workouts")({
   head: () => ({ meta: [{ title: "Workouts — ASCEND" }] }),
@@ -14,13 +15,17 @@ export const Route = createFileRoute("/workouts")({
 
 type Exercise = { name: string; sets: number; reps: number; weight: number };
 
+const EMPTY_EXERCISE: Exercise = { name: "", sets: 3, reps: 8, weight: 0 };
+
 function Workouts() {
   const { user } = useUser();
   const qc = useQueryClient();
   const [adding, setAdding] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [duration, setDuration] = useState("");
-  const [exercises, setExercises] = useState<Exercise[]>([{ name: "", sets: 3, reps: 8, weight: 0 }]);
+  const [notes, setNotes] = useState("");
+  const [exercises, setExercises] = useState<Exercise[]>([{ ...EMPTY_EXERCISE }]);
 
   const { data: workouts } = useQuery({
     queryKey: ["workouts", user?.id],
@@ -35,23 +40,77 @@ function Workouts() {
     },
   });
 
-  const create = useMutation({
+  function resetForm() {
+    setName("");
+    setDuration("");
+    setNotes("");
+    setExercises([{ ...EMPTY_EXERCISE }]);
+  }
+
+  function closeForm() {
+    setAdding(false);
+    setEditingId(null);
+    resetForm();
+  }
+
+  function startEdit(w: {
+    id: string;
+    name: string;
+    duration_min: number | null;
+    notes: string | null;
+    exercises: unknown;
+  }) {
+    setEditingId(w.id);
+    setAdding(true);
+    setName(w.name ?? "");
+    setDuration(w.duration_min != null ? String(w.duration_min) : "");
+    setNotes(w.notes ?? "");
+    const list = Array.isArray(w.exercises) ? (w.exercises as Exercise[]) : [];
+    setExercises(list.length > 0 ? list.map((e) => ({ ...EMPTY_EXERCISE, ...e })) : [{ ...EMPTY_EXERCISE }]);
+  }
+
+  function buildPayload() {
+    const parsed = workoutSchema.safeParse({
+      name: name || "Untitled Session",
+      notes: notes,
+      duration_min: duration ? parseInt(duration) : null,
+      exercises: exercises.filter((e) => e.name.trim()),
+    });
+    if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Invalid workout");
+    return parsed.data;
+  }
+
+  const save = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("workouts").insert({
-        user_id: user!.id,
-        name: name || "Untitled Session",
-        duration_min: duration ? parseInt(duration) : null,
-        exercises: exercises.filter((e) => e.name),
-      });
-      if (error) throw error;
+      const payload = buildPayload();
+      if (editingId) {
+        // Update in place — preserves the original performed_at timestamp and id.
+        const { error } = await supabase
+          .from("workouts")
+          .update({
+            name: payload.name,
+            notes: payload.notes || null,
+            duration_min: payload.duration_min ?? null,
+            exercises: payload.exercises,
+          })
+          .eq("id", editingId)
+          .eq("user_id", user!.id);
+        if (error) throw error;
+      } else {
+        const { error } = await supabase.from("workouts").insert({
+          user_id: user!.id,
+          name: payload.name,
+          notes: payload.notes || null,
+          duration_min: payload.duration_min ?? null,
+          exercises: payload.exercises,
+        });
+        if (error) throw error;
+      }
     },
     onSuccess: () => {
-      toast.success("Session logged.");
+      toast.success(editingId ? "Session updated." : "Session logged.");
       qc.invalidateQueries({ queryKey: ["workouts"] });
-      setAdding(false);
-      setName("");
-      setDuration("");
-      setExercises([{ name: "", sets: 3, reps: 8, weight: 0 }]);
+      closeForm();
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Failed"),
   });
@@ -76,8 +135,9 @@ function Workouts() {
           <h1 className="text-display text-3xl font-bold">Workouts</h1>
         </div>
         <button
-          onClick={() => setAdding(!adding)}
+          onClick={() => (adding ? closeForm() : setAdding(true))}
           className="grid size-11 place-items-center rounded-full bg-brand-red shadow-glow-red"
+          aria-label={adding ? "Close form" : "New session"}
         >
           <Plus className={`size-5 text-white transition-transform ${adding ? "rotate-45" : ""}`} />
         </button>
@@ -85,10 +145,18 @@ function Workouts() {
 
       {adding && (
         <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5">
-          <p className="chip-label text-brand-red mb-3">New Session</p>
+          <div className="mb-3 flex items-center justify-between">
+            <p className="chip-label text-brand-red">{editingId ? "Edit Session" : "New Session"}</p>
+            {editingId && (
+              <button onClick={closeForm} className="text-xs text-brand-silver hover:text-white flex items-center gap-1">
+                <X className="size-3" /> Cancel
+              </button>
+            )}
+          </div>
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
+            maxLength={LIMITS.workoutName}
             placeholder="Push Day · Heavy"
             className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm focus:border-brand-red focus:outline-none"
           />
@@ -99,12 +167,22 @@ function Workouts() {
             placeholder="Duration (min)"
             className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm focus:border-brand-red focus:outline-none"
           />
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            maxLength={LIMITS.workoutNotes}
+            rows={2}
+            placeholder="Notes (optional)"
+            className="mt-2 w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2.5 text-sm focus:border-brand-red focus:outline-none"
+          />
+          <p className="mt-1 text-right text-[9px] text-brand-silver/60">{notes.length}/{LIMITS.workoutNotes}</p>
           <div className="mt-4 space-y-2">
             <p className="chip-label text-brand-silver">Exercises</p>
             {exercises.map((ex, i) => (
-              <div key={i} className="grid grid-cols-[1fr_50px_50px_60px] gap-2">
+              <div key={i} className="grid grid-cols-[1fr_50px_50px_60px_20px] gap-2">
                 <input
                   value={ex.name}
+                  maxLength={LIMITS.exerciseName}
                   onChange={(e) => setExercises(exercises.map((x, j) => j === i ? { ...x, name: e.target.value } : x))}
                   placeholder="Bench Press"
                   className="rounded-md border border-white/10 bg-black/40 px-2 py-2 text-xs focus:border-brand-red focus:outline-none"
@@ -127,27 +205,36 @@ function Workouts() {
                   onChange={(e) => setExercises(exercises.map((x, j) => j === i ? { ...x, weight: +e.target.value } : x))}
                   className="rounded-md border border-white/10 bg-black/40 px-2 py-2 text-xs focus:border-brand-red focus:outline-none"
                 />
+                <button
+                  type="button"
+                  onClick={() => setExercises(exercises.length > 1 ? exercises.filter((_, j) => j !== i) : [{ ...EMPTY_EXERCISE }])}
+                  className="text-brand-silver hover:text-brand-red"
+                  aria-label="Remove exercise"
+                >
+                  <X className="size-3.5" />
+                </button>
               </div>
             ))}
-            <div className="grid grid-cols-[1fr_50px_50px_60px] gap-2 px-1">
+            <div className="grid grid-cols-[1fr_50px_50px_60px_20px] gap-2 px-1">
               <span className="text-[9px] uppercase tracking-widest text-brand-silver">Name</span>
               <span className="text-[9px] uppercase tracking-widest text-brand-silver">Sets</span>
               <span className="text-[9px] uppercase tracking-widest text-brand-silver">Reps</span>
               <span className="text-[9px] uppercase tracking-widest text-brand-silver">Wt</span>
+              <span />
             </div>
             <button
-              onClick={() => setExercises([...exercises, { name: "", sets: 3, reps: 8, weight: 0 }])}
+              onClick={() => setExercises([...exercises, { ...EMPTY_EXERCISE }])}
               className="w-full rounded-md border border-dashed border-white/20 py-2 text-xs text-brand-silver hover:text-white"
             >
               + Add Exercise
             </button>
           </div>
           <button
-            onClick={() => create.mutate()}
-            disabled={create.isPending}
+            onClick={() => save.mutate()}
+            disabled={save.isPending}
             className="mt-4 w-full rounded-xl bg-brand-red px-4 py-3 font-bold uppercase tracking-widest text-white disabled:opacity-50"
           >
-            {create.isPending ? "..." : "Log Session"}
+            {save.isPending ? "..." : editingId ? "Save Changes" : "Log Session"}
           </button>
         </section>
       )}
@@ -178,16 +265,29 @@ function Workouts() {
                     ))}
                   </div>
                 )}
+                {w.notes && <p className="mt-2 text-xs text-brand-silver/80">{w.notes}</p>}
               </div>
-              <button
-                onClick={() => {
-                  if (confirm("Delete this session? This can't be undone.")) remove.mutate(w.id);
-                }}
-                className="text-brand-silver hover:text-brand-red"
-                aria-label="Delete session"
-              >
-                <Trash2 className="size-4" />
-              </button>
+              <div className="flex shrink-0 items-center gap-3">
+                <button
+                  onClick={() => {
+                    startEdit(w);
+                    if (typeof window !== "undefined") window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  className="text-brand-silver hover:text-white"
+                  aria-label="Edit session"
+                >
+                  <Pencil className="size-4" />
+                </button>
+                <button
+                  onClick={() => {
+                    if (confirm("Delete this session? This can't be undone.")) remove.mutate(w.id);
+                  }}
+                  className="text-brand-silver hover:text-brand-red"
+                  aria-label="Delete session"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
             </div>
           </div>
         ))}
