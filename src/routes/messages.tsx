@@ -147,9 +147,13 @@ function MessagesPage() {
             profile?.username ??
             "Unknown";
           const rawContent = lastMessage?.content ?? "";
-          const preview = lastMessage
-            ? rawContent.slice(0, 40) + (rawContent.length > 40 ? "…" : "")
-            : "Start a conversation";
+          const preview = !lastMessage
+            ? "Start a conversation"
+            : lastMessage.message_type === "image"
+              ? "📷 Photo"
+              : rawContent
+                ? rawContent.slice(0, 40) + (rawContent.length > 40 ? "…" : "")
+                : lastMessage.message_type.replace(/_/g, " ");
 
           return (
             <button
