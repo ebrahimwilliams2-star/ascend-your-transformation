@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Home, Dumbbell, Flame, Users, MessageCircle } from "lucide-react";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import type { ReactNode } from "react";
