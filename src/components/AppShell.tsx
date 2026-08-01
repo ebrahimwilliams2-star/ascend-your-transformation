@@ -1,6 +1,7 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
 import { Home, Dumbbell, Flame, Users, MessageCircle } from "lucide-react";
 import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
 import type { ReactNode } from "react";
@@ -18,9 +19,31 @@ export function AppShell({ children }: { children: ReactNode }) {
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
+  // Legacy accounts may have no username; social surfaces would render "Unknown".
+  const { data: profile } = useQuery({
+    queryKey: ["profile-username-gate", user?.id],
+    enabled: !!user,
+    queryFn: async () => {
+      const { data } = await supabase
+        .from("profiles")
+        .select("username")
+        .eq("id", user!.id)
+        .maybeSingle();
+      return data;
+    },
+  });
+
   useEffect(() => {
     if (!loading && !user) navigate({ to: "/auth" });
   }, [user, loading, navigate]);
+
+  const needsUsername = !!user && !!profile && !profile.username?.trim();
+
+  useEffect(() => {
+    if (needsUsername && pathname !== "/complete-profile") {
+      navigate({ to: "/complete-profile" });
+    }
+  }, [needsUsername, pathname, navigate]);
 
   if (loading || !user) {
     return (
@@ -29,6 +52,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </div>
     );
   }
+
 
   return (
     <div

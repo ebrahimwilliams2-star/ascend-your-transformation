@@ -189,7 +189,8 @@ function Coach() {
         <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-brand-gray/95 p-2 backdrop-blur-xl">
           <input
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={(e) => setInput(e.target.value.slice(0, 2000))}
+            maxLength={2000}
             onKeyDown={(e) => {
               if (e.key === "Enter") send();
             }}

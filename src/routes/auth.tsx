@@ -5,6 +5,7 @@ import { lovable } from "@/integrations/lovable/index";
 import { useUser } from "@/lib/auth";
 import { toast } from "sonner";
 import { AscendLogo } from "@/components/AscendLogo";
+import { loginSchema, registerSchema } from "@/lib/validation";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({ meta: [{ title: "Sign In — ASCEND" }] }),
@@ -25,18 +26,23 @@ function AuthPage() {
 
   const handleEmail = async (e: React.FormEvent) => {
     e.preventDefault();
+    const parsed = (mode === "signup" ? registerSchema : loginSchema).safeParse({ email, password });
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0]?.message ?? "Invalid input");
+      return;
+    }
+    const creds = { email: parsed.data.email, password: parsed.data.password };
     setSubmitting(true);
     try {
       if (mode === "signup") {
         const { error } = await supabase.auth.signUp({
-          email,
-          password,
+          ...creds,
           options: { emailRedirectTo: window.location.origin },
         });
         if (error) throw error;
         toast.success("Account created. Welcome to ASCEND.");
       } else {
-        const { error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword(creds);
         if (error) throw error;
       }
       navigate({ to: "/dash" });

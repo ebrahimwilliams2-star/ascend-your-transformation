@@ -21,6 +21,7 @@ import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as JournalRouteImport } from './routes/journal'
 import { Route as GymbrosRouteImport } from './routes/gymbros'
 import { Route as DashRouteImport } from './routes/dash'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
 import { Route as CommunityRouteImport } from './routes/community'
 import { Route as CoachRouteImport } from './routes/coach'
 import { Route as ChallengesRouteImport } from './routes/challenges'
@@ -89,6 +90,11 @@ const DashRoute = DashRouteImport.update({
   path: '/dash',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CommunityRoute = CommunityRouteImport.update({
   id: '/community',
   path: '/community',
@@ -132,6 +138,7 @@ export interface FileRoutesByFullPath {
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
@@ -153,6 +160,7 @@ export interface FileRoutesByTo {
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
@@ -175,6 +183,7 @@ export interface FileRoutesById {
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
+  '/complete-profile': typeof CompleteProfileRoute
   '/dash': typeof DashRoute
   '/gymbros': typeof GymbrosRoute
   '/journal': typeof JournalRoute
@@ -198,6 +207,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/coach'
     | '/community'
+    | '/complete-profile'
     | '/dash'
     | '/gymbros'
     | '/journal'
@@ -219,6 +229,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/coach'
     | '/community'
+    | '/complete-profile'
     | '/dash'
     | '/gymbros'
     | '/journal'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/challenges'
     | '/coach'
     | '/community'
+    | '/complete-profile'
     | '/dash'
     | '/gymbros'
     | '/journal'
@@ -262,6 +274,7 @@ export interface RootRouteChildren {
   ChallengesRoute: typeof ChallengesRoute
   CoachRoute: typeof CoachRoute
   CommunityRoute: typeof CommunityRoute
+  CompleteProfileRoute: typeof CompleteProfileRoute
   DashRoute: typeof DashRoute
   GymbrosRoute: typeof GymbrosRoute
   JournalRoute: typeof JournalRoute
@@ -363,6 +376,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/community': {
       id: '/community'
       path: '/community'
@@ -422,6 +442,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChallengesRoute: ChallengesRoute,
   CoachRoute: CoachRoute,
   CommunityRoute: CommunityRoute,
+  CompleteProfileRoute: CompleteProfileRoute,
   DashRoute: DashRoute,
   GymbrosRoute: GymbrosRoute,
   JournalRoute: JournalRoute,
@@ -439,13 +460,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

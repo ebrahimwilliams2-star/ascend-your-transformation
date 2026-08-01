@@ -673,6 +673,7 @@ function AddFoodModal({ meal, onClose, onSaved }: { meal: string; onClose: () =>
             placeholder="Food name"
             value={f.food_name}
             onChange={(e) => setF({ ...f, food_name: e.target.value })}
+            maxLength={120}
             className="w-full rounded-xl border border-white/10 bg-brand-gray px-4 py-3 text-white placeholder:text-brand-silver focus:border-brand-red focus:outline-none"
           />
           <div className="grid grid-cols-2 gap-3">
