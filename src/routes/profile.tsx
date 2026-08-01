@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useRef, useState } from "react";
 import { toast } from "sonner";
+import { usernameSchema, LIMITS } from "@/lib/validation";
 import { Camera, ChevronLeft, User, Flame, Trophy, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
@@ -104,11 +105,15 @@ function ProfilePage() {
 
   const saveProfile = useMutation({
     mutationFn: async () => {
+      const parsedUsername = usernameSchema.safeParse(form.username);
+      if (!parsedUsername.success) {
+        throw new Error(parsedUsername.error.issues[0]?.message ?? "Invalid username");
+      }
       const { error } = await supabase
         .from("profiles")
         .update({
           display_name: form.display_name || null,
-          username: form.username || null,
+          username: parsedUsername.data,
           experience_level: form.experience_level || null,
           fitness_goals: form.fitness_goals.length > 0 ? form.fitness_goals : null,
           city: form.city || null,
@@ -124,7 +129,7 @@ function ProfilePage() {
       setEditing(false);
       qc.invalidateQueries({ queryKey: ["profile"] });
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "Failed to save"),
+    onError: (e) => toast.error(e instanceof Error ? (e.message.includes("duplicate") || (e as { code?: string }).code === "23505" ? "This username is already taken" : e.message) : "Failed to save"),
   });
 
   async function handleAvatarChange(e: React.ChangeEvent<HTMLInputElement>) {
@@ -291,6 +296,7 @@ function ProfilePage() {
                   type="text"
                   value={form.display_name}
                   onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
+                  maxLength={LIMITS.displayName}
                   className="mt-1 w-full rounded-lg border border-white/10 bg-brand-black px-3 py-2 text-sm text-white placeholder:text-brand-silver/50 focus:border-brand-red/40 focus:outline-none"
                   placeholder="Your name"
                 />
@@ -303,6 +309,7 @@ function ProfilePage() {
                   type="text"
                   value={form.username}
                   onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
+                  maxLength={20}
                   className="mt-1 w-full rounded-lg border border-white/10 bg-brand-black px-3 py-2 text-sm text-white placeholder:text-brand-silver/50 focus:border-brand-red/40 focus:outline-none"
                   placeholder="@username"
                 />
