@@ -72,11 +72,11 @@ export function AppShell({ children }: { children: ReactNode }) {
           ))}
           <Link to="/coach" className="relative -top-6 mx-auto">
             <div className={`grid size-14 place-items-center rounded-full bg-brand-red shadow-glow-red-strong ring-4 ring-brand-black transition-transform active:scale-95 ${pathname.startsWith("/coach") ? "text-white" : ""}`}>
-              <MessageCircle className="size-6 text-white" strokeWidth={2.2} />
+              <Sparkles className="size-6 text-white" strokeWidth={2.2} />
             </div>
           </Link>
           {navItems.slice(2).map((it) => (
-            <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
+            <NavBtn key={it.to} {...it} active={isSocialActive(pathname, it.to)} />
           ))}
         </div>
       </nav>
