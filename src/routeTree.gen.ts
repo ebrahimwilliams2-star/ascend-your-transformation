@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as SquadsRouteImport } from './routes/squads'
+import { Route as SocialRouteImport } from './routes/social'
 import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as ProfileRouteImport } from './routes/profile'
@@ -38,6 +39,11 @@ const WorkoutsRoute = WorkoutsRouteImport.update({
 const SquadsRoute = SquadsRouteImport.update({
   id: '/squads',
   path: '/squads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialRoute = SocialRouteImport.update({
+  id: '/social',
+  path: '/social',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RewardsRoute = RewardsRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
+  '/social': typeof SocialRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
@@ -171,6 +178,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
+  '/social': typeof SocialRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
@@ -194,6 +202,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/rewards': typeof RewardsRoute
+  '/social': typeof SocialRoute
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages_/$conversationId': typeof MessagesConversationIdRoute
@@ -218,6 +227,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/rewards'
+    | '/social'
     | '/squads'
     | '/workouts'
     | '/messages/$conversationId'
@@ -240,6 +250,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/rewards'
+    | '/social'
     | '/squads'
     | '/workouts'
     | '/messages/$conversationId'
@@ -262,6 +273,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/rewards'
+    | '/social'
     | '/squads'
     | '/workouts'
     | '/messages_/$conversationId'
@@ -285,6 +297,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   RewardsRoute: typeof RewardsRoute
+  SocialRoute: typeof SocialRoute
   SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
   MessagesConversationIdRoute: typeof MessagesConversationIdRoute
@@ -304,6 +317,13 @@ declare module '@tanstack/react-router' {
       path: '/squads'
       fullPath: '/squads'
       preLoaderRoute: typeof SquadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social': {
+      id: '/social'
+      path: '/social'
+      fullPath: '/social'
+      preLoaderRoute: typeof SocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rewards': {
@@ -453,6 +473,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   RewardsRoute: RewardsRoute,
+  SocialRoute: SocialRoute,
   SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,
   MessagesConversationIdRoute: MessagesConversationIdRoute,

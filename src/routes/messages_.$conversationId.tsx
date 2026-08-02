@@ -359,7 +359,7 @@ export function ChatConversationPage({ conversationId }: { conversationId: strin
       {/* ── Header ── */}
       <header className="sticky top-0 z-30 flex items-center gap-3 border-b border-white/5 bg-brand-black/95 px-4 py-3 backdrop-blur-md">
         <button
-          onClick={() => navigate({ to: "/messages" })}
+          onClick={() => navigate({ to: "/social", search: { tab: "dms" } })}
           className="grid size-9 place-items-center rounded-lg text-brand-silver hover:text-white"
           aria-label="Back"
         >

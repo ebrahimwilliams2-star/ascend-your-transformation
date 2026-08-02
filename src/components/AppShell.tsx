@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Dumbbell, Flame, Users, MessageCircle } from "lucide-react";
+import { Home, Dumbbell, Flame, Users, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/lib/auth";
@@ -9,9 +9,8 @@ import type { ReactNode } from "react";
 const navItems = [
   { to: "/dash", label: "Dash", Icon: Home },
   { to: "/workouts", label: "Lift", Icon: Dumbbell },
+  { to: "/social", label: "Bros", Icon: Users },
   { to: "/photos", label: "Form", Icon: Flame },
-  { to: "/messages", label: "DMs", Icon: MessageCircle },
-  { to: "/gymbros", label: "Bros", Icon: Users },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
@@ -67,22 +66,29 @@ export function AppShell({ children }: { children: ReactNode }) {
         className="fixed bottom-0 left-1/2 z-nav -translate-x-1/2 w-full max-w-md px-4 pt-2"
         style={{ paddingBottom: "calc(1rem + env(safe-area-inset-bottom))" }}
       >
-        <div className="relative grid grid-cols-6 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
+        <div className="relative grid grid-cols-5 items-center rounded-2xl border border-white/10 bg-brand-black/95 px-2 py-3 backdrop-blur-xl">
           {navItems.slice(0, 2).map((it) => (
             <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
           ))}
           <Link to="/coach" className="relative -top-6 mx-auto">
             <div className={`grid size-14 place-items-center rounded-full bg-brand-red shadow-glow-red-strong ring-4 ring-brand-black transition-transform active:scale-95 ${pathname.startsWith("/coach") ? "text-white" : ""}`}>
-              <MessageCircle className="size-6 text-white" strokeWidth={2.2} />
+              <Sparkles className="size-6 text-white" strokeWidth={2.2} />
             </div>
           </Link>
           {navItems.slice(2).map((it) => (
-            <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
+            <NavBtn key={it.to} {...it} active={isSocialActive(pathname, it.to)} />
           ))}
         </div>
       </nav>
     </div>
   );
+}
+
+function isSocialActive(pathname: string, to: string) {
+  if (to === "/social") {
+    return pathname.startsWith("/social") || pathname.startsWith("/messages") || pathname.startsWith("/gymbros");
+  }
+  return pathname.startsWith(to);
 }
 
 function NavBtn({ to, label, Icon, active }: { to: string; label: string; Icon: typeof Home; active: boolean }) {

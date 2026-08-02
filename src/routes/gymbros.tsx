@@ -1,20 +1,15 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Navigate, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Check, Search, UserPlus, X, Trophy, Flame, Crown, Zap, MessageCircle } from "lucide-react";
-import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { conversationsService } from "@/services/messaging";
 
 export const Route = createFileRoute("/gymbros")({
   head: () => ({ meta: [{ title: "Gymbros — ASCEND" }] }),
-  component: () => (
-    <AppShell>
-      <Gymbros />
-    </AppShell>
-  ),
+  component: () => <Navigate to="/social" search={{ tab: "gymbros" }} />,
 });
 
 type Bro = {
@@ -41,7 +36,7 @@ type SearchHit = {
   level: number;
 };
 
-function Gymbros() {
+export function GymbrosPage() {
   const { user } = useUser();
   const qc = useQueryClient();
   const navigate = useNavigate();
