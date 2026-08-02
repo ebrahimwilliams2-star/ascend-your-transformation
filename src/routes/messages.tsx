@@ -62,7 +62,7 @@ function SkeletonCard() {
   );
 }
 
-function MessagesPage() {
+export function MessagesPage() {
   const { user } = useUser();
   const navigate = useNavigate();
 
