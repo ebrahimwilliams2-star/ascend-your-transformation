@@ -84,6 +84,13 @@ export function AppShell({ children }: { children: ReactNode }) {
   );
 }
 
+function isSocialActive(pathname: string, to: string) {
+  if (to === "/social") {
+    return pathname.startsWith("/social") || pathname.startsWith("/messages") || pathname.startsWith("/gymbros");
+  }
+  return pathname.startsWith(to);
+}
+
 function NavBtn({ to, label, Icon, active }: { to: string; label: string; Icon: typeof Home; active: boolean }) {
   return (
     <Link to={to} className={`flex flex-col items-center gap-1 ${active ? "text-brand-red" : "text-brand-silver"}`}>
