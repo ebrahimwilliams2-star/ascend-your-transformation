@@ -10,8 +10,6 @@ export const Route = createFileRoute("/messages")({
   component: () => <Navigate to="/social" search={{ tab: "dms" }} />,
 });
 
-export function MessagesPage() {
-
 function formatTime(dateString: string | null): string {
   if (!dateString) return "";
   const date = new Date(dateString);
