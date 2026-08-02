@@ -36,7 +36,7 @@ type SearchHit = {
   level: number;
 };
 
-function Gymbros() {
+export function GymbrosPage() {
   const { user } = useUser();
   const qc = useQueryClient();
   const navigate = useNavigate();
