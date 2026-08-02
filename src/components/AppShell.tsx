@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from "@tanstack/react-router";
-import { Home, Dumbbell, Flame, Users, MessageCircle } from "lucide-react";
+import { Home, Dumbbell, Flame, Users, Sparkles } from "lucide-react";
 import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/lib/auth";
@@ -9,9 +9,8 @@ import type { ReactNode } from "react";
 const navItems = [
   { to: "/dash", label: "Dash", Icon: Home },
   { to: "/workouts", label: "Lift", Icon: Dumbbell },
+  { to: "/social", label: "Bros", Icon: Users },
   { to: "/photos", label: "Form", Icon: Flame },
-  { to: "/messages", label: "DMs", Icon: MessageCircle },
-  { to: "/gymbros", label: "Bros", Icon: Users },
 ] as const;
 
 export function AppShell({ children }: { children: ReactNode }) {
