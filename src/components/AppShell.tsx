@@ -4,6 +4,8 @@ import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useUser } from "@/lib/auth";
 import { supabase } from "@/integrations/supabase/client";
+import { haptic } from "@/lib/motion";
+
 import type { ReactNode } from "react";
 
 const navItems = [
@@ -47,7 +49,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   if (loading || !user) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-brand-black">
-        <div className="size-8 animate-pulse rounded-full bg-brand-red" />
+        <div className="size-8 animate-breathe rounded-full bg-brand-red" />
       </div>
     );
   }
@@ -60,7 +62,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         paddingBottom: "calc(7rem + env(safe-area-inset-bottom))",
       }}
     >
-      <div className="mx-auto max-w-md">{children}</div>
+      <div key={pathname} className="mx-auto max-w-md animate-page-enter">{children}</div>
 
       <nav
         className="fixed bottom-0 left-1/2 z-nav -translate-x-1/2 w-full max-w-md px-4 pt-2"
@@ -70,8 +72,19 @@ export function AppShell({ children }: { children: ReactNode }) {
           {navItems.slice(0, 2).map((it) => (
             <NavBtn key={it.to} {...it} active={pathname.startsWith(it.to)} />
           ))}
-          <Link to="/coach" className="relative -top-6 mx-auto">
-            <div className={`grid size-14 place-items-center rounded-full bg-brand-red shadow-glow-red-strong ring-4 ring-brand-black transition-transform active:scale-95 ${pathname.startsWith("/coach") ? "text-white" : ""}`}>
+          <Link
+            to="/coach"
+            onClick={() => haptic("medium")}
+            className="relative -top-6 mx-auto tap"
+            aria-label="Ethan AI Coach"
+          >
+            <div
+              className={`grid size-14 place-items-center rounded-full bg-brand-red ring-4 ring-brand-black ${
+                pathname.startsWith("/coach")
+                  ? "scale-105 shadow-glow-red-strong"
+                  : "animate-breathe"
+              }`}
+            >
               <Sparkles className="size-6 text-white" strokeWidth={2.2} />
             </div>
           </Link>
@@ -93,9 +106,22 @@ function isSocialActive(pathname: string, to: string) {
 
 function NavBtn({ to, label, Icon, active }: { to: string; label: string; Icon: typeof Home; active: boolean }) {
   return (
-    <Link to={to} className={`flex flex-col items-center gap-1 ${active ? "text-brand-red" : "text-brand-silver"}`}>
-      <Icon className="size-5" strokeWidth={active ? 2.3 : 1.8} />
-      <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+    <Link
+      to={to}
+      onClick={() => haptic("light")}
+      className={`tap flex flex-col items-center gap-1 ${active ? "text-brand-red" : "text-brand-silver"}`}
+    >
+      <Icon
+        className="size-5 transition-transform duration-200 ease-out"
+        style={{ transform: active ? "scale(1.18) translateY(-1px)" : "scale(1)" }}
+        strokeWidth={active ? 2.3 : 1.8}
+      />
+      <span
+        className="text-[10px] font-bold uppercase tracking-widest transition-all duration-200 ease-out"
+        style={{ opacity: active ? 1 : 0.6, transform: active ? "translateY(0)" : "translateY(1px)" }}
+      >
+        {label}
+      </span>
     </Link>
   );
 }
@@ -106,3 +132,4 @@ export async function signOut() {
   // keeps the signed-in route off the back stack.
   if (typeof window !== "undefined") window.location.replace("/auth");
 }
+
