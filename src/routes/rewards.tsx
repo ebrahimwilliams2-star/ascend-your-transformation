@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { haptic } from "@/lib/motion";
+import { Celebration } from "@/components/motion/Celebration";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -153,6 +154,7 @@ function Rewards() {
       if (error) throw error;
     },
     onSuccess: () => {
+      setCelebrate(true);
       toast.success("Reward claimed. Enjoy it.");
       qc.invalidateQueries({ queryKey: ["reward-meals"] });
     },
