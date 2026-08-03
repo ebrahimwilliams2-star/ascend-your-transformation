@@ -7,6 +7,8 @@ import { useState } from "react";
 import { Plus, Trash2, Pencil, X } from "lucide-react";
 import { toast } from "sonner";
 import { workoutSchema, LIMITS } from "@/lib/validation";
+import { haptic } from "@/lib/motion";
+import { Celebration } from "@/components/motion/Celebration";
 
 export const Route = createFileRoute("/workouts")({
   head: () => ({ meta: [{ title: "Workouts — ASCEND" }] }),
@@ -21,6 +23,7 @@ function Workouts() {
   const { user } = useUser();
   const qc = useQueryClient();
   const [adding, setAdding] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [duration, setDuration] = useState("");
@@ -108,6 +111,12 @@ function Workouts() {
       }
     },
     onSuccess: () => {
+      if (!editingId) {
+        haptic("celebrate");
+        setCelebrate(true);
+      } else {
+        haptic("success");
+      }
       toast.success(editingId ? "Session updated." : "Session logged.");
       qc.invalidateQueries({ queryKey: ["workouts"] });
       closeForm();
@@ -129,6 +138,12 @@ function Workouts() {
 
   return (
     <>
+      <Celebration
+        open={celebrate}
+        onDone={() => setCelebrate(false)}
+        title="Session Logged"
+        subtitle="1% better than yesterday."
+      />
       <header className="flex items-center justify-between p-6">
         <div>
           <p className="chip-label text-brand-red">The Grind</p>
@@ -230,11 +245,17 @@ function Workouts() {
             </button>
           </div>
           <button
-            onClick={() => save.mutate()}
+            onClick={() => { haptic("medium"); save.mutate(); }}
             disabled={save.isPending}
             className="mt-4 w-full rounded-xl bg-brand-red px-4 py-3 font-bold uppercase tracking-widest text-white disabled:opacity-50"
           >
-            {save.isPending ? "..." : editingId ? "Save Changes" : "Log Session"}
+            {save.isPending ? (
+              <span className="inline-flex items-center gap-1.5">
+                <span className="size-1.5 animate-pop rounded-full bg-white [animation-duration:1s] [animation-iteration-count:infinite]" />
+                <span className="size-1.5 animate-pop rounded-full bg-white [animation-delay:150ms] [animation-duration:1s] [animation-iteration-count:infinite]" />
+                <span className="size-1.5 animate-pop rounded-full bg-white [animation-delay:300ms] [animation-duration:1s] [animation-iteration-count:infinite]" />
+              </span>
+            ) : editingId ? "Save Changes" : "Log Session"}
           </button>
         </section>
       )}
@@ -246,8 +267,12 @@ function Workouts() {
             <p className="text-sm text-brand-silver">Tap + to log your first lift.</p>
           </div>
         )}
-        {(workouts ?? []).map((w) => (
-          <div key={w.id} className="rounded-xl border border-white/5 bg-brand-gray/60 p-4">
+        {(workouts ?? []).map((w, wi) => (
+          <div
+            key={w.id}
+            className="animate-reveal-up rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-shadow duration-200 hover:shadow-glow-red"
+            style={{ animationDelay: `${Math.min(wi, 8) * 55}ms` }}
+          >
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="font-bold truncate">{w.name}</p>
