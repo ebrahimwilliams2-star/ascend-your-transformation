@@ -86,7 +86,7 @@ function Metrics() {
       </header>
 
       {open && (
-        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5">
+        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <p className="chip-label text-brand-red mb-3">Today's Entry</p>
           <div className="grid grid-cols-2 gap-3">
             {FIELDS.map((f) => (
@@ -112,7 +112,7 @@ function Metrics() {
         </section>
       )}
 
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         <p className="chip-label text-brand-silver mb-3">Current Snapshot</p>
         <div className="grid grid-cols-2 gap-3">
           {FIELDS.map((f) => {
@@ -137,7 +137,7 @@ function Metrics() {
         </div>
       </section>
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         <p className="chip-label text-brand-silver mb-3">History</p>
         <div className="space-y-2">
           {(rows ?? []).map((r) => (

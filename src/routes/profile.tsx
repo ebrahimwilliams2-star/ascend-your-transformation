@@ -197,7 +197,7 @@ function ProfilePage() {
       </header>
 
       {/* Avatar + name hero */}
-      <section className="px-6 pt-2 pb-6 flex flex-col items-center text-center">
+      <section className="px-6 pt-2 pb-6 flex flex-col items-center text-center animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative mb-4">
           <button
             onClick={() => fileInputRef.current?.click()}
@@ -277,7 +277,7 @@ function ProfilePage() {
       </section>
 
       {/* Edit profile */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {!editing ? (
           <button
             onClick={openEdit}
@@ -441,7 +441,7 @@ function ProfilePage() {
       </section>
 
       {/* Badges */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Badges</h3>
         {!userBadges || userBadges.length === 0 ? (
           <div className="rounded-2xl border border-white/5 bg-brand-gray/60 p-5 text-center">
@@ -469,7 +469,7 @@ function ProfilePage() {
       </section>
 
       {/* Stats */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "280ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Stats</h3>
         <div className="rounded-2xl border border-white/5 bg-brand-gray/60 divide-y divide-white/5">
           {[
@@ -488,7 +488,7 @@ function ProfilePage() {
       </section>
 
       {/* Sign out */}
-      <section className="px-6 pb-8">
+      <section className="px-6 pb-8 animate-reveal-up" style={{ animationDelay: "350ms" }}>
         <button
           onClick={() => signOut()}
           className="flex w-full items-center justify-center gap-2 rounded-xl border border-brand-red/40 py-3.5 text-sm font-bold text-brand-red hover:bg-brand-red/10 transition-colors"

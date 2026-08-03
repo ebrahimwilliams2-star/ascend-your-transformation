@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { haptic } from "@/lib/motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -182,7 +183,7 @@ function Rewards() {
         <div className="size-10" />
       </header>
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-brand-red/30 bg-gradient-to-br from-brand-gray to-black p-5">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/20 blur-3xl" />
           <Sparkles className="size-5 text-brand-red" />
@@ -198,7 +199,7 @@ function Rewards() {
         </div>
       </section>
 
-      <section className="px-6 mt-6 space-y-3">
+      <section className="px-6 mt-6 space-y-3 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {TEMPLATES.map((t) => {
           const earned = t.condition(state);
           const row = unlockedMap.get(t.milestone);
@@ -221,7 +222,7 @@ function Rewards() {
                   <p className="mt-1 text-xs text-brand-silver leading-snug">{t.description}</p>
                   {row && !claimed && (
                     <button
-                      onClick={() => claim.mutate(row.id)}
+                      onClick={() => { haptic("celebrate"); claim.mutate(row.id); }}
                       disabled={claim.isPending}
                       className="mt-3 w-full rounded-lg bg-brand-red px-4 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-glow-red"
                     >Claim Reward</button>

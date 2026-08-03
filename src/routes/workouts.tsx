@@ -144,7 +144,7 @@ function Workouts() {
       </header>
 
       {adding && (
-        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5">
+        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <div className="mb-3 flex items-center justify-between">
             <p className="chip-label text-brand-red">{editingId ? "Edit Session" : "New Session"}</p>
             {editingId && (
@@ -239,7 +239,7 @@ function Workouts() {
         </section>
       )}
 
-      <section className="px-6 space-y-3">
+      <section className="px-6 space-y-3 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {(workouts ?? []).length === 0 && !adding && (
           <div className="rounded-2xl border border-dashed border-white/10 p-10 text-center">
             <p className="chip-label text-brand-red mb-2">No Sessions</p>

@@ -31,7 +31,7 @@ function Thumb({ photo, onDelete, selected, onSelect }: { photo: Photo; onDelete
   const url = useSignedUrl(photo.photo_path);
   return (
     <div className={`group relative aspect-[3/4] overflow-hidden rounded-xl border ${selected ? "border-brand-red ring-2 ring-brand-red" : "border-white/10"}`}>
-      {url ? <img src={url} alt={photo.label ?? "Progress"} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-brand-gray animate-pulse" />}
+      {url ? <img src={url} alt={photo.label ?? "Progress"} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-brand-gray animate-shimmer-bg" />}
       <button onClick={onSelect} className="absolute inset-0" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/80 to-transparent p-2">
         <span className="text-[10px] font-bold uppercase tracking-widest text-white">
@@ -125,7 +125,7 @@ function Photos() {
       </header>
 
       {selected.before && selected.after && (
-        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-4">
+        <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-4 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <p className="chip-label text-brand-red mb-3">Side By Side</p>
           <div className="grid grid-cols-2 gap-3">
             {[{ p: selected.before, url: beforeUrl, l: "Before" }, { p: selected.after, url: afterUrl, l: "After" }].map((s, i) => (
@@ -148,7 +148,7 @@ function Photos() {
         </section>
       )}
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {!selected.before && (
           <p className="chip-label text-brand-silver mb-3">Tap two photos to compare</p>
         )}

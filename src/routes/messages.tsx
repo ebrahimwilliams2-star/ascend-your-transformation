@@ -110,7 +110,7 @@ export function MessagesPage() {
         <h1 className="text-display mt-0.5 text-2xl font-bold">Messages</h1>
       </header>
 
-      <section className="space-y-2 px-4 pb-6">
+      <section className="space-y-2 px-4 pb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         {isLoading &&
           Array.from({ length: 4 }).map((_, i) => <SkeletonCard key={i} />)}
 

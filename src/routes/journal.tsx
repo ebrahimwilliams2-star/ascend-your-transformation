@@ -226,7 +226,7 @@ function WriteTab({ entries, onSaved }: { entries: Entry[]; onSaved: () => void 
   );
 
   return (
-    <section className="px-6">
+    <section className="px-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
       {journaledToday && (
         <div className="mb-4 flex items-center gap-2 rounded-xl border border-brand-red/30 bg-brand-red/10 px-4 py-3 text-xs">
           <Flame className="size-4 text-brand-red" />
@@ -373,7 +373,7 @@ function HistoryTab({ entries }: { entries: Entry[] }) {
   });
 
   return (
-    <section className="px-6 space-y-3">
+    <section className="px-6 space-y-3 animate-reveal-up" style={{ animationDelay: "140ms" }}>
       <div className="relative">
         <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-silver/60" />
         <input
@@ -672,14 +672,14 @@ function InsightsTab({ entries }: { entries: Entry[] }) {
 
   if (!stats) {
     return (
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         <div className="h-40 animate-pulse rounded-2xl bg-brand-gray/40" />
       </section>
     );
   }
 
   return (
-    <section className="px-6 space-y-4">
+    <section className="px-6 space-y-4 animate-reveal-up" style={{ animationDelay: "280ms" }}>
       <div className="grid grid-cols-2 gap-3">
         <StatTile label="Total Entries" value={stats.total} />
         <StatTile

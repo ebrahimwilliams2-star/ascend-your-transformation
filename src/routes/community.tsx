@@ -137,7 +137,7 @@ function Community() {
       </header>
 
       {composing && (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <div className="rounded-2xl border border-brand-red/40 bg-brand-gray p-4">
             <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
               {(["update", "milestone", "transformation", "challenge"] as const).map((t) => (
@@ -174,7 +174,7 @@ function Community() {
         </section>
       )}
 
-      <section className="px-6 space-y-4 pb-4">
+      <section className="px-6 space-y-4 pb-4 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {(posts ?? []).length === 0 && (
           <div className="rounded-2xl border border-dashed border-white/10 bg-brand-gray/40 p-10 text-center">
             <Heart className="mx-auto size-8 text-brand-red mb-3" />

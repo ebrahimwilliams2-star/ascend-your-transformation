@@ -381,7 +381,7 @@ export function ChatConversationPage({ conversationId }: { conversationId: strin
       <div className="flex-1 space-y-2 overflow-y-auto px-4 py-4">
         {loadingMessages && (
           <div className="flex justify-center pt-8">
-            <div className="size-6 animate-pulse rounded-full bg-brand-red/40" />
+            <div className="size-6 animate-breathe rounded-full bg-brand-red/40" />
           </div>
         )}
 
