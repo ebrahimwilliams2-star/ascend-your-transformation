@@ -5,7 +5,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, Gift, Lock, Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -161,6 +161,7 @@ function Rewards() {
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not claim reward"),
   });
 
+  const [celebrate, setCelebrate] = useState(false);
   const unlockedMap = new Map((unlocked ?? []).map((u) => [u.milestone, u]));
   const state = {
     streak: profile?.current_streak ?? 0,
@@ -174,6 +175,12 @@ function Rewards() {
 
   return (
     <>
+      <Celebration
+        open={celebrate}
+        onDone={() => setCelebrate(false)}
+        title="Reward Unlocked"
+        subtitle="You earned this one."
+      />
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
         <Link to="/dash" className="grid size-10 place-items-center rounded-full border border-white/10 text-brand-silver hover:text-white">
           <ChevronLeft className="size-5" />
