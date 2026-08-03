@@ -6,6 +6,8 @@ import { useUser } from "@/lib/auth";
 import { useEffect, useRef, useState } from "react";
 import { Camera, Trash2 } from "lucide-react";
 import { toast } from "sonner";
+import { haptic } from "@/lib/motion";
+import { Shimmer } from "@/components/motion/Skeleton";
 
 export const Route = createFileRoute("/photos")({
   head: () => ({ meta: [{ title: "Progress — ASCEND" }] }),
@@ -27,12 +29,15 @@ function useSignedUrl(path: string | undefined) {
   return url;
 }
 
-function Thumb({ photo, onDelete, selected, onSelect }: { photo: Photo; onDelete: () => void; selected: boolean; onSelect: () => void }) {
+function Thumb({ photo, onDelete, selected, onSelect, index = 0 }: { photo: Photo; onDelete: () => void; selected: boolean; onSelect: () => void; index?: number }) {
   const url = useSignedUrl(photo.photo_path);
   return (
-    <div className={`group relative aspect-[3/4] overflow-hidden rounded-xl border ${selected ? "border-brand-red ring-2 ring-brand-red" : "border-white/10"}`}>
+    <div
+      className={`group relative aspect-[3/4] animate-reveal-up overflow-hidden rounded-xl border transition-transform duration-200 active:scale-[0.97] ${selected ? "border-brand-red ring-2 ring-brand-red" : "border-white/10"}`}
+      style={{ animationDelay: `${Math.min(index, 8) * 50}ms` }}
+    >
       {url ? <img src={url} alt={photo.label ?? "Progress"} className="h-full w-full object-cover" /> : <div className="h-full w-full bg-brand-gray animate-shimmer-bg" />}
-      <button onClick={onSelect} className="absolute inset-0" />
+      <button onClick={() => { haptic("light"); onSelect(); }} className="absolute inset-0" />
       <div className="absolute inset-x-0 bottom-0 flex items-end justify-between bg-gradient-to-t from-black/80 to-transparent p-2">
         <span className="text-[10px] font-bold uppercase tracking-widest text-white">
           {new Date(photo.taken_at).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
@@ -50,6 +55,7 @@ function Photos() {
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [selected, setSelected] = useState<{ before?: Photo; after?: Photo }>({});
+  const [flash, setFlash] = useState(false);
 
   const { data: photos } = useQuery({
     queryKey: ["photos-list", user?.id],
@@ -77,6 +83,9 @@ function Photos() {
       if (error) throw error;
     },
     onSuccess: () => {
+      haptic("success");
+      setFlash(true);
+      window.setTimeout(() => setFlash(false), 650);
       toast.success("Progress captured.");
       qc.invalidateQueries({ queryKey: ["photos-list"] });
       qc.invalidateQueries({ queryKey: ["photos"] });
@@ -98,6 +107,9 @@ function Photos() {
 
   return (
     <>
+      {flash && (
+        <div className="pointer-events-none fixed inset-0 z-modal bg-white animate-flash" aria-hidden />
+      )}
       <header className="flex items-center justify-between p-6">
         <div>
           <p className="chip-label text-brand-red">Visual Proof</p>
@@ -153,9 +165,11 @@ function Photos() {
           <p className="chip-label text-brand-silver mb-3">Tap two photos to compare</p>
         )}
         <div className="grid grid-cols-2 gap-3">
-          {(photos ?? []).map((p) => (
+          {upload.isPending && <Shimmer className="aspect-[3/4] rounded-xl" />}
+          {(photos ?? []).map((p, i) => (
             <Thumb
               key={p.id}
+              index={i}
               photo={p}
               selected={selected.before?.id === p.id || selected.after?.id === p.id}
               onSelect={() => {
