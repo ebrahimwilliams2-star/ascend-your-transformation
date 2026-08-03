@@ -20,7 +20,7 @@ export function SkeletonCard({ lines = 3, className }: { lines?: number; classNa
       <Shimmer className="h-3 w-24" />
       <div className="mt-4 space-y-2.5">
         {Array.from({ length: lines }).map((_, i) => (
-          <Shimmer key={i} className="h-3" style={undefined as never} />
+          <Shimmer key={i} className="h-3" />
         ))}
       </div>
     </div>
