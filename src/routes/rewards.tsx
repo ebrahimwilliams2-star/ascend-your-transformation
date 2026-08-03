@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { haptic } from "@/lib/motion";
 import { Celebration } from "@/components/motion/Celebration";
+import { CountUp } from "@/components/motion/CountUp";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -258,7 +259,7 @@ function Rewards() {
 function Stat({ label, value, tone }: { label: string; value: number; tone?: boolean }) {
   return (
     <div className="text-center">
-      <p className={`text-2xl font-bold ${tone ? "text-brand-red" : "text-white"}`}>{value}</p>
+      <CountUp value={value} className={`block text-2xl font-bold ${tone ? "text-brand-red" : "text-white"}`} />
       <p className="chip-label text-brand-silver">{label}</p>
     </div>
   );
