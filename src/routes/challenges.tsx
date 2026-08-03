@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { haptic } from "@/lib/motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
@@ -179,7 +180,7 @@ function Challenges() {
         <div className="size-10" />
       </header>
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="rounded-2xl border border-brand-red/30 bg-gradient-to-br from-brand-gray to-black p-5">
           <Trophy className="size-5 text-brand-red" />
           <p className="mt-2 text-display text-2xl font-bold italic">Prove It.</p>
@@ -236,7 +237,7 @@ function Challenges() {
                       )}
                       {!claimed && (
                         <button
-                          onClick={() => claim.mutate(c)}
+                          onClick={() => { haptic("celebrate"); claim.mutate(c); }}
                           disabled={!isComplete || claim.isPending}
                           className={`mt-3 w-full rounded-lg px-4 py-2 text-xs font-bold uppercase tracking-widest transition-all ${
                             isComplete
@@ -285,7 +286,7 @@ function BadgeWall() {
   });
 
   return (
-    <section className="px-6 mt-6">
+    <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
       <h3 className="chip-label text-brand-silver mb-3">Badge Wall</h3>
       <div className="grid grid-cols-4 gap-3">
         {(allBadges ?? []).map((b) => {

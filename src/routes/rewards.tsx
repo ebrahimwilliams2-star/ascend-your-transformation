@@ -1,9 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { haptic } from "@/lib/motion";
+import { Celebration } from "@/components/motion/Celebration";
+import { CountUp } from "@/components/motion/CountUp";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ChevronLeft, Gift, Lock, Sparkles, Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -152,12 +155,14 @@ function Rewards() {
       if (error) throw error;
     },
     onSuccess: () => {
+      setCelebrate(true);
       toast.success("Reward claimed. Enjoy it.");
       qc.invalidateQueries({ queryKey: ["reward-meals"] });
     },
     onError: (e) => toast.error(e instanceof Error ? e.message : "Could not claim reward"),
   });
 
+  const [celebrate, setCelebrate] = useState(false);
   const unlockedMap = new Map((unlocked ?? []).map((u) => [u.milestone, u]));
   const state = {
     streak: profile?.current_streak ?? 0,
@@ -171,6 +176,12 @@ function Rewards() {
 
   return (
     <>
+      <Celebration
+        open={celebrate}
+        onDone={() => setCelebrate(false)}
+        title="Reward Unlocked"
+        subtitle="You earned this one."
+      />
       <header className="sticky top-0 z-30 flex items-center justify-between p-6 backdrop-blur-md bg-brand-black/80">
         <Link to="/dash" className="grid size-10 place-items-center rounded-full border border-white/10 text-brand-silver hover:text-white">
           <ChevronLeft className="size-5" />
@@ -182,7 +193,7 @@ function Rewards() {
         <div className="size-10" />
       </header>
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-brand-red/30 bg-gradient-to-br from-brand-gray to-black p-5">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/20 blur-3xl" />
           <Sparkles className="size-5 text-brand-red" />
@@ -198,7 +209,7 @@ function Rewards() {
         </div>
       </section>
 
-      <section className="px-6 mt-6 space-y-3">
+      <section className="px-6 mt-6 space-y-3 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {TEMPLATES.map((t) => {
           const earned = t.condition(state);
           const row = unlockedMap.get(t.milestone);
@@ -221,7 +232,7 @@ function Rewards() {
                   <p className="mt-1 text-xs text-brand-silver leading-snug">{t.description}</p>
                   {row && !claimed && (
                     <button
-                      onClick={() => claim.mutate(row.id)}
+                      onClick={() => { haptic("celebrate"); claim.mutate(row.id); }}
                       disabled={claim.isPending}
                       className="mt-3 w-full rounded-lg bg-brand-red px-4 py-2 text-xs font-bold uppercase tracking-widest text-white shadow-glow-red"
                     >Claim Reward</button>
@@ -248,7 +259,7 @@ function Rewards() {
 function Stat({ label, value, tone }: { label: string; value: number; tone?: boolean }) {
   return (
     <div className="text-center">
-      <p className={`text-2xl font-bold ${tone ? "text-brand-red" : "text-white"}`}>{value}</p>
+      <CountUp value={value} className={`block text-2xl font-bold ${tone ? "text-brand-red" : "text-white"}`} />
       <p className="chip-label text-brand-silver">{label}</p>
     </div>
   );

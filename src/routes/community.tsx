@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { haptic } from "@/lib/motion";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useState } from "react";
+import { CountUp } from "@/components/motion/CountUp";
 import { ChevronLeft, Heart, Send, Plus } from "lucide-react";
 import { toast } from "sonner";
 
@@ -137,7 +139,7 @@ function Community() {
       </header>
 
       {composing && (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <div className="rounded-2xl border border-brand-red/40 bg-brand-gray p-4">
             <div className="flex gap-2 mb-3 overflow-x-auto pb-1">
               {(["update", "milestone", "transformation", "challenge"] as const).map((t) => (
@@ -174,7 +176,7 @@ function Community() {
         </section>
       )}
 
-      <section className="px-6 space-y-4 pb-4">
+      <section className="px-6 space-y-4 pb-4 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         {(posts ?? []).length === 0 && (
           <div className="rounded-2xl border border-dashed border-white/10 bg-brand-gray/40 p-10 text-center">
             <Heart className="mx-auto size-8 text-brand-red mb-3" />
@@ -182,11 +184,15 @@ function Community() {
             <p className="mt-1 text-xs text-brand-silver">Post a milestone to start the brotherhood.</p>
           </div>
         )}
-        {(posts ?? []).map((p) => {
+        {(posts ?? []).map((p, pi) => {
           const author = authors?.get(p.user_id);
           const rdata = reactionMap.get(p.id) ?? { counts: { respect: 0, salute: 0, strong_work: 0, legend: 0 }, mine: new Set<Reaction>() };
           return (
-            <article key={p.id} className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4">
+            <article
+              key={p.id}
+              className="animate-reveal-up rounded-2xl border border-white/5 bg-brand-gray/60 p-4 transition-shadow duration-200 hover:shadow-glow-red"
+              style={{ animationDelay: `${Math.min(pi, 8) * 55}ms` }}
+            >
               <header className="flex items-center gap-3">
                 <div className="grid size-10 shrink-0 place-items-center rounded-full bg-brand-red/20 text-brand-red font-bold">
                   {(author?.display_name ?? "A").slice(0, 1).toUpperCase()}
@@ -207,16 +213,16 @@ function Community() {
                   return (
                     <button
                       key={r.id}
-                      onClick={() => react.mutate({ postId: p.id, reaction: r.id, currentlyOn: on })}
+                      onClick={() => { haptic(on ? "light" : "success"); react.mutate({ postId: p.id, reaction: r.id, currentlyOn: on }); }}
                       className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-widest transition-all ${
                         on
                           ? "bg-brand-red text-white shadow-glow-red"
                           : "bg-black/40 text-brand-silver hover:text-white"
                       }`}
                     >
-                      <span>{r.emoji}</span>
+                      <span key={on ? "on" : "off"} className={on ? "inline-block animate-pop" : "inline-block"}>{r.emoji}</span>
                       <span>{r.label}</span>
-                      {count > 0 && <span className={on ? "text-white" : "text-brand-red"}>{count}</span>}
+                      {count > 0 && <CountUp value={count} duration={400} className={on ? "text-white" : "text-brand-red"} />}
                     </button>
                   );
                 })}

@@ -3,12 +3,14 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { AppShell, signOut } from "@/components/AppShell";
 import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
+import { CountUp } from "@/components/motion/CountUp";
+import { haptic } from "@/lib/motion";
 import { NotificationsBell } from "@/components/NotificationsBell";
 import { ShareCardModal } from "@/components/ShareCardModal";
 import { LocationSheet } from "@/components/LocationSheet";
@@ -106,6 +108,11 @@ function Dashboard() {
   const hour = new Date().getHours();
   const greeting = hour < 5 ? "Still grinding" : hour < 12 ? "Rise up" : hour < 18 ? "Stay sharp" : "Finish strong";
 
+  const [barWidth, setBarWidth] = useState(0);
+  useEffect(() => {
+    const id = requestAnimationFrame(() => setBarWidth(progress));
+    return () => cancelAnimationFrame(id);
+  }, [progress]);
   const [shareOpen, setShareOpen] = useState(false);
   const [locationOpen, setLocationOpen] = useState(false);
   const city = (profile as { city?: string | null } | null)?.city ?? null;
@@ -120,7 +127,7 @@ function Dashboard() {
           </Link>
           <div>
             <p className="chip-label text-brand-red">{rank} · LVL {level}</p>
-            <h1 className="text-display text-xl font-bold mt-0.5">
+            <h1 className="text-display text-xl font-bold mt-0.5 animate-reveal-up">
               {greeting}, {firstName}
             </h1>
           </div>
@@ -134,8 +141,8 @@ function Dashboard() {
             {city ?? "Set city"}
           </button>
           <div className="text-right">
-            <p className="chip-label text-brand-silver">{xp.toLocaleString()} XP</p>
-            <p className="text-xs font-bold text-white">{streak}d streak</p>
+            <p className="chip-label text-brand-silver"><CountUp value={xp} /> XP</p>
+            <p className="text-xs font-bold text-white"><CountUp value={streak} duration={600} />d streak</p>
           </div>
           <NotificationsBell />
           <button
@@ -148,7 +155,7 @@ function Dashboard() {
       </header>
 
       {/* Hero progress */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-brand-gray p-6">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
           <div className="relative">
@@ -171,9 +178,9 @@ function Dashboard() {
             </div>
             <div className="mt-6 flex items-end gap-3">
               <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                <div className="h-full bg-brand-red transition-all duration-500" style={{ width: `${progress}%` }} />
+                <div className="h-full rounded-full bg-brand-red" style={{ width: `${barWidth}%`, transition: "width 900ms cubic-bezier(0.22, 1, 0.36, 1)" }} />
               </div>
-              <span className="chip-label text-white">{xp % 500} / 500</span>
+              <span className="chip-label text-white"><CountUp value={xp % 500} /> / 500</span>
             </div>
             <p className="mt-2 text-[10px] uppercase tracking-widest text-brand-silver">
               {nextLevelXp - xp} XP to {rankFor(level + 1)}
@@ -200,7 +207,7 @@ function Dashboard() {
       />
 
       {city ? (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
           <button
             onClick={() => setLocationOpen(true)}
             className="w-full group relative block overflow-hidden rounded-2xl border border-brand-red/30 bg-brand-red/5 p-5 transition-all hover:bg-brand-red/10 text-left"
@@ -222,7 +229,7 @@ function Dashboard() {
           </button>
         </section>
       ) : (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
           <button
             onClick={() => setLocationOpen(true)}
             className="flex w-full items-center justify-between rounded-2xl border border-brand-red/30 bg-brand-red/5 p-4 text-left"
@@ -242,7 +249,7 @@ function Dashboard() {
       )}
 
       {/* Journal Widgets Section */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "280ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">The Mirror</h3>
         <div className="grid grid-cols-2 gap-3">
           <TodayJournalWidget />
@@ -255,7 +262,7 @@ function Dashboard() {
       </section>
 
       {/* The Ascendant card */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "350ms" }}>
         <Link
           to="/ascendant"
           className="group relative block overflow-hidden rounded-2xl border border-brand-red/40 bg-gradient-to-br from-brand-gray to-black p-5 transition-all hover:shadow-glow-red"
@@ -263,7 +270,7 @@ function Dashboard() {
           <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-red/30 blur-3xl" />
           <div className="relative flex items-center gap-4">
             <div className="grid size-12 place-items-center rounded-xl bg-brand-red/20 ring-1 ring-brand-red/50">
-              <Flame className="size-6 text-brand-red" />
+              <Flame className="size-6 text-brand-red animate-flame" />
             </div>
             <div className="min-w-0 flex-1">
               <p className="chip-label text-brand-red mb-0.5">The Ascendant</p>
@@ -277,7 +284,7 @@ function Dashboard() {
       </section>
 
       {/* AI Coach card */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "420ms" }}>
         <Link
           to="/coach"
           className="group block rounded-2xl bg-brand-red p-5 shadow-glow-red transition-all hover:shadow-glow-red-strong"
@@ -299,7 +306,7 @@ function Dashboard() {
       </section>
 
       {/* Brotherhood grid */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "490ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Brotherhood</h3>
         <div className="grid grid-cols-2 gap-3">
           <FeatureTile to="/challenges" Icon={Trophy} label="Challenges" sub="Earn XP · Badges" tone />
@@ -310,7 +317,7 @@ function Dashboard() {
       </section>
 
       {/* Transformation */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "560ms" }}>
         <div className="mb-3 flex items-end justify-between">
           <h3 className="chip-label text-brand-silver">Transformation</h3>
           <Link to="/photos" className="chip-label text-brand-red">View All →</Link>
@@ -332,7 +339,7 @@ function Dashboard() {
       </section>
 
       {/* Daily Discipline */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "630ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Daily Discipline</h3>
         <div className="space-y-2.5">
           {DEFAULT_HABITS.map((h) => {
@@ -340,7 +347,7 @@ function Dashboard() {
             return (
               <button
                 key={h.id}
-                onClick={() => toggle.mutate(h.id)}
+                onClick={() => { haptic(done ? "light" : "success"); toggle.mutate(h.id); }}
                 disabled={toggle.isPending}
                 className={`flex w-full items-center justify-between rounded-xl border border-white/5 p-4 transition-colors ${
                   done ? "bg-brand-gray/30 opacity-60" : "bg-brand-gray/60 hover:bg-brand-gray"
@@ -362,7 +369,7 @@ function Dashboard() {
       </section>
 
       {/* Metrics & Nutrition quick links */}
-      <section className="px-6 space-y-3 pb-8">
+      <section className="px-6 space-y-3 pb-8 animate-reveal-up" style={{ animationDelay: "700ms" }}>
         <Link
           to="/nutrition"
           className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"

@@ -448,7 +448,7 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
       </header>
 
       {/* Calorie ring */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-brand-gray p-6">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
           <div className="relative flex items-center gap-5">
@@ -468,7 +468,7 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
       </section>
 
       {/* Score */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         <div className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4">
           <div>
             <p className="chip-label text-brand-silver">Nutrition Score</p>
@@ -481,7 +481,7 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
       </section>
 
       {/* Meals */}
-      <section className="px-6 pb-28 space-y-4">
+      <section className="px-6 pb-28 space-y-4 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         {MEALS.map((m) => {
           const items = (logs ?? []).filter((l) => l.meal_type === m);
           const mCal = items.reduce((a, l) => a + Number(l.calories), 0);

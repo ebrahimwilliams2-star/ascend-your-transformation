@@ -97,7 +97,7 @@ function Squads() {
 
       {view === "list" && (
         <>
-          <section className="px-6 grid grid-cols-2 gap-3">
+          <section className="px-6 grid grid-cols-2 gap-3 animate-reveal-up" style={{ animationDelay: "70ms" }}>
             <button
               onClick={() => setView("create")}
               className="rounded-2xl border border-brand-red/40 bg-brand-red/10 p-5 text-left transition-all hover:shadow-glow-red"
@@ -116,7 +116,7 @@ function Squads() {
             </button>
           </section>
 
-          <section className="px-6 mt-6">
+          <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
             <h3 className="chip-label text-brand-silver mb-3">Your Squads</h3>
             {!myMemberships?.length && (
               <div className="rounded-2xl border border-dashed border-white/10 bg-brand-gray/40 p-10 text-center">
@@ -148,7 +148,7 @@ function Squads() {
       )}
 
       {view === "create" && (
-        <section className="px-6">
+        <section className="px-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
           <div className="rounded-2xl border border-brand-red/40 bg-brand-gray p-5">
             <p className="chip-label text-brand-red">Forge Squad</p>
             <input
@@ -179,7 +179,7 @@ function Squads() {
       )}
 
       {view === "join" && (
-        <section className="px-6">
+        <section className="px-6 animate-reveal-up" style={{ animationDelay: "280ms" }}>
           <div className="rounded-2xl border border-white/10 bg-brand-gray p-5">
             <p className="chip-label text-brand-red">Join Squad</p>
             <input
@@ -314,7 +314,7 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
         </button>
       </header>
 
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "350ms" }}>
         <h3 className="chip-label text-brand-silver mb-3 flex items-center gap-2">
           <Trophy className="size-3 text-brand-red" /> Squad Leaderboard
         </h3>
@@ -344,7 +344,7 @@ function SquadDetail({ squadId, onBack }: { squadId: string; onBack: () => void 
         </div>
       </section>
 
-      <section className="px-6 mt-6">
+      <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "420ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Squad Feed</h3>
         <div className="rounded-xl border border-white/5 bg-brand-gray/60 p-3">
           <textarea

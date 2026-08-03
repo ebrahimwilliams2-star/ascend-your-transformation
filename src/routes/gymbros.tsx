@@ -172,7 +172,7 @@ export function GymbrosPage() {
       </header>
 
       {/* Search */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative">
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-brand-silver" />
           <input
@@ -219,7 +219,7 @@ export function GymbrosPage() {
 
       {/* Incoming */}
       {incoming.length > 0 && (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
           <h3 className="chip-label text-brand-silver mb-3">Pending Invites</h3>
           <div className="space-y-2">
             {incoming.map((b) => (
@@ -253,7 +253,7 @@ export function GymbrosPage() {
       )}
 
       {/* Leaderboard */}
-      <section className="px-6 mb-6">
+      <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         <div className="mb-3 flex items-end justify-between">
           <h3 className="chip-label text-brand-silver">Leaderboard</h3>
           <span className="chip-label text-brand-red">{board.length} athletes</span>
@@ -380,7 +380,7 @@ export function GymbrosPage() {
 
       {/* Outgoing */}
       {outgoing.length > 0 && (
-        <section className="px-6 mb-6">
+        <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "280ms" }}>
           <h3 className="chip-label text-brand-silver mb-3">Sent Invites</h3>
           <div className="space-y-2">
             {outgoing.map((b) => (
@@ -405,7 +405,7 @@ export function GymbrosPage() {
         </section>
       )}
 
-      <section className="px-6 pb-4">
+      <section className="px-6 pb-4 animate-reveal-up" style={{ animationDelay: "350ms" }}>
         <p className="text-center text-[10px] uppercase tracking-widest text-brand-silver">
           You at {myXp.toLocaleString()} XP · keep climbing
         </p>

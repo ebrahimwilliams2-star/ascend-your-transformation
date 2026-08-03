@@ -119,7 +119,7 @@ function Ascendant() {
       </header>
 
       {/* Hero — character visualization */}
-      <section className="px-6">
+      <section className="px-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-3xl border border-white/5 bg-gradient-to-b from-brand-gray to-black p-6">
           <div className="absolute -right-20 -top-20 h-64 w-64 rounded-full bg-brand-red/20 blur-3xl animate-pulse" />
           <div className="absolute -left-20 -bottom-20 h-64 w-64 rounded-full bg-brand-red/10 blur-3xl" />
@@ -138,7 +138,7 @@ function Ascendant() {
       </section>
 
       {/* Rank progress */}
-      <section className="px-6 mt-6">
+      <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "140ms" }}>
         <div className="rounded-2xl border border-white/5 bg-brand-gray/60 p-5">
           <div className="flex items-center justify-between">
             <div>
@@ -166,7 +166,7 @@ function Ascendant() {
       </section>
 
       {/* Score grid */}
-      <section className="px-6 mt-6">
+      <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "210ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">Ascendant Profile</h3>
         <div className="grid grid-cols-2 gap-3">
           <ScoreCard Icon={Shield}     label="Discipline"     value={discipline}     tone />
@@ -178,7 +178,7 @@ function Ascendant() {
       </section>
 
       {/* Streak + photos */}
-      <section className="px-6 mt-6 grid grid-cols-2 gap-3">
+      <section className="px-6 mt-6 grid grid-cols-2 gap-3 animate-reveal-up" style={{ animationDelay: "280ms" }}>
         <div className="rounded-2xl border border-white/5 bg-brand-gray/60 p-4">
           <Flame className="size-5 text-brand-red" />
           <p className="mt-2 text-2xl font-bold">{streak}</p>
@@ -192,7 +192,7 @@ function Ascendant() {
       </section>
 
       {/* Next evolution */}
-      <section className="px-6 mt-6">
+      <section className="px-6 mt-6 animate-reveal-up" style={{ animationDelay: "350ms" }}>
         <div className="rounded-2xl border border-brand-red/30 bg-brand-red/5 p-5">
           <div className="flex items-start gap-3">
             <Sparkles className="size-5 shrink-0 text-brand-red mt-0.5" />
@@ -210,7 +210,7 @@ function Ascendant() {
       </section>
 
       {/* XP breakdown */}
-      <section className="px-6 mt-6 mb-4">
+      <section className="px-6 mt-6 mb-4 animate-reveal-up" style={{ animationDelay: "420ms" }}>
         <h3 className="chip-label text-brand-silver mb-3">How You Earn</h3>
         <div className="space-y-2">
           {[
@@ -230,7 +230,7 @@ function Ascendant() {
         </div>
       </section>
 
-      <section className="px-6 pb-4">
+      <section className="px-6 pb-4 animate-reveal-up" style={{ animationDelay: "490ms" }}>
         <p className="text-center text-[10px] uppercase tracking-widest text-brand-silver">
           {transformationOverall}% transformation complete · keep climbing
         </p>

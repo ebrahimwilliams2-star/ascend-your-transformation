@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import { Send, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
+import { haptic } from "@/lib/motion";
 
 export const Route = createFileRoute("/coach")({
   head: () => ({ meta: [{ title: "Ethan — ASCEND" }] }),
@@ -61,6 +62,7 @@ function Coach() {
   const send = async () => {
     if (!input.trim() || streaming || !user) return;
     const userText = input.trim();
+    haptic("light");
     const userMsg: Msg = { role: "user", content: userText };
     const next = [...messages, userMsg];
     setMessages([...next, { role: "assistant", content: "" }]);
@@ -147,7 +149,7 @@ function Coach() {
     <div className="flex h-screen flex-col">
       <header className="flex items-center gap-3 border-b border-white/5 p-6">
         <div className="relative grid size-10 place-items-center rounded-xl bg-brand-red shadow-glow-red">
-          <Sparkles className="size-5 text-white" />
+          <Sparkles className={`size-5 text-white ${streaming ? "animate-pop [animation-iteration-count:infinite] [animation-duration:1.4s]" : ""}`} />
         </div>
         <div className="min-w-0 flex-1">
           <p className="chip-label text-brand-red">Ethan · Your GymBro</p>
@@ -163,7 +165,7 @@ function Coach() {
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[85%] animate-bubble-in rounded-2xl px-4 py-3 text-sm leading-relaxed ${
                 m.role === "user"
                   ? "bg-brand-red text-white rounded-br-sm"
                   : "bg-brand-gray text-white rounded-bl-sm border border-white/5"
@@ -172,9 +174,9 @@ function Coach() {
               {m.content ||
                 (streaming && i === messages.length - 1 ? (
                   <span className="inline-flex gap-1">
-                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red" />
-                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:150ms]" />
-                    <span className="size-1.5 animate-pulse rounded-full bg-brand-red [animation-delay:300ms]" />
+                    <span className="size-1.5 animate-pop rounded-full bg-brand-red [animation-iteration-count:infinite] [animation-duration:1s]" />
+                    <span className="size-1.5 animate-pop rounded-full bg-brand-red [animation-iteration-count:infinite] [animation-duration:1s] [animation-delay:150ms]" />
+                    <span className="size-1.5 animate-pop rounded-full bg-brand-red [animation-iteration-count:infinite] [animation-duration:1s] [animation-delay:300ms]" />
                   </span>
                 ) : null)}
             </div>
@@ -201,7 +203,7 @@ function Coach() {
           <button
             onClick={send}
             disabled={streaming || !input.trim()}
-            className="grid size-10 place-items-center rounded-xl bg-brand-red disabled:opacity-40"
+            className="tap grid size-10 place-items-center rounded-xl bg-brand-red disabled:opacity-40"
           >
             <Send className="size-4 text-white" />
           </button>
