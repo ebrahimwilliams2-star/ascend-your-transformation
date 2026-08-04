@@ -157,7 +157,7 @@ function Dashboard() {
       {/* Hero progress */}
       <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-brand-gray p-6">
-          <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
+          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
           <div className="relative">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -212,7 +212,7 @@ function Dashboard() {
             onClick={() => setLocationOpen(true)}
             className="w-full group relative block overflow-hidden rounded-2xl border border-brand-red/30 bg-brand-red/5 p-5 transition-all hover:bg-brand-red/10 text-left"
           >
-            <div className="absolute -right-10 -top-10 h-24 w-24 rounded-full bg-brand-red/15 blur-2xl group-hover:blur-3xl transition-all" />
+            <div className="pointer-events-none absolute -right-10 -top-10 h-24 w-24 rounded-full bg-brand-red/15 blur-2xl group-hover:blur-3xl transition-all" />
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div className="grid size-10 place-items-center rounded-xl bg-brand-red/15 text-brand-red">
@@ -267,7 +267,7 @@ function Dashboard() {
           to="/ascendant"
           className="group relative block overflow-hidden rounded-2xl border border-brand-red/40 bg-gradient-to-br from-brand-gray to-black p-5 transition-all hover:shadow-glow-red"
         >
-          <div className="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-red/30 blur-3xl" />
+          <div className="pointer-events-none absolute -right-10 -top-10 h-32 w-32 rounded-full bg-brand-red/30 blur-3xl" />
           <div className="relative flex items-center gap-4">
             <div className="grid size-12 place-items-center rounded-xl bg-brand-red/20 ring-1 ring-brand-red/50">
               <Flame className="size-6 text-brand-red animate-flame" />

@@ -95,7 +95,7 @@ export function TodayJournalWidget() {
       }}
     >
       <div className="relative p-4">
-        <div className="absolute -right-8 -top-8 h-20 w-20 rounded-full bg-brand-red/10 blur-2xl group-hover:blur-3xl transition-all" />
+        <div className="pointer-events-none absolute -right-8 -top-8 h-20 w-20 rounded-full bg-brand-red/10 blur-2xl group-hover:blur-3xl transition-all" />
         <div className="relative flex items-center gap-3">
           <div
             className="grid size-10 place-items-center rounded-lg"
@@ -160,7 +160,7 @@ export function StreakWidget() {
       search={{ tab: "insights" } as never}
       className="group relative block rounded-2xl border border-brand-red/40 bg-gradient-to-br from-brand-red/15 to-black p-4 transition-all hover:shadow-glow-red overflow-hidden"
     >
-      <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-brand-red/30 blur-3xl" />
+      <div className="pointer-events-none absolute -right-8 -top-8 h-24 w-24 rounded-full bg-brand-red/30 blur-3xl" />
       <div className="relative">
         <p className="chip-label text-brand-red text-[10px]">Streak</p>
         <div className="flex items-end justify-between mt-2">
