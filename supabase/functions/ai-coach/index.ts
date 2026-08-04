@@ -175,8 +175,8 @@ async function buildSnapshot(authToken: string): Promise<string> {
     if (np?.calorie_target) {
       lines.push(
         `Today's nutrition: ${Math.round(totals.c)} / ${np.calorie_target} kcal, ${Math.round(totals.p)}g protein` +
-          (np.protein_target_g ? ` / ${np.protein_target_g}g target` : "") +
-          (np.goal ? ` (goal: ${np.goal})` : "") +
+          (np.protein_g ? ` / ${np.protein_g}g target` : "") +
+          (np.goal_type ? ` (goal: ${np.goal_type})` : "") +
           ".",
       );
     } else {
@@ -186,10 +186,45 @@ async function buildSnapshot(authToken: string): Promise<string> {
     lines.push("Today's nutrition: nothing logged yet.");
   }
 
+  const np = nutritionProfile?.[0];
+  if (np?.weight_kg) {
+    lines.push(
+      `Bodyweight target: currently ${np.weight_kg}kg` +
+        (np.goal_weight_kg ? ` → goal ${np.goal_weight_kg}kg` : "") +
+        (np.protein_g || np.carbs_g || np.fat_g
+          ? ` · macros ${np.protein_g ?? "?"}P/${np.carbs_g ?? "?"}C/${np.fat_g ?? "?"}F`
+          : "") +
+        ".",
+    );
+  }
+
+  if (p) {
+    const stage = p.level >= 25 ? 5 : p.level >= 15 ? 4 : p.level >= 8 ? 3 : p.level >= 3 ? 2 : 1;
+    lines.push(`Ascendant stage: ${stage} of 5.`);
+  }
+
+  if (badges?.length) {
+    lines.push(`Recent badges: ${badges.map((b) => b.badge_id).join(", ")}.`);
+  }
+
+  if (challenges?.length) {
+    const active = challenges.filter((c) => !c.completed).length;
+    const done = challenges.filter((c) => c.completed).length;
+    lines.push(`Challenges: ${active} in progress, ${done} recently completed.`);
+  }
+
   const mem = memoryRows?.[0];
-  if (mem?.summary) lines.push(`Memory: ${mem.summary}`);
+  if (mem?.summary) lines.push(`Conversation summary so far: ${mem.summary}`);
   if (mem?.key_facts && Object.keys(mem.key_facts).length) {
     lines.push(`Key facts: ${JSON.stringify(mem.key_facts)}`);
+  }
+
+  if (longTermMemories?.length) {
+    const grouped = longTermMemories
+      .slice(0, 30)
+      .map((m) => `- [${m.category}] ${m.content}`)
+      .join("\n");
+    lines.push(`Things you remember about them (reference naturally, never list them out loud):\n${grouped}`);
   }
 
   return lines.join("\n");
