@@ -204,9 +204,11 @@
     from { opacity: 0; transform: translate3d(0, 14px, 0) scale(0.99); }
     to   { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
   }
+  /* `both` keeps the from-state during any delay AND leaves the element fully
+     visible/interactive if animations never run (low-power mode, throttled
+     tabs, animation-disabled webviews). Never set a static opacity: 0 here. */
   .animate-reveal-up {
-    opacity: 0;
-    animation: reveal-up 320ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    animation: reveal-up 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
   }
 
   @keyframes page-enter {
