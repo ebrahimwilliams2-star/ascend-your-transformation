@@ -75,6 +75,7 @@ async function sb<T = unknown>(authToken: string, path: string): Promise<T | nul
 
 type Profile = {
   display_name: string | null;
+  username?: string | null;
   rank: string;
   level: number;
   xp: number;
@@ -85,14 +86,28 @@ type Profile = {
 
 async function buildSnapshot(authToken: string): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
-  const [profileRows, workouts, journal, measurements, foodToday, nutritionProfile, memoryRows] = await Promise.all([
-    sb<Profile[]>(authToken, "profiles?select=display_name,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
-    sb<Array<{ name: string; created_at: string }>>(authToken, "workouts?select=name,created_at&order=created_at.desc&limit=5"),
+  const [
+    profileRows,
+    workouts,
+    journal,
+    measurements,
+    foodToday,
+    nutritionProfile,
+    memoryRows,
+    longTermMemories,
+    badges,
+    challenges,
+  ] = await Promise.all([
+    sb<Profile[]>(authToken, "profiles?select=display_name,username,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
+    sb<Array<{ name: string; created_at: string; performed_at: string; duration_min: number | null }>>(authToken, "workouts?select=name,created_at,performed_at,duration_min&order=performed_at.desc&limit=5"),
     sb<Array<{ mood: string | null; content: string; created_at: string; energy_level: number | null; discipline_score: number | null }>>(authToken, "journal_entries?select=mood,content,created_at,energy_level,discipline_score&order=created_at.desc&limit=10"),
     sb<Array<{ weight_kg: number | null; recorded_at: string }>>(authToken, "measurements?select=weight_kg,recorded_at&order=recorded_at.desc&limit=4"),
     sb<Array<{ calories: number; protein_g: number; carbs_g: number; fat_g: number }>>(authToken, `food_logs?select=calories,protein_g,carbs_g,fat_g&log_date=eq.${today}`),
-    sb<Array<{ calorie_target: number | null; protein_target_g: number | null; goal: string | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_target_g,goal&limit=1"),
+    sb<Array<{ calorie_target: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; goal_type: string | null; weight_kg: number | null; goal_weight_kg: number | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_g,carbs_g,fat_g,goal_type,weight_kg,goal_weight_kg&limit=1"),
     sb<Array<{ summary: string; key_facts: Record<string, unknown> }>>(authToken, "ethan_memory_summaries?select=summary,key_facts&limit=1"),
+    sb<Array<{ category: string; content: string; importance: number }>>(authToken, "ethan_memories?select=category,content,importance&order=importance.desc&order=updated_at.desc&limit=40"),
+    sb<Array<{ badge_id: string; earned_at: string }>>(authToken, "user_badges?select=badge_id,earned_at&order=earned_at.desc&limit=6"),
+    sb<Array<{ progress: number; completed: boolean; challenge_id: string }>>(authToken, "challenge_participants?select=progress,completed,challenge_id&order=joined_at.desc&limit=6"),
   ]);
 
   const p = profileRows?.[0];
@@ -161,8 +176,8 @@ async function buildSnapshot(authToken: string): Promise<string> {
     if (np?.calorie_target) {
       lines.push(
         `Today's nutrition: ${Math.round(totals.c)} / ${np.calorie_target} kcal, ${Math.round(totals.p)}g protein` +
-          (np.protein_target_g ? ` / ${np.protein_target_g}g target` : "") +
-          (np.goal ? ` (goal: ${np.goal})` : "") +
+          (np.protein_g ? ` / ${np.protein_g}g target` : "") +
+          (np.goal_type ? ` (goal: ${np.goal_type})` : "") +
           ".",
       );
     } else {
@@ -172,10 +187,45 @@ async function buildSnapshot(authToken: string): Promise<string> {
     lines.push("Today's nutrition: nothing logged yet.");
   }
 
+  const np = nutritionProfile?.[0];
+  if (np?.weight_kg) {
+    lines.push(
+      `Bodyweight target: currently ${np.weight_kg}kg` +
+        (np.goal_weight_kg ? ` → goal ${np.goal_weight_kg}kg` : "") +
+        (np.protein_g || np.carbs_g || np.fat_g
+          ? ` · macros ${np.protein_g ?? "?"}P/${np.carbs_g ?? "?"}C/${np.fat_g ?? "?"}F`
+          : "") +
+        ".",
+    );
+  }
+
+  if (p) {
+    const stage = p.level >= 25 ? 5 : p.level >= 15 ? 4 : p.level >= 8 ? 3 : p.level >= 3 ? 2 : 1;
+    lines.push(`Ascendant stage: ${stage} of 5.`);
+  }
+
+  if (badges?.length) {
+    lines.push(`Recent badges: ${badges.map((b) => b.badge_id).join(", ")}.`);
+  }
+
+  if (challenges?.length) {
+    const active = challenges.filter((c) => !c.completed).length;
+    const done = challenges.filter((c) => c.completed).length;
+    lines.push(`Challenges: ${active} in progress, ${done} recently completed.`);
+  }
+
   const mem = memoryRows?.[0];
-  if (mem?.summary) lines.push(`Memory: ${mem.summary}`);
+  if (mem?.summary) lines.push(`Conversation summary so far: ${mem.summary}`);
   if (mem?.key_facts && Object.keys(mem.key_facts).length) {
     lines.push(`Key facts: ${JSON.stringify(mem.key_facts)}`);
+  }
+
+  if (longTermMemories?.length) {
+    const grouped = longTermMemories
+      .slice(0, 30)
+      .map((m) => `- [${m.category}] ${m.content}`)
+      .join("\n");
+    lines.push(`Things you remember about them (reference naturally, never list them out loud):\n${grouped}`);
   }
 
   return lines.join("\n");
