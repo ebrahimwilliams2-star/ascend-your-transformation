@@ -75,6 +75,7 @@ async function sb<T = unknown>(authToken: string, path: string): Promise<T | nul
 
 type Profile = {
   display_name: string | null;
+  username?: string | null;
   rank: string;
   level: number;
   xp: number;
