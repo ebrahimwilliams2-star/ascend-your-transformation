@@ -85,14 +85,28 @@ type Profile = {
 
 async function buildSnapshot(authToken: string): Promise<string> {
   const today = new Date().toISOString().slice(0, 10);
-  const [profileRows, workouts, journal, measurements, foodToday, nutritionProfile, memoryRows] = await Promise.all([
-    sb<Profile[]>(authToken, "profiles?select=display_name,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
-    sb<Array<{ name: string; created_at: string }>>(authToken, "workouts?select=name,created_at&order=created_at.desc&limit=5"),
+  const [
+    profileRows,
+    workouts,
+    journal,
+    measurements,
+    foodToday,
+    nutritionProfile,
+    memoryRows,
+    longTermMemories,
+    badges,
+    challenges,
+  ] = await Promise.all([
+    sb<Profile[]>(authToken, "profiles?select=display_name,username,rank,level,xp,current_streak,longest_streak,last_checkin_date&limit=1"),
+    sb<Array<{ name: string; created_at: string; performed_at: string; duration_min: number | null }>>(authToken, "workouts?select=name,created_at,performed_at,duration_min&order=performed_at.desc&limit=5"),
     sb<Array<{ mood: string | null; content: string; created_at: string; energy_level: number | null; discipline_score: number | null }>>(authToken, "journal_entries?select=mood,content,created_at,energy_level,discipline_score&order=created_at.desc&limit=10"),
     sb<Array<{ weight_kg: number | null; recorded_at: string }>>(authToken, "measurements?select=weight_kg,recorded_at&order=recorded_at.desc&limit=4"),
     sb<Array<{ calories: number; protein_g: number; carbs_g: number; fat_g: number }>>(authToken, `food_logs?select=calories,protein_g,carbs_g,fat_g&log_date=eq.${today}`),
-    sb<Array<{ calorie_target: number | null; protein_target_g: number | null; goal: string | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_target_g,goal&limit=1"),
+    sb<Array<{ calorie_target: number | null; protein_g: number | null; carbs_g: number | null; fat_g: number | null; goal_type: string | null; weight_kg: number | null; goal_weight_kg: number | null }>>(authToken, "nutrition_profiles?select=calorie_target,protein_g,carbs_g,fat_g,goal_type,weight_kg,goal_weight_kg&limit=1"),
     sb<Array<{ summary: string; key_facts: Record<string, unknown> }>>(authToken, "ethan_memory_summaries?select=summary,key_facts&limit=1"),
+    sb<Array<{ category: string; content: string; importance: number }>>(authToken, "ethan_memories?select=category,content,importance&order=importance.desc&order=updated_at.desc&limit=40"),
+    sb<Array<{ badge_id: string; earned_at: string }>>(authToken, "user_badges?select=badge_id,earned_at&order=earned_at.desc&limit=6"),
+    sb<Array<{ progress: number; completed: boolean; challenge_id: string }>>(authToken, "challenge_participants?select=progress,completed,challenge_id&order=joined_at.desc&limit=6"),
   ]);
 
   const p = profileRows?.[0];
