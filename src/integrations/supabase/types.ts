@@ -293,21 +293,63 @@ export type Database = {
         }
         Relationships: []
       }
+      ethan_memories: {
+        Row: {
+          category: string
+          content: string
+          created_at: string
+          id: string
+          importance: number
+          last_referenced_at: string | null
+          source: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          category?: string
+          content: string
+          created_at?: string
+          id?: string
+          importance?: number
+          last_referenced_at?: string | null
+          source?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          category?: string
+          content?: string
+          created_at?: string
+          id?: string
+          importance?: number
+          last_referenced_at?: string | null
+          source?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       ethan_memory_summaries: {
         Row: {
+          covered_through: string | null
           key_facts: Json
+          message_count: number
           summary: string
           updated_at: string
           user_id: string
         }
         Insert: {
+          covered_through?: string | null
           key_facts?: Json
+          message_count?: number
           summary?: string
           updated_at?: string
           user_id: string
         }
         Update: {
+          covered_through?: string | null
           key_facts?: Json
+          message_count?: number
           summary?: string
           updated_at?: string
           user_id?: string
@@ -316,6 +358,7 @@ export type Database = {
       }
       ethan_messages: {
         Row: {
+          archived: boolean
           content: string
           created_at: string
           id: string
@@ -323,6 +366,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          archived?: boolean
           content: string
           created_at?: string
           id?: string
@@ -330,6 +374,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          archived?: boolean
           content?: string
           created_at?: string
           id?: string
