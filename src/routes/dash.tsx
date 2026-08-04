@@ -292,7 +292,7 @@ function Dashboard() {
           <div className="flex items-start gap-4">
             <div className="grid size-10 shrink-0 place-items-center rounded-xl bg-black">
               <Sparkles className="size-5 text-brand-red" />
-              <span className="absolute size-2 animate-pulse rounded-full bg-brand-red" style={{ marginLeft: 14, marginTop: 14 }} />
+              <span className="pointer-events-none absolute size-2 animate-pulse rounded-full bg-brand-red" style={{ marginLeft: 14, marginTop: 14 }} />
             </div>
             <div className="min-w-0 flex-1">
               <p className="chip-label text-black/70 mb-1">Ethan · Your Coach</p>
