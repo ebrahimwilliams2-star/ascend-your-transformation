@@ -202,8 +202,11 @@ function Coach() {
   }, [user]);
 
   return (
-    <div className="flex h-screen flex-col">
-      <header className="flex items-center gap-3 border-b border-white/5 p-6">
+    <div
+      className="flex flex-col overflow-hidden"
+      style={{ height: "calc(100dvh - 7rem - env(safe-area-inset-bottom))" }}
+    >
+      <header className="flex shrink-0 items-center gap-3 border-b border-white/5 px-5 py-4">
         <div className="relative grid size-10 place-items-center rounded-xl bg-brand-red shadow-glow-red">
           <Sparkles className={`size-5 text-white ${streaming ? "animate-pop [animation-iteration-count:infinite] [animation-duration:1.4s]" : ""}`} />
         </div>
@@ -225,13 +228,12 @@ function Coach() {
 
       <div
         ref={scrollRef}
-        className="flex-1 overflow-y-auto px-6 py-4 space-y-4"
-        style={{ paddingBottom: "calc(11rem + env(safe-area-inset-bottom))" }}
+        className="min-h-0 flex-1 space-y-4 overflow-y-auto overscroll-contain px-5 py-4"
       >
         {messages.map((m, i) => (
           <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
             <div
-              className={`max-w-[85%] animate-bubble-in rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[85%] animate-bubble-in rounded-2xl px-4 py-3 text-sm leading-relaxed break-words ${
                 m.role === "user"
                   ? "bg-brand-red text-white rounded-br-sm"
                   : "bg-brand-gray text-white rounded-bl-sm border border-white/5"
@@ -250,10 +252,7 @@ function Coach() {
         ))}
       </div>
 
-      <div
-        className="fixed left-1/2 z-40 w-full max-w-md -translate-x-1/2 px-4"
-        style={{ bottom: "calc(6rem + env(safe-area-inset-bottom))" }}
-      >
+      <div className="shrink-0 border-t border-white/5 bg-brand-black px-4 pb-3 pt-3">
         <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-brand-gray/95 p-2 backdrop-blur-xl">
           <input
             ref={inputRef}
@@ -265,17 +264,19 @@ function Coach() {
             }}
             placeholder="Talk to Ethan…"
             disabled={streaming}
-            className="flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-brand-silver/60"
+            className="min-w-0 flex-1 bg-transparent px-3 py-2 text-sm focus:outline-none placeholder:text-brand-silver/60"
           />
           <button
             onClick={send}
             disabled={streaming || !input.trim()}
-            className="tap grid size-10 place-items-center rounded-xl bg-brand-red disabled:opacity-40"
+            aria-label="Send message"
+            className="tap grid size-10 shrink-0 place-items-center rounded-xl bg-brand-red disabled:opacity-40"
           >
             <Send className="size-4 text-white" />
           </button>
         </div>
       </div>
+
 
       {memoryOpen && (
         <MemorySheet
