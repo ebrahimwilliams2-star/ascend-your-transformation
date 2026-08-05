@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { workoutSchema, LIMITS } from "@/lib/validation";
 import { haptic } from "@/lib/motion";
 import { Celebration } from "@/components/motion/Celebration";
+import { BlueprintFeatureCard } from "@/components/blueprint/BlueprintFeatureCard";
+
 
 export const Route = createFileRoute("/workouts")({
   head: () => ({ meta: [{ title: "Workouts — ASCEND" }] }),
