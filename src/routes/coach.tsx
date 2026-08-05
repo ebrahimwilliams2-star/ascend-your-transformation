@@ -155,19 +155,25 @@ function Coach() {
           try {
             const json = JSON.parse(data);
             const delta = json.choices?.[0]?.delta?.content;
-            if (delta) {
-              acc += delta;
-              setMessages((m) => {
-                const copy = [...m];
-                copy[copy.length - 1] = { role: "assistant", content: acc };
-                return copy;
-              });
-            }
+            if (delta) acc += delta;
           } catch {
             /* ignore */
           }
         }
       }
+
+      // Human pacing: Ethan "reads" your message, then types his reply out.
+      if (acc) {
+        await sleep(thinkingDelay(userText, acc));
+        await typeOut(acc, (partial) => {
+          setMessages((m) => {
+            const copy = [...m];
+            copy[copy.length - 1] = { role: "assistant", content: partial };
+            return copy;
+          });
+        });
+      }
+
 
       // Persist both messages once the stream completes
       if (acc) {
