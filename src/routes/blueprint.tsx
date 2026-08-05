@@ -7,7 +7,7 @@ import { ArrowLeft, Check, ChevronRight, Lock, Flame } from "lucide-react";
 import { haptic } from "@/lib/motion";
 import { useState } from "react";
 
-export const Route = createFileRoute("/blueprint")({
+export const Route = createFileRoute("/blueprint/")({
   head: () => ({
     meta: [
       { title: "Ethan's Blueprint — ASCEND" },
