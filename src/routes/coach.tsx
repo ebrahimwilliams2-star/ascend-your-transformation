@@ -54,6 +54,32 @@ const SEED: Msg[] = [
   },
 ];
 
+const sleep = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+
+/** How long Ethan "reads + thinks" before the typing bubble turns into words. */
+function thinkingDelay(userText: string, reply: string) {
+  const read = Math.min(userText.length * 12, 1200);
+  const think = Math.min(reply.length * 6, 1200);
+  return 500 + read * 0.5 + think * 0.5 + Math.random() * 400;
+}
+
+/** Reveals the reply chunk-by-chunk at a believable human typing cadence. */
+async function typeOut(full: string, onTick: (partial: string) => void) {
+  // ~45 chars/sec, but never drag a long reply past ~6s.
+  const perChar = Math.max(12, Math.min(24, 6000 / Math.max(full.length, 1)));
+  let i = 0;
+  while (i < full.length) {
+    const step = 2 + Math.floor(Math.random() * 3);
+    i = Math.min(full.length, i + step);
+    onTick(full.slice(0, i));
+    const prev = full[i - 1];
+    // Tiny breath after sentence ends, like a real person.
+    const pause = prev === "." || prev === "!" || prev === "?" ? 140 : prev === "," ? 70 : 0;
+    await sleep(perChar * step + pause);
+  }
+}
+
+
 function Coach() {
   const { user } = useUser();
   const [messages, setMessages] = useState<Msg[]>(SEED);
