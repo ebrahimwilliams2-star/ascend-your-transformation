@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlueprintRouteImport } from './routes/blueprint'
 import { Route as ChallengesRouteImport } from './routes/challenges'
 import { Route as CoachRouteImport } from './routes/coach'
 import { Route as CommunityRouteImport } from './routes/community'
@@ -29,7 +30,6 @@ import { Route as RewardsRouteImport } from './routes/rewards'
 import { Route as SocialRouteImport } from './routes/social'
 import { Route as SquadsRouteImport } from './routes/squads'
 import { Route as WorkoutsRouteImport } from './routes/workouts'
-import { Route as BlueprintIndexRouteImport } from './routes/blueprint.index'
 import { Route as MessagesConversationIdRouteImport } from './routes/messages_.$conversationId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -45,6 +45,11 @@ const AscendantRoute = AscendantRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlueprintRoute = BlueprintRouteImport.update({
+  id: '/blueprint',
+  path: '/blueprint',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChallengesRoute = ChallengesRouteImport.update({
@@ -132,11 +137,6 @@ const WorkoutsRoute = WorkoutsRouteImport.update({
   path: '/workouts',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlueprintIndexRoute = BlueprintIndexRouteImport.update({
-  id: '/blueprint/',
-  path: '/blueprint/',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const MessagesConversationIdRoute = MessagesConversationIdRouteImport.update({
   id: '/messages_/$conversationId',
   path: '/messages/$conversationId',
@@ -147,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/blueprint': typeof BlueprintRoute
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
@@ -165,12 +166,12 @@ export interface FileRoutesByFullPath {
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
-  '/blueprint/': typeof BlueprintIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/blueprint': typeof BlueprintRoute
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
@@ -189,13 +190,13 @@ export interface FileRoutesByTo {
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages/$conversationId': typeof MessagesConversationIdRoute
-  '/blueprint': typeof BlueprintIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/ascendant': typeof AscendantRoute
   '/auth': typeof AuthRoute
+  '/blueprint': typeof BlueprintRoute
   '/challenges': typeof ChallengesRoute
   '/coach': typeof CoachRoute
   '/community': typeof CommunityRoute
@@ -214,7 +215,6 @@ export interface FileRoutesById {
   '/squads': typeof SquadsRoute
   '/workouts': typeof WorkoutsRoute
   '/messages_/$conversationId': typeof MessagesConversationIdRoute
-  '/blueprint/': typeof BlueprintIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -222,6 +222,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/blueprint'
     | '/challenges'
     | '/coach'
     | '/community'
@@ -240,12 +241,12 @@ export interface FileRouteTypes {
     | '/squads'
     | '/workouts'
     | '/messages/$conversationId'
-    | '/blueprint/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/blueprint'
     | '/challenges'
     | '/coach'
     | '/community'
@@ -264,12 +265,12 @@ export interface FileRouteTypes {
     | '/squads'
     | '/workouts'
     | '/messages/$conversationId'
-    | '/blueprint'
   id:
     | '__root__'
     | '/'
     | '/ascendant'
     | '/auth'
+    | '/blueprint'
     | '/challenges'
     | '/coach'
     | '/community'
@@ -288,13 +289,13 @@ export interface FileRouteTypes {
     | '/squads'
     | '/workouts'
     | '/messages_/$conversationId'
-    | '/blueprint/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AscendantRoute: typeof AscendantRoute
   AuthRoute: typeof AuthRoute
+  BlueprintRoute: typeof BlueprintRoute
   ChallengesRoute: typeof ChallengesRoute
   CoachRoute: typeof CoachRoute
   CommunityRoute: typeof CommunityRoute
@@ -313,7 +314,6 @@ export interface RootRouteChildren {
   SquadsRoute: typeof SquadsRoute
   WorkoutsRoute: typeof WorkoutsRoute
   MessagesConversationIdRoute: typeof MessagesConversationIdRoute
-  BlueprintIndexRoute: typeof BlueprintIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -337,6 +337,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blueprint': {
+      id: '/blueprint'
+      path: '/blueprint'
+      fullPath: '/blueprint'
+      preLoaderRoute: typeof BlueprintRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/challenges': {
@@ -458,13 +465,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WorkoutsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blueprint/': {
-      id: '/blueprint/'
-      path: '/blueprint'
-      fullPath: '/blueprint/'
-      preLoaderRoute: typeof BlueprintIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/messages_/$conversationId': {
       id: '/messages_/$conversationId'
       path: '/messages/$conversationId'
@@ -479,6 +479,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AscendantRoute: AscendantRoute,
   AuthRoute: AuthRoute,
+  BlueprintRoute: BlueprintRoute,
   ChallengesRoute: ChallengesRoute,
   CoachRoute: CoachRoute,
   CommunityRoute: CommunityRoute,
@@ -497,7 +498,6 @@ const rootRouteChildren: RootRouteChildren = {
   SquadsRoute: SquadsRoute,
   WorkoutsRoute: WorkoutsRoute,
   MessagesConversationIdRoute: MessagesConversationIdRoute,
-  BlueprintIndexRoute: BlueprintIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
