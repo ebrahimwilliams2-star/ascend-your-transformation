@@ -158,6 +158,12 @@ function Workouts() {
         </button>
       </header>
 
+      <div className="mb-6">
+        <BlueprintFeatureCard />
+      </div>
+
+
+
       {adding && (
         <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5 animate-reveal-up" style={{ animationDelay: "70ms" }}>
           <div className="mb-3 flex items-center justify-between">
