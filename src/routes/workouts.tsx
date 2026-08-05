@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { workoutSchema, LIMITS } from "@/lib/validation";
 import { haptic } from "@/lib/motion";
 import { Celebration } from "@/components/motion/Celebration";
+import { BlueprintFeatureCard } from "@/components/blueprint/BlueprintFeatureCard";
+
 
 export const Route = createFileRoute("/workouts")({
   head: () => ({ meta: [{ title: "Workouts — ASCEND" }] }),
@@ -157,6 +159,12 @@ function Workouts() {
           <Plus className={`size-5 text-white transition-transform ${adding ? "rotate-45" : ""}`} />
         </button>
       </header>
+
+      <div className="mb-6">
+        <BlueprintFeatureCard />
+      </div>
+
+
 
       {adding && (
         <section className="mx-6 mb-6 rounded-2xl border border-brand-red/30 bg-brand-gray p-5 animate-reveal-up" style={{ animationDelay: "70ms" }}>

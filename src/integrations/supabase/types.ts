@@ -65,6 +65,95 @@ export type Database = {
         }
         Relationships: []
       }
+      blueprint_phases: {
+        Row: {
+          created_at: string
+          focus: string[]
+          is_active: boolean
+          key: string
+          name: string
+          required_level: number
+          required_xp: number
+          sort_order: number
+          tagline: string
+          tier: string
+        }
+        Insert: {
+          created_at?: string
+          focus?: string[]
+          is_active?: boolean
+          key: string
+          name: string
+          required_level?: number
+          required_xp?: number
+          sort_order?: number
+          tagline: string
+          tier: string
+        }
+        Update: {
+          created_at?: string
+          focus?: string[]
+          is_active?: boolean
+          key?: string
+          name?: string
+          required_level?: number
+          required_xp?: number
+          sort_order?: number
+          tagline?: string
+          tier?: string
+        }
+        Relationships: []
+      }
+      blueprint_sessions: {
+        Row: {
+          completed_at: string
+          created_at: string
+          duration_min: number | null
+          exercise_logs: Json
+          id: string
+          phase_key: string
+          total_volume: number
+          user_id: string
+          workout_id: string | null
+          workout_key: string
+          workout_name: string
+        }
+        Insert: {
+          completed_at?: string
+          created_at?: string
+          duration_min?: number | null
+          exercise_logs?: Json
+          id?: string
+          phase_key: string
+          total_volume?: number
+          user_id: string
+          workout_id?: string | null
+          workout_key: string
+          workout_name: string
+        }
+        Update: {
+          completed_at?: string
+          created_at?: string
+          duration_min?: number | null
+          exercise_logs?: Json
+          id?: string
+          phase_key?: string
+          total_volume?: number
+          user_id?: string
+          workout_id?: string | null
+          workout_key?: string
+          workout_name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "blueprint_sessions_workout_id_fkey"
+            columns: ["workout_id"]
+            isOneToOne: false
+            referencedRelation: "workouts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       challenge_participants: {
         Row: {
           challenge_id: string
