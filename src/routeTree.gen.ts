@@ -9,116 +9,31 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as WorkoutsRouteImport } from './routes/workouts'
-import { Route as SquadsRouteImport } from './routes/squads'
-import { Route as SocialRouteImport } from './routes/social'
-import { Route as RewardsRouteImport } from './routes/rewards'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as ProfileRouteImport } from './routes/profile'
-import { Route as PhotosRouteImport } from './routes/photos'
-import { Route as NutritionRouteImport } from './routes/nutrition'
-import { Route as MetricsRouteImport } from './routes/metrics'
-import { Route as MessagesRouteImport } from './routes/messages'
-import { Route as JournalRouteImport } from './routes/journal'
-import { Route as GymbrosRouteImport } from './routes/gymbros'
-import { Route as DashRouteImport } from './routes/dash'
-import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
-import { Route as CommunityRouteImport } from './routes/community'
-import { Route as CoachRouteImport } from './routes/coach'
-import { Route as ChallengesRouteImport } from './routes/challenges'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AscendantRouteImport } from './routes/ascendant'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AscendantRouteImport } from './routes/ascendant'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ChallengesRouteImport } from './routes/challenges'
+import { Route as CoachRouteImport } from './routes/coach'
+import { Route as CommunityRouteImport } from './routes/community'
+import { Route as CompleteProfileRouteImport } from './routes/complete-profile'
+import { Route as DashRouteImport } from './routes/dash'
+import { Route as GymbrosRouteImport } from './routes/gymbros'
+import { Route as JournalRouteImport } from './routes/journal'
+import { Route as MessagesRouteImport } from './routes/messages'
+import { Route as MetricsRouteImport } from './routes/metrics'
+import { Route as NutritionRouteImport } from './routes/nutrition'
+import { Route as PhotosRouteImport } from './routes/photos'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RewardsRouteImport } from './routes/rewards'
+import { Route as SocialRouteImport } from './routes/social'
+import { Route as SquadsRouteImport } from './routes/squads'
+import { Route as WorkoutsRouteImport } from './routes/workouts'
 import { Route as MessagesConversationIdRouteImport } from './routes/messages_.$conversationId'
 
-const WorkoutsRoute = WorkoutsRouteImport.update({
-  id: '/workouts',
-  path: '/workouts',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SquadsRoute = SquadsRouteImport.update({
-  id: '/squads',
-  path: '/squads',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SocialRoute = SocialRouteImport.update({
-  id: '/social',
-  path: '/social',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RewardsRoute = RewardsRouteImport.update({
-  id: '/rewards',
-  path: '/rewards',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ProfileRoute = ProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PhotosRoute = PhotosRouteImport.update({
-  id: '/photos',
-  path: '/photos',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const NutritionRoute = NutritionRouteImport.update({
-  id: '/nutrition',
-  path: '/nutrition',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MetricsRoute = MetricsRouteImport.update({
-  id: '/metrics',
-  path: '/metrics',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MessagesRoute = MessagesRouteImport.update({
-  id: '/messages',
-  path: '/messages',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JournalRoute = JournalRouteImport.update({
-  id: '/journal',
-  path: '/journal',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GymbrosRoute = GymbrosRouteImport.update({
-  id: '/gymbros',
-  path: '/gymbros',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashRoute = DashRouteImport.update({
-  id: '/dash',
-  path: '/dash',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CompleteProfileRoute = CompleteProfileRouteImport.update({
-  id: '/complete-profile',
-  path: '/complete-profile',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CommunityRoute = CommunityRouteImport.update({
-  id: '/community',
-  path: '/community',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CoachRoute = CoachRouteImport.update({
-  id: '/coach',
-  path: '/coach',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ChallengesRoute = ChallengesRouteImport.update({
-  id: '/challenges',
-  path: '/challenges',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AscendantRoute = AscendantRouteImport.update({
@@ -126,9 +41,94 @@ const AscendantRoute = AscendantRouteImport.update({
   path: '/ascendant',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ChallengesRoute = ChallengesRouteImport.update({
+  id: '/challenges',
+  path: '/challenges',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoachRoute = CoachRouteImport.update({
+  id: '/coach',
+  path: '/coach',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommunityRoute = CommunityRouteImport.update({
+  id: '/community',
+  path: '/community',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompleteProfileRoute = CompleteProfileRouteImport.update({
+  id: '/complete-profile',
+  path: '/complete-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashRoute = DashRouteImport.update({
+  id: '/dash',
+  path: '/dash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GymbrosRoute = GymbrosRouteImport.update({
+  id: '/gymbros',
+  path: '/gymbros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JournalRoute = JournalRouteImport.update({
+  id: '/journal',
+  path: '/journal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MessagesRoute = MessagesRouteImport.update({
+  id: '/messages',
+  path: '/messages',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MetricsRoute = MetricsRouteImport.update({
+  id: '/metrics',
+  path: '/metrics',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NutritionRoute = NutritionRouteImport.update({
+  id: '/nutrition',
+  path: '/nutrition',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PhotosRoute = PhotosRouteImport.update({
+  id: '/photos',
+  path: '/photos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RewardsRoute = RewardsRouteImport.update({
+  id: '/rewards',
+  path: '/rewards',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialRoute = SocialRouteImport.update({
+  id: '/social',
+  path: '/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SquadsRoute = SquadsRouteImport.update({
+  id: '/squads',
+  path: '/squads',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const WorkoutsRoute = WorkoutsRouteImport.update({
+  id: '/workouts',
+  path: '/workouts',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MessagesConversationIdRoute = MessagesConversationIdRouteImport.update({
@@ -305,130 +305,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/workouts': {
-      id: '/workouts'
-      path: '/workouts'
-      fullPath: '/workouts'
-      preLoaderRoute: typeof WorkoutsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/squads': {
-      id: '/squads'
-      path: '/squads'
-      fullPath: '/squads'
-      preLoaderRoute: typeof SquadsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/social': {
-      id: '/social'
-      path: '/social'
-      fullPath: '/social'
-      preLoaderRoute: typeof SocialRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/rewards': {
-      id: '/rewards'
-      path: '/rewards'
-      fullPath: '/rewards'
-      preLoaderRoute: typeof RewardsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/photos': {
-      id: '/photos'
-      path: '/photos'
-      fullPath: '/photos'
-      preLoaderRoute: typeof PhotosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/nutrition': {
-      id: '/nutrition'
-      path: '/nutrition'
-      fullPath: '/nutrition'
-      preLoaderRoute: typeof NutritionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/metrics': {
-      id: '/metrics'
-      path: '/metrics'
-      fullPath: '/metrics'
-      preLoaderRoute: typeof MetricsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/messages': {
-      id: '/messages'
-      path: '/messages'
-      fullPath: '/messages'
-      preLoaderRoute: typeof MessagesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/journal': {
-      id: '/journal'
-      path: '/journal'
-      fullPath: '/journal'
-      preLoaderRoute: typeof JournalRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/gymbros': {
-      id: '/gymbros'
-      path: '/gymbros'
-      fullPath: '/gymbros'
-      preLoaderRoute: typeof GymbrosRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dash': {
-      id: '/dash'
-      path: '/dash'
-      fullPath: '/dash'
-      preLoaderRoute: typeof DashRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/complete-profile': {
-      id: '/complete-profile'
-      path: '/complete-profile'
-      fullPath: '/complete-profile'
-      preLoaderRoute: typeof CompleteProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/community': {
-      id: '/community'
-      path: '/community'
-      fullPath: '/community'
-      preLoaderRoute: typeof CommunityRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/coach': {
-      id: '/coach'
-      path: '/coach'
-      fullPath: '/coach'
-      preLoaderRoute: typeof CoachRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/challenges': {
-      id: '/challenges'
-      path: '/challenges'
-      fullPath: '/challenges'
-      preLoaderRoute: typeof ChallengesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ascendant': {
@@ -438,11 +319,130 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AscendantRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/challenges': {
+      id: '/challenges'
+      path: '/challenges'
+      fullPath: '/challenges'
+      preLoaderRoute: typeof ChallengesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/coach': {
+      id: '/coach'
+      path: '/coach'
+      fullPath: '/coach'
+      preLoaderRoute: typeof CoachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/community': {
+      id: '/community'
+      path: '/community'
+      fullPath: '/community'
+      preLoaderRoute: typeof CommunityRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/complete-profile': {
+      id: '/complete-profile'
+      path: '/complete-profile'
+      fullPath: '/complete-profile'
+      preLoaderRoute: typeof CompleteProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dash': {
+      id: '/dash'
+      path: '/dash'
+      fullPath: '/dash'
+      preLoaderRoute: typeof DashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/gymbros': {
+      id: '/gymbros'
+      path: '/gymbros'
+      fullPath: '/gymbros'
+      preLoaderRoute: typeof GymbrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/journal': {
+      id: '/journal'
+      path: '/journal'
+      fullPath: '/journal'
+      preLoaderRoute: typeof JournalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/messages': {
+      id: '/messages'
+      path: '/messages'
+      fullPath: '/messages'
+      preLoaderRoute: typeof MessagesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/metrics': {
+      id: '/metrics'
+      path: '/metrics'
+      fullPath: '/metrics'
+      preLoaderRoute: typeof MetricsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nutrition': {
+      id: '/nutrition'
+      path: '/nutrition'
+      fullPath: '/nutrition'
+      preLoaderRoute: typeof NutritionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/photos': {
+      id: '/photos'
+      path: '/photos'
+      fullPath: '/photos'
+      preLoaderRoute: typeof PhotosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/rewards': {
+      id: '/rewards'
+      path: '/rewards'
+      fullPath: '/rewards'
+      preLoaderRoute: typeof RewardsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/social': {
+      id: '/social'
+      path: '/social'
+      fullPath: '/social'
+      preLoaderRoute: typeof SocialRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/squads': {
+      id: '/squads'
+      path: '/squads'
+      fullPath: '/squads'
+      preLoaderRoute: typeof SquadsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/workouts': {
+      id: '/workouts'
+      path: '/workouts'
+      fullPath: '/workouts'
+      preLoaderRoute: typeof WorkoutsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/messages_/$conversationId': {
