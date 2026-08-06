@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
