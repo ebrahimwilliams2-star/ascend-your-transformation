@@ -829,6 +829,176 @@ export type Database = {
         }
         Relationships: []
       }
+      nutrition_blueprint_plans: {
+        Row: {
+          coaching: Json
+          created_at: string
+          generated_at: string
+          grocery_list: Json
+          id: string
+          is_active: boolean
+          meal_prep: Json
+          meals: Json
+          profile_snapshot: Json
+          targets: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          coaching?: Json
+          created_at?: string
+          generated_at?: string
+          grocery_list?: Json
+          id?: string
+          is_active?: boolean
+          meal_prep?: Json
+          meals?: Json
+          profile_snapshot?: Json
+          targets?: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          coaching?: Json
+          created_at?: string
+          generated_at?: string
+          grocery_list?: Json
+          id?: string
+          is_active?: boolean
+          meal_prep?: Json
+          meals?: Json
+          profile_snapshot?: Json
+          targets?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nutrition_blueprint_profiles: {
+        Row: {
+          age: number
+          allergies: string[]
+          budget: string
+          calorie_target: number | null
+          carbs_g: number | null
+          cardio_frequency: string
+          country: string
+          created_at: string
+          diet_preference: string
+          fat_g: number | null
+          fibre_g: number | null
+          goal_type: string
+          goal_weight_kg: number | null
+          height_cm: number
+          id: string
+          intensity: string
+          lifestyle: string
+          meals_per_day: number
+          protein_g: number | null
+          sex: string
+          training_days: number
+          updated_at: string
+          user_id: string
+          water_ml: number | null
+          weekly_change_kg: number | null
+          weight_kg: number
+        }
+        Insert: {
+          age: number
+          allergies?: string[]
+          budget?: string
+          calorie_target?: number | null
+          carbs_g?: number | null
+          cardio_frequency?: string
+          country?: string
+          created_at?: string
+          diet_preference?: string
+          fat_g?: number | null
+          fibre_g?: number | null
+          goal_type: string
+          goal_weight_kg?: number | null
+          height_cm: number
+          id?: string
+          intensity?: string
+          lifestyle?: string
+          meals_per_day?: number
+          protein_g?: number | null
+          sex: string
+          training_days?: number
+          updated_at?: string
+          user_id: string
+          water_ml?: number | null
+          weekly_change_kg?: number | null
+          weight_kg: number
+        }
+        Update: {
+          age?: number
+          allergies?: string[]
+          budget?: string
+          calorie_target?: number | null
+          carbs_g?: number | null
+          cardio_frequency?: string
+          country?: string
+          created_at?: string
+          diet_preference?: string
+          fat_g?: number | null
+          fibre_g?: number | null
+          goal_type?: string
+          goal_weight_kg?: number | null
+          height_cm?: number
+          id?: string
+          intensity?: string
+          lifestyle?: string
+          meals_per_day?: number
+          protein_g?: number | null
+          sex?: string
+          training_days?: number
+          updated_at?: string
+          user_id?: string
+          water_ml?: number | null
+          weekly_change_kg?: number | null
+          weight_kg?: number
+        }
+        Relationships: []
+      }
+      nutrition_meal_completions: {
+        Row: {
+          created_at: string
+          id: string
+          log_date: string
+          meal_index: number
+          meal_name: string
+          plan_id: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          log_date?: string
+          meal_index: number
+          meal_name: string
+          plan_id?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          log_date?: string
+          meal_index?: number
+          meal_name?: string
+          plan_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nutrition_meal_completions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "nutrition_blueprint_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       nutrition_profiles: {
         Row: {
           activity_level: string
@@ -892,6 +1062,39 @@ export type Database = {
           updated_at?: string
           user_id?: string
           weight_kg?: number
+        }
+        Relationships: []
+      }
+      nutrition_reviews: {
+        Row: {
+          calorie_delta: number
+          created_at: string
+          id: string
+          message: string
+          reviewed_at: string
+          user_id: string
+          verdict: string
+          weight_change_kg: number | null
+        }
+        Insert: {
+          calorie_delta?: number
+          created_at?: string
+          id?: string
+          message: string
+          reviewed_at?: string
+          user_id: string
+          verdict: string
+          weight_change_kg?: number | null
+        }
+        Update: {
+          calorie_delta?: number
+          created_at?: string
+          id?: string
+          message?: string
+          reviewed_at?: string
+          user_id?: string
+          verdict?: string
+          weight_change_kg?: number | null
         }
         Relationships: []
       }
