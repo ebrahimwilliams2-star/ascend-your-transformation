@@ -121,23 +121,12 @@ Use exactly these ${slots.length} meal slots in this order, using the slot name 
     const raw = json.choices?.[0]?.message?.content;
     if (!raw) throw new Error("Empty plan returned. Try again.");
 
-    const parsed = parseJsonBlock(raw) as
-      | {
-          meals?: unknown[];
-          grocery_list?: unknown[];
-          meal_prep?: Record<string, unknown>;
-          coaching?: unknown[];
-        }
-      | null;
+    const parsed = PlanSchema.safeParse(parseJsonBlock(raw));
 
-    if (!parsed || !Array.isArray(parsed.meals) || parsed.meals.length === 0) {
+    if (!parsed.success || parsed.data.meals.length === 0) {
       throw new Error("Plan came back malformed. Try again.");
     }
 
-    return {
-      meals: parsed.meals,
-      grocery_list: Array.isArray(parsed.grocery_list) ? parsed.grocery_list : [],
-      meal_prep: parsed.meal_prep ?? { batch: [], portioning: [], storage: [] },
-      coaching: Array.isArray(parsed.coaching) ? parsed.coaching : [],
-    };
+    return parsed.data;
   });
+
