@@ -54,7 +54,49 @@ Return STRICT JSON only, no markdown fence:
 "meal_prep":{"batch":[""],"portioning":[""],"storage":[""]},
 "coaching":[""]}`;
 
+const PlanSchema = z.object({
+  meals: z
+    .array(
+      z.object({
+        name: z.string().default("Meal"),
+        title: z.string().default(""),
+        foods: z
+          .array(z.object({ item: z.string().default(""), portion: z.string().default("") }))
+          .default([]),
+        calories: z.coerce.number().default(0),
+        protein_g: z.coerce.number().default(0),
+        carbs_g: z.coerce.number().default(0),
+        fat_g: z.coerce.number().default(0),
+        prep: z.string().default(""),
+        swaps: z
+          .array(z.object({ from: z.string().default(""), to: z.string().default("") }))
+          .default([]),
+        coach_note: z.string().default(""),
+      }),
+    )
+    .default([]),
+  grocery_list: z
+    .array(
+      z.object({
+        category: z.string().default("Other"),
+        items: z
+          .array(z.object({ name: z.string().default(""), quantity: z.string().default("") }))
+          .default([]),
+      }),
+    )
+    .default([]),
+  meal_prep: z
+    .object({
+      batch: z.array(z.string()).default([]),
+      portioning: z.array(z.string()).default([]),
+      storage: z.array(z.string()).default([]),
+    })
+    .default({ batch: [], portioning: [], storage: [] }),
+  coaching: z.array(z.string()).default([]),
+});
+
 function parseJsonBlock(raw: string): unknown {
+
   const cleaned = raw
     .trim()
     .replace(/^```(?:json)?/i, "")
