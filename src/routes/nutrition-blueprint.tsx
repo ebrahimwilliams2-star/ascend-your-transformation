@@ -188,12 +188,12 @@ function Onboarding() {
 
       const { error: plErr } = await supabase.from("nutrition_blueprint_plans").insert({
         user_id: user!.id,
-        targets: targets as unknown as Record<string, number>,
+        targets: targets as unknown as never,
         meals: plan.meals,
         grocery_list: plan.grocery_list,
         meal_prep: plan.meal_prep,
         coaching: plan.coaching,
-        profile_snapshot: form as unknown as Record<string, unknown>,
+        profile_snapshot: form as unknown as never,
       });
       if (plErr) throw plErr;
     },
@@ -603,12 +603,12 @@ function PlanView({ profile }: { profile: DbProfile }) {
 
       const { error } = await supabase.from("nutrition_blueprint_plans").insert({
         user_id: user!.id,
-        targets: targets as unknown as Record<string, number>,
+        targets: targets as unknown as never,
         meals: fresh.meals,
         grocery_list: fresh.grocery_list,
         meal_prep: fresh.meal_prep,
         coaching: fresh.coaching,
-        profile_snapshot: {} as Record<string, unknown>,
+        profile_snapshot: {} as unknown as never,
       });
       if (error) throw error;
     },

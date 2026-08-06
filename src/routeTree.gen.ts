@@ -23,6 +23,7 @@ import { Route as JournalRouteImport } from './routes/journal'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as MetricsRouteImport } from './routes/metrics'
 import { Route as NutritionRouteImport } from './routes/nutrition'
+import { Route as NutritionBlueprintRouteImport } from './routes/nutrition-blueprint'
 import { Route as PhotosRouteImport } from './routes/photos'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -103,6 +104,11 @@ const NutritionRoute = NutritionRouteImport.update({
   path: '/nutrition',
   getParentRoute: () => rootRouteImport,
 } as any)
+const NutritionBlueprintRoute = NutritionBlueprintRouteImport.update({
+  id: '/nutrition-blueprint',
+  path: '/nutrition-blueprint',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const PhotosRoute = PhotosRouteImport.update({
   id: '/photos',
   path: '/photos',
@@ -164,6 +170,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
+  '/nutrition-blueprint': typeof NutritionBlueprintRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -189,6 +196,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
+  '/nutrition-blueprint': typeof NutritionBlueprintRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -215,6 +223,7 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/metrics': typeof MetricsRoute
   '/nutrition': typeof NutritionRoute
+  '/nutrition-blueprint': typeof NutritionBlueprintRoute
   '/photos': typeof PhotosRoute
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -242,6 +251,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/metrics'
     | '/nutrition'
+    | '/nutrition-blueprint'
     | '/photos'
     | '/profile'
     | '/reset-password'
@@ -267,6 +277,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/metrics'
     | '/nutrition'
+    | '/nutrition-blueprint'
     | '/photos'
     | '/profile'
     | '/reset-password'
@@ -292,6 +303,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/metrics'
     | '/nutrition'
+    | '/nutrition-blueprint'
     | '/photos'
     | '/profile'
     | '/reset-password'
@@ -318,6 +330,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   MetricsRoute: typeof MetricsRoute
   NutritionRoute: typeof NutritionRoute
+  NutritionBlueprintRoute: typeof NutritionBlueprintRoute
   PhotosRoute: typeof PhotosRoute
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -429,6 +442,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof NutritionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/nutrition-blueprint': {
+      id: '/nutrition-blueprint'
+      path: '/nutrition-blueprint'
+      fullPath: '/nutrition-blueprint'
+      preLoaderRoute: typeof NutritionBlueprintRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/photos': {
       id: '/photos'
       path: '/photos'
@@ -510,6 +530,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   MetricsRoute: MetricsRoute,
   NutritionRoute: NutritionRoute,
+  NutritionBlueprintRoute: NutritionBlueprintRoute,
   PhotosRoute: PhotosRoute,
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
