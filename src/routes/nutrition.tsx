@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
@@ -447,7 +447,31 @@ function NutritionDashboard({ profile, onReset }: { profile: Profile; onReset: (
         </div>
       </header>
 
+      {/* Ethan's Nutrition Blueprint */}
+      <section className="mb-6 px-6">
+        <Link
+          to="/nutrition-blueprint"
+          className="tap relative block overflow-hidden rounded-3xl border border-brand-red/35 bg-black p-6 shadow-glow-red"
+        >
+          <div
+            className="pointer-events-none absolute -right-16 -top-16 size-48 rounded-full bg-brand-red/20 blur-3xl"
+            aria-hidden
+          />
+          <p className="chip-label relative text-brand-red">Ethan's Nutrition Blueprint</p>
+          <p className="text-display relative mt-2 text-2xl font-bold leading-tight">
+            Stop guessing what to eat.
+          </p>
+          <p className="relative mt-2 text-sm text-brand-silver">
+            A full day of meals, macros, grocery list and prep plan built around your body and budget.
+          </p>
+          <span className="relative mt-5 flex w-full items-center justify-center gap-2 rounded-2xl bg-brand-red py-3 text-sm font-bold uppercase tracking-widest text-white">
+            Open Blueprint <ChevronRight className="size-4" />
+          </span>
+        </Link>
+      </section>
+
       {/* Calorie ring */}
+
       <section className="px-6 mb-6 animate-reveal-up" style={{ animationDelay: "70ms" }}>
         <div className="relative overflow-hidden rounded-2xl border border-white/5 bg-brand-gray p-6">
           <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full bg-brand-red/15 blur-3xl" />
