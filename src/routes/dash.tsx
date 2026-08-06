@@ -5,7 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useUser } from "@/lib/auth";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { ChevronRight, LogOut, Scale, Sparkles, Flame, Apple, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
+import { ChevronRight, LogOut, Scale, Sparkles, Flame, Trophy, Users, Heart, Gift, Share2, MapPin, Edit3, User } from "lucide-react";
 import beforeImg from "@/assets/progress-before.jpg";
 import afterImg from "@/assets/progress-after.jpg";
 import { AscendLogo } from "@/components/AscendLogo";
@@ -368,23 +368,9 @@ function Dashboard() {
         </div>
       </section>
 
-      {/* Metrics & Nutrition quick links */}
+      {/* Metrics quick links */}
       <section className="px-6 space-y-3 pb-8 animate-reveal-up" style={{ animationDelay: "700ms" }}>
-        <Link
-          to="/nutrition"
-          className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"
-        >
-          <div className="flex items-center gap-3">
-            <div className="grid size-10 place-items-center rounded-lg bg-brand-red/20 text-brand-red">
-              <Apple className="size-5" />
-            </div>
-            <div>
-              <p className="text-sm font-bold">Nutrition</p>
-              <p className="text-[10px] uppercase tracking-widest text-brand-silver">Calories · Macros · Meals</p>
-            </div>
-          </div>
-          <ChevronRight className="size-5 text-brand-silver" />
-        </Link>
+
         <Link
           to="/metrics"
           className="flex items-center justify-between rounded-xl border border-white/5 bg-brand-gray/60 p-4 transition-colors hover:bg-brand-gray"
