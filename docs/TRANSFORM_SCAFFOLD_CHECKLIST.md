@@ -1,13 +1,16 @@
-# Transform feature scaffold checklist
+# Updated scaffold checklist - Iteration A started
 
-- [ ] iOS SwiftUI scaffold (TransformationHero, Timeline)
-- [ ] Android Jetpack Compose scaffold (Hero, Timeline)
-- [ ] docs/transform-api.md (API contract & notes)
-- [ ] mock Ethan analysis JSON
-- [ ] Unit/UI test placeholders
+Completed:
+- [x] Created feature/transform-redesign branch
+- [x] Initial scaffold files pushed for iOS & Android
+- [x] Basic before/after hero and timeline scaffolds
 
-Next steps after scaffold
-- Implement comparison modal gestures and pinch-to-zoom
-- Implement upload flow with signed URL support
-- Add Ethan analysis integration or replace mock with real endpoint
-- Implement statistics cards, charts, milestones, share card generation
+In progress (Iteration A):
+- [ ] Interactive before/after slider improvements
+- [ ] Animated count-up hero stats
+- [ ] Timeline virtualization + thumbnail lazy-loading (platform-specific)
+
+Next (future iterations):
+- Comparison modal with gestures (pinch/zoom/double tap swap)
+- Upload flow (signed URL) + Ethan analysis integration
+- Charts, milestones, share card generation
