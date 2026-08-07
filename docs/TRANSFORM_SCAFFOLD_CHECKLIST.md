@@ -1,16 +1,21 @@
-# Updated scaffold checklist - Iteration A started
+# Iteration A progress update
 
-Completed:
-- [x] Created feature/transform-redesign branch
-- [x] Initial scaffold files pushed for iOS & Android
-- [x] Basic before/after hero and timeline scaffolds
+This update implements the next scaffold improvements for Iteration A on branch feature/transform-redesign.
 
-In progress (Iteration A):
-- [ ] Interactive before/after slider improvements
-- [ ] Animated count-up hero stats
-- [ ] Timeline virtualization + thumbnail lazy-loading (platform-specific)
+What was added in this push
+- iOS:
+  - ios/Ascend/Transform/ComparisonModal.swift — fullscreen comparison modal with pinch/zoom, double-tap swap, and save-screenshot stub
+  - ios/Ascend/Transform/SkeletonView.swift — skeleton placeholder + shimmer helper
+  - ios/Ascend/Transform/NetworkingStub.swift — development networking stubs for signed-upload & Ethan enqueue
+- Android:
+  - android/app/src/main/java/com/ascend/transform/ComparisonModalAndroid.kt — fullscreen comparison composable stub
+  - android/app/src/main/java/com/ascend/transform/SkeletonComposable.kt — skeleton placeholder composable
+  - android/app/src/main/java/com/ascend/transform/NetworkingStubAndroid.kt — coroutine-based networking stub
+- docs: updated checklist indicating Iteration A started
 
-Next (future iterations):
-- Comparison modal with gestures (pinch/zoom/double tap swap)
-- Upload flow (signed URL) + Ethan analysis integration
-- Charts, milestones, share card generation
+Next actions
+- Integrate the ComparisonModal into the hero flow and wire screenshot/share APIs
+- Implement timeline virtualization and lazy thumbnail loading per platform
+- Add unit/UI tests and small instrumentation
+
+I will open a draft PR after wiring the modal into the hero and adding basic tests (next push).
