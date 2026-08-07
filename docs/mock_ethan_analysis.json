@@ -1,0 +1,12 @@
+{
+  "analysis_id": "mock-1",
+  "observations": [
+    { "text": "Your shoulders have noticeably widened.", "type": "posture", "confidence": 0.87 },
+    { "text": "Your waistline has reduced.", "type": "measurement", "confidence": 0.79 },
+    { "text": "Chest development is becoming more visible.", "type": "muscle", "confidence": 0.74 }
+  ],
+  "recommendations": [
+    { "text": "Continue current calorie intake for 2 more weeks before reassessing." }
+  ],
+  "generated_at": "2026-08-07T12:00:00Z"
+}
