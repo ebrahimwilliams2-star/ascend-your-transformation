@@ -183,7 +183,7 @@ function Dashboard() {
               <span className="chip-label text-white"><CountUp value={xp % 500} /> / 500</span>
             </div>
             <p className="mt-2 text-[10px] uppercase tracking-widest text-brand-silver">
-              {nextLevelXp - xp} XP to {rankFor(level + 1)}
+              {nextLevelXp - xp} XP to Level {level + 1}{rankFor(level + 1) !== rank ? ` · ${rankFor(level + 1)}` : ""}
             </p>
           </div>
         </div>
