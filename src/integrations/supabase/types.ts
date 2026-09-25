@@ -1526,6 +1526,7 @@ export type Database = {
       xp_logs: {
         Row: {
           amount: number
+          award_key: string | null
           created_at: string
           id: string
           ref_id: string | null
@@ -1534,6 +1535,7 @@ export type Database = {
         }
         Insert: {
           amount: number
+          award_key?: string | null
           created_at?: string
           id?: string
           ref_id?: string | null
@@ -1542,6 +1544,7 @@ export type Database = {
         }
         Update: {
           amount?: number
+          award_key?: string | null
           created_at?: string
           id?: string
           ref_id?: string | null
@@ -1555,6 +1558,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ascend_today: { Args: never; Returns: string }
       award_xp: {
         Args: {
           _amount: number
@@ -1563,6 +1567,16 @@ export type Database = {
           _user_id: string
         }
         Returns: undefined
+      }
+      award_xp_once: {
+        Args: {
+          _amount: number
+          _key: string
+          _ref_id: string
+          _source: string
+          _user_id: string
+        }
+        Returns: boolean
       }
       claim_challenge_xp: {
         Args: { _challenge_id: string }
