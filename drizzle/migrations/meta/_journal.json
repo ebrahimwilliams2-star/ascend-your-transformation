@@ -15,6 +15,20 @@
       "when": 1790318259267,
       "tag": "0001_discipline_habits_tick_once_per_day",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1790328118925,
+      "tag": "0002_fix_double_xp_triggers",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1790328134480,
+      "tag": "0003_challenge_xp_on_every_claim",
+      "breakpoints": true
     }
   ]
 }
