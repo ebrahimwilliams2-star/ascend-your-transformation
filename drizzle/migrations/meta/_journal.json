@@ -8,6 +8,13 @@
       "when": 1790318125800,
       "tag": "0000_xp_idempotency",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790318259267,
+      "tag": "0001_discipline_habits_tick_once_per_day",
+      "breakpoints": true
     }
   ]
 }
