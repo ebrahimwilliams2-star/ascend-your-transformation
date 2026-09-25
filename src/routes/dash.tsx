@@ -347,10 +347,10 @@ function Dashboard() {
             return (
               <button
                 key={h.id}
-                onClick={() => { haptic(done ? "light" : "success"); toggle.mutate(h.id); }}
-                disabled={toggle.isPending}
+                onClick={() => { if (done) return; haptic("success"); toggle.mutate(h.id); }}
+                disabled={done || toggle.isPending}
                 className={`flex w-full items-center justify-between rounded-xl border border-white/5 p-4 transition-colors ${
-                  done ? "bg-brand-gray/30 opacity-60" : "bg-brand-gray/60 hover:bg-brand-gray"
+                  done ? "bg-brand-gray/30 opacity-60 cursor-not-allowed" : "bg-brand-gray/60 hover:bg-brand-gray"
                 }`}
               >
                 <div className="flex items-center gap-3">
